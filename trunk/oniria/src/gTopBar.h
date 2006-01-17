@@ -1,4 +1,4 @@
-/* $Id: gTopBar.h 483 2005-08-29 12:14:26Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

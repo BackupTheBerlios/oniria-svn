@@ -1,4 +1,4 @@
-/* $Id: onir.cc 620 2005-12-30 15:24:23Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 246 2005-08-04 16:10:02Z choman $
+# $Id$
 
 noinst_PROGRAMS = stream objects xml crypt
 

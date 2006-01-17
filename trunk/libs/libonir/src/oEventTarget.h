@@ -1,4 +1,4 @@
-/* $Id: oEventTarget.h 307 2005-08-15 12:27:36Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

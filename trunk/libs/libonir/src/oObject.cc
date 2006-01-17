@@ -1,4 +1,4 @@
-/* $Id: oObject.cc 632 2006-01-02 14:56:49Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

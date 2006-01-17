@@ -1,4 +1,4 @@
-/* $Id: oPlugin.h 179 2005-07-26 17:01:14Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

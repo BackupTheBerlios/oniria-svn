@@ -1,4 +1,4 @@
-/* $Id: gAdvStatus.h 576 2005-09-15 20:44:09Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: dconv.h 418 2005-08-22 12:26:01Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

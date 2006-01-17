@@ -1,4 +1,4 @@
-/* $Id: oResources.h 481 2005-08-29 10:03:06Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

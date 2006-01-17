@@ -1,4 +1,4 @@
-/* $Id: saslSASL.h 635 2006-01-03 13:14:09Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: jRoster.h 559 2005-09-08 14:05:42Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

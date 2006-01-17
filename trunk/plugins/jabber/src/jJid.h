@@ -1,4 +1,4 @@
-/* $Id: jJid.h 258 2005-08-07 14:00:22Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 470 2005-08-26 11:51:21Z choman $
+# $Id$
 
 SUBDIRS = win32
 

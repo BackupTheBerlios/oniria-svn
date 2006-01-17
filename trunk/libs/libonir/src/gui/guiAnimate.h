@@ -1,4 +1,4 @@
-/* $Id: guiAnimate.h 611 2005-12-01 21:39:21Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

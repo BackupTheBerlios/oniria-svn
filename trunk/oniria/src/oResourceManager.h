@@ -1,4 +1,4 @@
-/* $Id: oResourceManager.h 479 2005-08-29 09:59:36Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

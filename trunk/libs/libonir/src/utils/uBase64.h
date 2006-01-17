@@ -1,4 +1,4 @@
-/* $Id: uBase64.h 623 2005-12-31 21:14:41Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

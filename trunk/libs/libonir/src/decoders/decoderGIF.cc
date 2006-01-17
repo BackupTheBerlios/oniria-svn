@@ -1,4 +1,4 @@
-/* $Id: decoderGIF.cc 614 2005-12-29 16:44:50Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

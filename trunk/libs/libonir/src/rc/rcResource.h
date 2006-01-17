@@ -1,4 +1,4 @@
-/* $Id: rcResource.h 369 2005-08-19 09:52:51Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

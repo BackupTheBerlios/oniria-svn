@@ -1,4 +1,4 @@
-/* $Id: plugin.h 130 2005-07-23 21:14:59Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

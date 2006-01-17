@@ -1,4 +1,4 @@
-/* $Id: uException.h 182 2005-07-26 19:08:19Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-# $Id: liboxml.pro 639 2006-01-03 14:22:18Z choman $
+# $Id$
 
 TEMPLATE = lib
 TARGET = oxml

@@ -1,4 +1,4 @@
-/* $Id: gChat.h 556 2005-09-08 11:41:27Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

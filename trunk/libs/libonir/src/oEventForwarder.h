@@ -1,4 +1,4 @@
-/* $Id: oEventForwarder.h 608 2005-10-07 09:57:23Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: gAdvStatus.cc 628 2006-01-02 11:16:03Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

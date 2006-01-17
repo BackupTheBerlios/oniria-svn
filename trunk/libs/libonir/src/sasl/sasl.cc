@@ -1,4 +1,4 @@
-/* $Id: sasl.cc 614 2005-12-29 16:44:50Z choman $ */
+/* $Id$ */
 
 /*!\namespace onirSASL
  * \brief Basic SASL implementation.

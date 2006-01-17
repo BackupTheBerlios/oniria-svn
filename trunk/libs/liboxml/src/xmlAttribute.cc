@@ -1,4 +1,4 @@
-/* $Id: xmlAttribute.cc 639 2006-01-03 14:22:18Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

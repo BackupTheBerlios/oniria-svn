@@ -1,4 +1,4 @@
-/* $Id: ctrlRosterTree.h 587 2005-09-21 20:19:31Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

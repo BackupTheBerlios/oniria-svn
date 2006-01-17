@@ -1,4 +1,4 @@
-/* $Id: guiPopupWindow.h 594 2005-09-22 21:31:42Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: oOniriaImpl.h 563 2005-09-11 10:06:55Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: imProtocol.h 209 2005-07-28 17:05:39Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

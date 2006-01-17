@@ -1,4 +1,4 @@
-/* $Id: oxml_config.h 637 2006-01-03 14:08:26Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

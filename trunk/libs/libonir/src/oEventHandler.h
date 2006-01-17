@@ -1,4 +1,4 @@
-/* $Id: oEventHandler.h 299 2005-08-15 11:00:26Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

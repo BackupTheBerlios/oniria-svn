@@ -1,4 +1,4 @@
-# $Id: libonir.pro 636 2006-01-03 14:04:42Z choman $
+# $Id$
 
 TEMPLATE = lib
 TARGET = onir

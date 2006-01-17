@@ -1,4 +1,4 @@
-/* $Id: cptHash.cc 624 2006-01-01 22:04:34Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

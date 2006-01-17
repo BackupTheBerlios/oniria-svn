@@ -1,4 +1,4 @@
-/* $Id: xh_guianim.h 603 2005-09-30 06:43:26Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

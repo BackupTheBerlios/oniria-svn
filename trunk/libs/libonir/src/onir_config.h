@@ -1,4 +1,4 @@
-/* $Id: onir_config.h 626 2006-01-02 09:55:42Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

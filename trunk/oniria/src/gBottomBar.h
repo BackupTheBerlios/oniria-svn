@@ -1,4 +1,4 @@
-/* $Id: gBottomBar.h 570 2005-09-13 19:41:26Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

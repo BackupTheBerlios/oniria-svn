@@ -1,4 +1,4 @@
-/* $Id: jPlugin.h 149 2005-07-24 17:50:26Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

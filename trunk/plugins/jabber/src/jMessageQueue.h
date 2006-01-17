@@ -1,4 +1,4 @@
-/* $Id: jMessageQueue.h 581 2005-09-21 13:15:47Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

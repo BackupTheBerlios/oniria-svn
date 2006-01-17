@@ -1,4 +1,4 @@
-/* $Id: xConfig.h 391 2005-08-21 09:00:01Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

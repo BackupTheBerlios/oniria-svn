@@ -1,4 +1,4 @@
-# $Id: Makefile.am 84 2005-07-18 19:10:13Z choman $
+# $Id$
 
 #noinst_PROGRAMS = 
 

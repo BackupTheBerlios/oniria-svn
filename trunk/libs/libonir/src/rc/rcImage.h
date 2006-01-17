@@ -1,4 +1,4 @@
-/* $Id: rcImage.h 376 2005-08-19 13:34:46Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

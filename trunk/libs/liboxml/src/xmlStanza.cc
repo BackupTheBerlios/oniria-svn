@@ -1,4 +1,4 @@
-/* $Id: xmlStanza.cc 636 2006-01-03 14:04:42Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

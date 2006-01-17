@@ -1,4 +1,4 @@
-/* $Id: jPeer.h 549 2005-09-08 08:51:21Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

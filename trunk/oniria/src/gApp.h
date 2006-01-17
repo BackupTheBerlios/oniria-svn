@@ -1,4 +1,4 @@
-/* $Id: gApp.h 490 2005-09-02 08:43:33Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

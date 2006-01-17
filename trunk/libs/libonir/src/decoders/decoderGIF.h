@@ -1,4 +1,4 @@
-/* $Id: decoderGIF.h 607 2005-10-05 13:46:23Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

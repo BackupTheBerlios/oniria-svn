@@ -1,4 +1,4 @@
-/* $Id: oSessionManager.h 584 2005-09-21 13:19:26Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

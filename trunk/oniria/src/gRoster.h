@@ -1,4 +1,4 @@
-/* $Id: gRoster.h 575 2005-09-15 20:24:17Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

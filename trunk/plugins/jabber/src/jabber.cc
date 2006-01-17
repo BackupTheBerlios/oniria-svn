@@ -1,4 +1,4 @@
-/* $Id: jabber.cc 629 2006-01-02 11:20:46Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: imRosterGroup.h 450 2005-08-24 13:40:21Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

@@ -1,4 +1,4 @@
-/* $Id: config.h 562 2005-09-11 09:23:14Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

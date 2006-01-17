@@ -1,4 +1,4 @@
-/* $Id: oniria_config.h 108 2005-07-20 19:15:49Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

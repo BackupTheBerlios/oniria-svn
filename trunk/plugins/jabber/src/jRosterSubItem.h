@@ -1,4 +1,4 @@
-/* $Id: jRosterSubItem.h 416 2005-08-22 11:55:52Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

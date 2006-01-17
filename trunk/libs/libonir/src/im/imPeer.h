@@ -1,4 +1,4 @@
-/* $Id: imPeer.h 547 2005-09-07 12:45:29Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

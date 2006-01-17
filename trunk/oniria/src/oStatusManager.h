@@ -1,4 +1,4 @@
-/* $Id: oStatusManager.h 571 2005-09-14 09:28:57Z morg $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *

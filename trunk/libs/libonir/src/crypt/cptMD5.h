@@ -1,4 +1,4 @@
-/* $Id: cptMD5.h 615 2005-12-29 23:29:57Z choman $ */
+/* $Id$ */
 /*
  * Copyright (C) 2005
  *
