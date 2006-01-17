@@ -1,0 +1,123 @@
+/* $Id: events.txt 580 2005-09-19 11:37:18Z choman $ */
+
+/*!
+
+\page events Events
+This document describes events used in Oniria.
+
+\section events-toc Table of contents
+- \ref events-toc
+- \ref events-overview
+- \ref events-reference
+	- \ref events-ref-im
+		- \ref events-ref-im-session
+			- \ref events-oniria-im-session-connected "oniria:im:session:connected"
+		- \ref events-ref-im-roster
+			- \ref events-oniria-im-session-roster-updated "oniria:im:session:roster:updated"
+			- \ref events-oniria-im-session-roster-item-presence "oniria:im:session:roster:item:presence"
+			- \ref events-oniria-im-session-roster-item-new "oniria:im:session:roster:item:new"
+		- \ref events-ref-im-others
+			- \ref events-oniria-im-session-thread-ui-create "oniria:im:session:thread:ui:create"
+
+\section events-overview Overview
+TODO
+
+
+\section events-reference Reference
+
+\subsection events-ref-im IM related events (oniria:im)
+
+\subsubsection events-ref-im-session Session (oniria:im:session)
+
+- \anchor events-oniria-im-session-connected <b>oniria:im:session:connected</b>\n\n
+Queued by session handler when session is successfully connected and established.\n
+XML Schema:\n
+<pre style="font-size: 8pt">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session-id" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+		<xs:attribute name="id" type="xs:string" use="required" fixed="oniria:im:session:connected" />
+	</xs:element>
+</xs:schema>
+</pre>
+
+\subsubsection events-ref-im-roster Roster (oniria:im:session:roster)
+
+- \anchor events-oniria-im-session-roster-updated <b>oniria:im:session:roster:updated</b>\n\n
+Queued when roster is updated (synchronized with one stored on server).\n
+XML Schema:\n
+<pre style="font-size: 8pt">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session-id" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+		<xs:attribute name="id" type="xs:string" use="required" fixed="oniria:im:session:roster:updated" />
+	</xs:element>
+</xs:schema>
+</pre>
+
+- \anchor events-oniria-im-session-roster-item-presence <b>oniria:im:session:roster:item:presence</b>\n\n
+Roster item presence has changed. There's no gurantee, that item still exists in roster.\n
+XML Schema:\n
+<pre style="font-size: 8pt">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session-id" type="xs:string" />
+				<xs:element name="item-id" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+		<xs:attribute name="id" type="xs:string" use="required" fixed="oniria:im:session:roster:item:presence" />
+	</xs:element>
+</xs:schema>
+</pre>
+
+- \anchor events-oniria-im-session-roster-item-new <b>oniria:im:session:roster:item:new</b>\n\n
+New item has been added to roster. There's no guarantee, that item still exists in roster. It can
+be deleted before this event will be processed.\n
+XML Schema:\n
+<pre style="font-size: 8pt">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session-id" type="xs:string" />
+				<xs:element name="item-id" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+		<xs:attribute name="id" type="xs:string" use="required" fixed="oniria:im:session:roster:item:new" />
+	</xs:element>
+</xs:schema>
+</pre>
+
+\subsubsection events-ref-im-others Others
+- \anchor events-oniria-im-session-thread-ui-create oniria:im:session:thread:ui:create\n\n
+Called when new user interface for conversation thread should be created. This event is never
+queued. It's immediatelly processed. Handler should create UI object and associate it with
+conversation thread.\n
+XML Schema:\n
+<pre style="font-size: 8pt">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="session-id" type="xs:string" />
+				<xs:element name="thread-id" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+		<xs:attribute name="id" type="xs:string" use="required" fixed="oniria:im:session:thread:ui:create" />
+	</xs:element>
+</xs:schema>
+</pre>
+
+
+*/
+

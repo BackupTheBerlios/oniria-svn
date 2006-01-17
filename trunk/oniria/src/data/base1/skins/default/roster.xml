@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: roster.xml 503 2005-09-04 14:01:22Z choman $ -->
+
+<roster>
+	<background>#ffffff</background>
+
+	<item>
+		<avail>
+
+			<normal>
+
+				<background>
+					<gradient>
+						<from>#ffffff</from>
+						<to>#ffffff</to>
+					</gradient>
+				</background>
+
+				<pad>
+					<x>1</x>
+					<y>1</y>
+				</pad>
+				<indent>15</indent>
+
+				<title>
+					<font>
+						<size>8</size>
+						<bold />
+					</font>
+					<colour>#0060c0</colour>
+				</title>
+
+				<description ref="title">
+					<font>
+						<size>7</size>
+						<bold value="no" />
+					</font>
+					<colour>#0060c0</colour>
+				</description>
+
+			</normal>
+
+			<normal-e ref="normal" />
+			<selected ref="normal">
+				<background>
+					<gradient>
+						<from>#d7d7d7</from>
+						<to>#e9e9e9</to>
+					</gradient>
+				</background>
+				<title><colour>BLACK</colour></title>
+				<description><colour>BLACK</colour></description>
+			</selected>
+			<selected-e ref="selected" />
+		</avail>
+		<chat ref="avail" />
+
+		<away ref="avail">
+			<normal>
+				<title><colour>#008080</colour></title>
+				<description><colour>#008080</colour></description>
+			</normal>
+			<normal-e ref="normal" />
+		</away>
+		<xa ref="away" />
+
+		<dnd ref="avail">
+			<normal>
+				<title><colour>#800000</colour></title>
+				<description><colour>#800000</colour></description>
+			</normal>
+			<normal-e ref="normal" />
+		</dnd>
+
+		<na ref="avail">
+			<normal>
+				<title><colour>BLACK</colour></title>
+				<description><colour>BLACK</colour></description>
+			</normal>
+			<normal-e ref="normal" />
+		</na>
+		<inv ref="na" />
+		<unsp ref="na" />
+	</item>
+
+	<subitem ref="item" />
+	<group ref="item:na" />
+</roster>
+

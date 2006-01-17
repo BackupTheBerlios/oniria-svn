@@ -1,0 +1,9 @@
+oniria
+Makefile.in
+oniria_config.h
+.svningore
+.deps
+Makefile
+*.o
+*.pak
+resources.xml

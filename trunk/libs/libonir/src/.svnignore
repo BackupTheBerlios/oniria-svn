@@ -1,0 +1,5 @@
+onir_config.h
+Makefile.in
+.libs
+.deps
+Makefile

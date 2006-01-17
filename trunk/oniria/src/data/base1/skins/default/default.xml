@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: default.xml 503 2005-09-04 14:01:22Z choman $ -->
+
+<skin>
+	<name>Default skin</name>
+
+	<include file="skins/default/roster.xml" />
+</skin>
+
