@@ -1,6 +1,8 @@
 #!/bin/sh
 # $Id: win32-install.sh 607 2005-10-05 13:46:23Z morg $
 
+# TODO: rewrite
+
 function install_header ()
 {
         install -Dv ./src/$1 ../win32-build/libonir/include/onir/$1
