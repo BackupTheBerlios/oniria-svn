@@ -24,4 +24,6 @@ SOURCES += src/xml.cc \
 	   src/xmlStanza.cc \
 	   src/xmlStream.cc
 
+DOC_INPUT = doxygen.cfg
+	   
 include(../../tools/qbuild/common.pro)

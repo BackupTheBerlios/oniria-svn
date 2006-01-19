@@ -1,47 +1,26 @@
-unix{
-	message("Unix build")
-	isEmpty(PREFIX){
-		PREFIX = /usr
-	}
+# $Id$
 
-	isEmpty(LIB_DIR){
-		LIB_DIR = $${PREFIX}/lib
-	}
+message("Unix build")
 
-	isEmpty(INCLUDE_DIR){
-		INCLUDE_DIR = $${PREFIX}/include
-	}
+isEmpty(PREFIX):PREFIX =/usr
+isEmpty(LIB_DIR):LIB_DIR = $${PREFIX}/lib
+isEmpty(INCLUDE_DIR):INCLUDE_DIR = $${PREFIX}/include
+isEmpty(DOC_DIR):DOC_DIR = $${PREFIX}/share/doc
 
-	isEmpty(DOC_DIR){
-		DOC_DIR = $${PREFIX}/share/doc
-	}
+!hpux:QMAKE_COPY_FILE = $${QMAKE_COPY_FILE} -P
 
-	!hpux {
-	    QMAKE_COPY_FILE = $${QMAKE_COPY_FILE} -P
-	}
-  	# install header
-  	include.path = $${INCLUDE_DIR}/$${TARGET}
-  	include.files = $${HEADERS}
+# install header
+include.path = $${INCLUDE_DIR}/$${TARGET}
+include.files = $${HEADERS}
 
-  	# install documentation html
-  	#documentation.path = $${DOC_DIR}/$${TARGET}
-  	#documentation.files = ../doc/*.html ../doc/*.css
+# install library
+target.path = $${LIB_DIR}
 
-  	# install documentation refManual
-  	#docRefManual.path = $${DOC_DIR}/$${TARGET}
-  	#docRefManual.files = ../doc/refManual/*
+# "make install" configuration options
+INSTALLS += target include
 
-  	# install static library  	
-  	#staticlib.path = $${LIB_DIR}
-  	#staticlib.files = lib$${TARGET}.a
-	
-	#install dynamic library
-	dll.files = $${TARGET}.so
-	dll.path = $${LIB_DIR}
-
-  	# install library
-  	target.path = $${LIB_DIR}
-
-  	# "make install" configuration options
-  	INSTALLS += target include dll#documentation 
-}
+message(PREFIX = $${PREFIX})
+message(LIB_DIR = $${LIB_DIR})
+message(INCLUDE_DIR = $${INCLUDE_DIR})
+message(DOC_DIR = $${DOC_DIR})
+message(TARGET = $${TARGET})
