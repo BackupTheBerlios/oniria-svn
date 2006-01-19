@@ -24,3 +24,4 @@ SOURCES += src/xml.cc \
 	   src/xmlStanza.cc \
 	   src/xmlStream.cc
 
+include(../../tools/qbuild/common.pro)
