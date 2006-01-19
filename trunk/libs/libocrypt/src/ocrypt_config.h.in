@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: onir_config.h.in 56 2005-07-16 15:31:04Z choman $ */
 /* This file generated from onir_config.h.in. */
 /*
  * Copyright (C) 2005
@@ -20,10 +20,10 @@
 #ifndef __OCRYPT_CONFIG_H
 #define __OCRYPT_CONFIG_H
 
-#define OCRYPT_MAJOR_VERSION	0
-#define OCRYPT_MINOR_VERSION	1
-#define OCRYPT_MICRO_VERSION	0
-#define OCRYPT_INTERFACE_AGE	0
-#define OCRYPT_BINARY_AGE		0
+#define OCRYPT_MAJOR_VERSION	@OCRYPT_MAJOR_VERSION@
+#define OCRYPT_MINOR_VERSION	@OCRYPT_MINOR_VERSION@
+#define OCRYPT_MICRO_VERSION	@OCRYPT_MICRO_VERSION@
+#define OCRYPT_INTERFACE_AGE	@OCRYPT_INTERFACE_AGE@
+#define OCRYPT_BINARY_AGE		@OCRYPT_BINARY_AGE@
 
 #endif
