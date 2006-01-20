@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/ocrypt
+
+Name: @PACKAGE@
+Description: Oniria cryptographic library
+Version: @VERSION@
+Libs: -L${libdir} -locrypt
+Cflags: -I${includedir} @QT_CFLAGS@
+

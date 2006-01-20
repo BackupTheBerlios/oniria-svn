@@ -5,14 +5,16 @@ SUBDIRS = src scripts
 docs_DOCS = AUTHORS ChangeLog COPYING INSTALL NEWS README
 docsdir = $(prefix)/share/doc/@PACKAGE@
 
-EXTRA_DIST = scripts/config.rpath scripts/mkinstalldirs libocrypt.m4 \
-	     libocrypt.pro win32-install.sh
+EXTRA_DIST = libocrypt.m4 libocrypt.pro win32-install.sh
 bin_SCRIPTS = libocrypt-config
 BUILT_SOURCES = libocrypt-config
 ocrypt-config: libocrypt-config.in
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = libocrypt.m4
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libocrypt.pc
 
 gen-docs:
 	doxygen doxygen.cfg

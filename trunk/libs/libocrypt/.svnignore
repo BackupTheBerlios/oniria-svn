@@ -42,4 +42,4 @@ libocrypt.tag
 libocrypt.depend
 .objs
 docs-output
-
+libocrypt.pc

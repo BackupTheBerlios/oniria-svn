@@ -20,6 +20,7 @@ AC_CONFIG_FILES([libocrypt-config
 		 scripts/Makefile 
 		 src/Makefile
 		 src/ocrypt_config.h
+		 libocrypt.pc
 		],
 		[chmod -f +x libocrypt-config])
 
