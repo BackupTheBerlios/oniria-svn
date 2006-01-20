@@ -4,6 +4,7 @@ TEMPLATE = lib
 TARGET = onir
 win32:debug:TARGET = onir-debug
 QT -= gui
+CONFIG += dll
 DEFINES += BUILDING_LIBONIR_DLL QT_NO_CAST_TO_ASCII
 DEPENDPATH += . \
               src \
@@ -47,3 +48,6 @@ SOURCES += src/onir.cc \
 	   src/sasl/saslCallback.cc \
 	   src/sasl/saslMechanism.cc 
 
+DOC_INPUT = doxygen.cfg
+	 
+include(../../tools/qbuild/common.pro)

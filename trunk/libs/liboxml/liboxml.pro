@@ -2,6 +2,7 @@
 
 TEMPLATE = lib
 TARGET = oxml
+CONFIG += dll
 win32:debug:TARGET = oxml-debug
 QT -= gui
 QT += xml
@@ -25,5 +26,5 @@ SOURCES += src/xml.cc \
 	   src/xmlStream.cc
 
 DOC_INPUT = doxygen.cfg
-	   
+	 
 include(../../tools/qbuild/common.pro)

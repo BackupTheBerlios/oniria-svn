@@ -2,6 +2,7 @@
 
 TEMPLATE = lib
 TARGET = ocrypt
+CONFIG += dll
 win32:debug:TARGET = ocrypt-debug
 QT -= gui
 QT += xml
@@ -26,3 +27,6 @@ SOURCES += src/crypt.cc \
 	   src/cptBase16.cc \
 	   src/cptBase64.cc
 
+DOC_INPUT = doxygen.cfg
+	 
+include(../../tools/qbuild/common.pro)

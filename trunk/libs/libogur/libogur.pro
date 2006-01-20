@@ -3,6 +3,8 @@
 CONFIG += debug precompile_header
 TEMPLATE = lib
 LIBRARY_NAME = ogur
+
+CONFIG += dll
 DEFINES += BUILDING_LIBOGUR_DLL QT_NO_CAST_TO_ASCII
 
 #Precompiled headers
@@ -30,11 +32,6 @@ CONFIG(debug, debug|release){
 		TARGET = $${LIBRARY_NAME}-debug
 	}
 	
-#messages
-message (Library Target: $${TARGET} )
-message(Qt version: $$[QT_VERSION])
-message(Qt is installed in $$[QT_INSTALL_PREFIX])
-message(Qt resources can be found in the following locations:)
-message(Header files: $$[QT_INSTALL_HEADERS])
-message(Libraries: $$[QT_INSTALL_LIBS])
-message(Binary files (executables): $$[QT_INSTALL_BINS])
+DOC_INPUT = doxygen.cfg
+	 
+include(../../tools/qbuild/common.pro)
