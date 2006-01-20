@@ -58,6 +58,7 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PATH_PROG(QTMOC, moc)
 
 dnl Checks for header files.
 dnl AC_CHECK_HEADERS(stdio.h stdlib.h stdint.h errno.h string.h strings.h assert.h \
