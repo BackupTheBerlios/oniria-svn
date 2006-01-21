@@ -17,3 +17,7 @@ Makefile.win
 docs-output
 liboxml.so*
 moc_*
+.moc
+Makefile
+liboxml.so*
+
