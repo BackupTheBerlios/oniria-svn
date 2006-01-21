@@ -17,10 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef __TREE_LIST_ITEM__
-#define __TREE_LIST_ITEM__
+#ifndef __TREE_LIST_ITEM_H
+#define __TREE_LIST_ITEM_H
 
-#include "dll.h"
+#include "ogur_dll.h"
 #include <QWidget>
 
 class LIBOGUR_API TreeListItem :public QWidget{

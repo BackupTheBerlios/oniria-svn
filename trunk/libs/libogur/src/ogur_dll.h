@@ -16,8 +16,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef __DLL_H
-#define __DLL_H
+#ifndef __OGUR_DLL_H
+#define __OGUR_DLL_H
 
 #if defined(WIN32)
 # if BUILDING_LIBOGUR_DLL

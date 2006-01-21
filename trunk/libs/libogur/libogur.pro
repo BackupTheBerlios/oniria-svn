@@ -12,7 +12,7 @@ PRECOMPILED_HEADER  = src/dll.h src/ogur_config.h
 
 
 # Input
-HEADERS +=	src/dll.h \
+HEADERS +=	src/ogur_dll.h \
 			src/ogur_config.h \
 			src/TreeList.h \
 			src/TreeListItem.h

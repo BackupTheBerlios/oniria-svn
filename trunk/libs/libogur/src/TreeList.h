@@ -17,10 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef __TREE_LIST__
-#define __TREE_LIST__
+#ifndef __TREE_LIST_H
+#define __TREE_LIST_H
 
-#include "dll.h"
+#include "ogur_dll.h"
 #include <QScrollArea>
 #include <QMap>
 
