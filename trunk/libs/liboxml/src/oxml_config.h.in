@@ -1,4 +1,5 @@
 /* $Id$ */
+/* This file generated from onir_config.h.in. */
 /*
  * Copyright (C) 2005
  *
@@ -19,14 +20,10 @@
 #ifndef __OXML_CONFIG_H
 #define __OXML_CONFIG_H
 
-#define OXML_MAJOR_VERSION	0
-#define OXML_MINOR_VERSION	1
-#define OXML_MICRO_VERSION	0
-#define OXML_INTERFACE_AGE	0
-#define OXML_BINARY_AGE		0
-
-#define PACKAGE		"liboxml"
-#define LOCALEDIR	"locales"
-#define DATADIR 	"data"
+#define OXML_MAJOR_VERSION	@OXML_MAJOR_VERSION@
+#define OXML_MINOR_VERSION	@OXML_MINOR_VERSION@
+#define OXML_MICRO_VERSION	@OXML_MICRO_VERSION@
+#define OXML_INTERFACE_AGE	@OXML_INTERFACE_AGE@
+#define OXML_BINARY_AGE		@OXML_BINARY_AGE@
 
 #endif

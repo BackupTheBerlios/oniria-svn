@@ -1,0 +1,7 @@
+oxml_config.h
+Makefile.in
+.libs
+.deps
+Makefile
+*.moc.cc
+

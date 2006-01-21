@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/oniria/oxml
+
+Name: @PACKAGE@
+Description: Oniria XML library
+Version: @VERSION@
+Libs: -L${libdir} -loxml
+Cflags: -I${includedir} @QT_CFLAGS@
+
