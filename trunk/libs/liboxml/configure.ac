@@ -21,6 +21,7 @@ AC_CONFIG_FILES([liboxml-config
 		 src/Makefile
 		 src/oxml_config.h
 		 liboxml.pc
+	 	 doxygen.cfg
 		],
 		[chmod -f +x liboxml-config])
 
