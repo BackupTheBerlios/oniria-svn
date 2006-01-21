@@ -38,3 +38,4 @@ ABOUT-NLS
 intl
 .objs
 liboxml.pc
+doxygen.cfg

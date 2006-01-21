@@ -43,3 +43,4 @@ libocrypt.depend
 .objs
 docs-output
 libocrypt.pc
+doxygen.cfg
