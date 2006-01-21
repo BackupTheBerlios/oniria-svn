@@ -1,0 +1,5 @@
+libogur.so*
+moc_*.cpp
+*.gch
+Makefile
+
