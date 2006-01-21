@@ -18,7 +18,7 @@ libocrypt_la_HEADERS_moc = cptHash.h			\
 			   cptHMAC.h
 
 nobase_ocryptinclude_HEADERS = ocrypt.h				\
-			       dll.h				\
+			       ocrypt_dll.h			\
 			       cptBase16.h			\
 			       cptBase64.h			\
 			       $(libocrypt_la_HEADERS_moc)

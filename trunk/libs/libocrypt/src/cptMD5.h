@@ -22,7 +22,7 @@
 #include <QString>
 #include <QObject>
 #include <stdint.h>
-#include "dll.h"
+#include "ocrypt_dll.h"
 #include "cptHash.h"
 
 namespace onirCrypt {

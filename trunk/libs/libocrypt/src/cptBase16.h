@@ -19,7 +19,7 @@
 #ifndef __CPTBASE16_H
 #define __CPTBASE16_H
 
-#include "dll.h"
+#include "ocrypt_dll.h"
 
 #include <QString>
 #include <QByteArray>
