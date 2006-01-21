@@ -3,11 +3,11 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/oniria/ocrypt
+includedir=@includedir@/oniria
 
 Name: @PACKAGE@
 Description: Oniria cryptographic library
 Version: @VERSION@
 Libs: -L${libdir} -locrypt
-Cflags: -I${includedir} @QT_CFLAGS@
+Cflags: -I${includedir} -I${includedir}/ocrypt @QT_CFLAGS@
 
