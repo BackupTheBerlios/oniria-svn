@@ -24,12 +24,8 @@
 
 namespace onirSASL {
 
-DEFINE_OOBJECT(saslMechanism, oObject);
-
 saslMechanism::saslMechanism()
 {
-	INIT_OOBJECT;
-
 	state(not_implemented);
 }
 

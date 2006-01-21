@@ -16,50 +16,44 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef _SASLDIGESTMD5_H
-#define _SASLDIGESTMD5_H
+#ifndef __SASLCALLBACK_H
+#define __SASLCALLBACK_H
 
 #include <QString>
-#include <stdint.h>
-#include "../dll.h"
-#include "saslMechanism.h"
-
-using namespace std;
+#include <QByteArray>
+#include <QObject>
+#include "dll.h"
 
 namespace onirSASL {
 
-/*!\class saslDIGESTMD5
- * \brief DIGEST-MD5 mechanism.
+/*!\class saslCallback
+ * \brief SASL callback, used by saslMechanism to obtain specific
+ * informations.
  */
-class LIBONIR_API saslDIGESTMD5 : public saslMechanism {
+class LIBOSASL_API saslCallback : public QObject {
+
+	Q_OBJECT
 
 	public:
 		/*!\name Constructors and destructor.
 		 */
 		//@{
 
-		/*!\fn saslDIGESTMD5()
+		/*!\fn saslCallback()
 		 * \brief Constructor.
 		 */
-		saslDIGESTMD5();
-
-		/*!\fn virtual ~saslDIGESTMD5()
-		 * \brief Destructor.
-		 */
-		virtual ~saslDIGESTMD5();
+		saslCallback();
 		//@}
 
-		virtual bool response(QByteArray * challenge, QByteArray * response);
-
-	protected:
-		bool step1(QByteArray * challenge, QByteArray * response);
-		bool step2(QByteArray * challenge, QByteArray * response);
-
-	private:
-		int _step;
-
-		DECLARE_OOBJECT;
+		/*!\fn virtual QByteArray * property(const QString& name)
+		 * \brief Called by saslMechanism to obtain missing properties.
+		 * \param name Property name.
+		 * \return Callback should return property value or NULL.
+		 */
+		virtual QByteArray * property(const QString& name);
 };
+
+
 
 };
 

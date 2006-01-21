@@ -16,23 +16,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#if defined(HAVE_CONFIG_H)
-# include <config.h>
+#ifndef __OSASL_DLL_H
+#define __OSASL_DLL_H
+
+#if defined(WIN32)
+# if BUILDING_LIBOSASL_DLL
+#  define LIBOSASL_API __declspec (dllexport)
+# else /* Not BUILDING_LIBOSASL_DLL */
+#  define LIBOSASL_API __declspec (dllimport)
+# endif /* Not BUILDING_LIBOSASL_DLL */
+#else
+# define LIBOSASL_API
 #endif
-#include "saslCallback.h"
 
-namespace onirSASL {
-
-DEFINE_OOBJECT(saslCallback, oObject);
-
-saslCallback::saslCallback()
-{
-	INIT_OOBJECT;
-}
-
-QByteArray * saslCallback::property(const QString& name)
-{
-	return NULL;
-}
-
-};
+#endif /* __DLL_H_ */

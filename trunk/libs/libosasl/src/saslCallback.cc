@@ -16,47 +16,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef __SASLCALLBACK_H
-#define __SASLCALLBACK_H
-
-#include <QString>
-#include <QByteArray>
-#include "../dll.h"
-#include "../oObject.h"
-
-using onir::oObject;
+#if defined(HAVE_CONFIG_H)
+# include <config.h>
+#endif
+#include "saslCallback.h"
 
 namespace onirSASL {
 
-/*!\class saslCallback
- * \brief SASL callback, used by saslMechanism to obtain specific
- * informations.
- */
-class LIBONIR_API saslCallback : public oObject {
+saslCallback::saslCallback()
+{
+}
 
-	public:
-		/*!\name Constructors and destructor.
-		 */
-		//@{
-
-		/*!\fn saslCallback()
-		 * \brief Constructor.
-		 */
-		saslCallback();
-		//@}
-
-		/*!\fn virtual QByteArray * property(const QString& name)
-		 * \brief Called by saslMechanism to obtain missing properties.
-		 * \param name Property name.
-		 * \return Callback should return property value or NULL.
-		 */
-		virtual QByteArray * property(const QString& name);
-
-		DECLARE_OOBJECT;
-};
-
-
+QByteArray * saslCallback::property(const QString& name)
+{
+	return NULL;
+}
 
 };
-
-#endif

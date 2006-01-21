@@ -26,12 +26,8 @@
 
 namespace onirSASL {
 
-DEFINE_OOBJECT(saslSASL, oObject);
-
 saslSASL::saslSASL()
 {
-	INIT_OOBJECT;
-
 	_mechanism = NULL;
 	_callback = NULL;
 
@@ -54,10 +50,10 @@ void saslSASL::callback(saslCallback * cb)
 		delete _callback;
 	_callback = cb;
 	for (QMap<QString, saslMechanism *>::iterator it = _mechs.begin(); it != _mechs.end(); it++)
-		it.value()->Callback(cb);
+		it.value()->callback(cb);
 }
 
-bool saslSASL::AddMechanism(saslMechanism * mech)
+bool saslSASL::addMechanism(saslMechanism * mech)
 {
 	if (_mechs.find(mech->name()) != _mechs.end())
 		return false;
@@ -76,7 +72,7 @@ saslMechanism * saslSASL::findMechanism(const QString& name) const
 		return _mechs.find(name).value();
 }
 
-saslMechanism * saslSASL::ChooseMechanism(const QList<QString>& mechs)
+saslMechanism * saslSASL::chooseMechanism(const QList<QString>& mechs)
 {
 	_allowed_mechs = mechs;
 	_i_mechanism = _allowed_mechs.begin();

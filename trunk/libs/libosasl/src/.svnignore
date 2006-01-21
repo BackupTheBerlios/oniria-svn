@@ -1,0 +1,7 @@
+osasl_config.h
+Makefile.in
+.libs
+.deps
+Makefile
+*.moc.cc
+libosasl_la-saslSASL.loT

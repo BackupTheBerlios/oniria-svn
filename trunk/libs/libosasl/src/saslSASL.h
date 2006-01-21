@@ -22,11 +22,9 @@
 #include <QString>
 #include <QMap>
 #include <QList>
+#include <QObject>
 #include <stdint.h>
-#include "../dll.h"
-#include "../oObject.h"
-
-using onir::oObject;
+#include "dll.h"
 
 namespace onirSASL {
 
@@ -36,7 +34,9 @@ class saslCallback;
 /*!\class saslSASL
  * \brief Main SASL class.
  */
-class LIBONIR_API saslSASL : public oObject {
+class LIBOSASL_API saslSASL : public QObject {
+
+	Q_OBJECT
 
 	public:
 		/*!\name Constructors and destructor.
@@ -121,8 +121,6 @@ class LIBONIR_API saslSASL : public oObject {
 		QList<QString>::iterator _i_mechanism;
 		saslMechanism * _mechanism;
 		saslCallback * _callback;
-
-		DECLARE_OOBJECT;
 };
 
 };

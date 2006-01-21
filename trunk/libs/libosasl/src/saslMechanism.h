@@ -24,11 +24,9 @@
 #include <QMultiMap>
 #include <QList>
 #include <QByteArray>
+#include <QObject>
 #include <stdint.h>
-#include "../dll.h"
-#include "../oObject.h"
-
-using onir::oObject;
+#include "dll.h"
 
 namespace onirSASL {
 
@@ -37,7 +35,9 @@ class saslCallback;
 /*!\class saslMechanism
  * \brief Base class for SASL mechanisms.
  */
-class LIBONIR_API saslMechanism : public oObject {
+class LIBOSASL_API saslMechanism : public QObject {
+
+	Q_OBJECT
 
 	public:
 
@@ -184,8 +184,6 @@ class LIBONIR_API saslMechanism : public oObject {
 
 		QString _mech_name;
 		QMultiMap<QString, QByteArray *> _properties;
-
-		DECLARE_OOBJECT;
 };
 
 };
