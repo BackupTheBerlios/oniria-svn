@@ -19,7 +19,7 @@
 #ifndef _XMLSTANZA_H
 #define _XMLSTANZA_H
 
-#include "dll.h"
+#include "oxml_dll.h"
 #include <QObject>
 
 namespace onirXML {

@@ -19,6 +19,7 @@ liboxml_la_HEADERS_moc = xmlAttribute.h			\
 			 xmlStream.h
 
 nobase_oxmlinclude_HEADERS = oxml.h				\
+			     oxml_dll.h				\
 			     $(liboxml_la_HEADERS_moc)
 
 liboxml_la_SOURCES = xml.cc					\

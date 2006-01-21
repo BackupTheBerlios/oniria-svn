@@ -22,7 +22,7 @@
 #include <QIODevice>
 #include <QString>
 #include <QList>
-#include "dll.h"
+#include "oxml_dll.h"
 
 namespace onirXML {
 

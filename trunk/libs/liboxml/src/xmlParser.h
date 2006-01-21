@@ -19,7 +19,7 @@
 #ifndef _XMLPARSER_H
 #define _XMLPARSER_H
 
-#include "dll.h"
+#include "oxml_dll.h"
 
 
 namespace onirXML {

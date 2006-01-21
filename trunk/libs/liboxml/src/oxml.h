@@ -19,7 +19,7 @@
 #ifndef __OXML_H
 #define __OXML_H
 
-#include "dll.h"
+#include "oxml_dll.h"
 
 #include <stdint.h>
 #include <QString>

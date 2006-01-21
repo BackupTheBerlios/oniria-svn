@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QString>
-#include "dll.h"
+#include "oxml_dll.h"
 
 namespace onirXML {
 

@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QMultiMap>
 #include <QList>
-#include "dll.h"
+#include "oxml_dll.h"
 #include "xmlAttribute.h"
 
 namespace onirXML {
