@@ -21,7 +21,7 @@
 
 #include <QString>
 #include <stdint.h>
-#include "dll.h"
+#include "osasl_dll.h"
 #include "saslMechanism.h"
 
 namespace onirSASL {

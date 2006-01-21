@@ -19,7 +19,7 @@ libosasl_la_HEADERS_moc = saslCallback.h			\
 			  saslDIGESTMD5.h
 
 nobase_osaslinclude_HEADERS = osasl.h				\
-			      dll.h				\
+			      osasl_dll.h			\
 			      $(libosasl_la_HEADERS_moc)
 
 libosasl_la_SOURCES = sasl.cc					\

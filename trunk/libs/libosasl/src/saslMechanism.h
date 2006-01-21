@@ -26,7 +26,7 @@
 #include <QByteArray>
 #include <QObject>
 #include <stdint.h>
-#include "dll.h"
+#include "osasl_dll.h"
 
 namespace onirSASL {
 

@@ -22,7 +22,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QObject>
-#include "dll.h"
+#include "osasl_dll.h"
 
 namespace onirSASL {
 
