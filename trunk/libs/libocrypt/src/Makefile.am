@@ -1,6 +1,6 @@
 # $Id$
 
-ocryptincludedir = $(includedir)/ocrypt
+ocryptincludedir = $(includedir)/oniria/ocrypt
 
 EXTRA_DIST = ocrypt_config.h.in
 

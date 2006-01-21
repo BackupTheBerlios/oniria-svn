@@ -5,8 +5,8 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 exec_prefix_set=no
-cflags="-I@includedir@/ocrypt"
-cxxflags="-I@includedir@/ocrypt"
+cflags="-I@includedir@/oniria/ocrypt"
+cxxflags="-I@includedir@/oniria/ocrypt"
 libs="-L@libdir@ -locrypt"
 
 usage()
