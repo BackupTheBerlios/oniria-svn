@@ -3,7 +3,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/ocrypt
+includedir=@includedir@/oniria/ocrypt
 
 Name: @PACKAGE@
 Description: Oniria cryptographic library
