@@ -21,6 +21,7 @@ AC_CONFIG_FILES([libocrypt-config
 		 src/Makefile
 		 src/ocrypt_config.h
 		 libocrypt.pc
+		 doxygen.cfg
 		],
 		[chmod -f +x libocrypt-config])
 
