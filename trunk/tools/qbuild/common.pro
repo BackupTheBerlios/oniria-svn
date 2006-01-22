@@ -2,18 +2,10 @@
 
 # variables:
 # DOC_INPUT - specs input file for doxygen doc generator
-# BUILD_DIR_PREFIX 
 
 QMAKE_EXT_MOC = .cc
 
 include(funcs.pri)
-
-isEmpty(BUILD_DIR_PREFIX){
-	BUILD_DIR_PREFIX = .
-}
-
-MOC_DIR = $${BUILD_DIR_PREFIX}/.moc
-OBJ_DIR = $${BUILD_DIR_PREFIX}/.obj
 
 unix:include(unix.pro)
 win32:include(win32.pro)
