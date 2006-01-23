@@ -19,6 +19,7 @@ AC_CONFIG_FILES([libocrypt-config
 		 Makefile
 		 scripts/Makefile 
 		 src/Makefile
+		 src/tests/Makefile
 		 src/ocrypt_config.h
 		 libocrypt.pc
 		 doxygen.cfg

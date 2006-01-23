@@ -1,5 +1,7 @@
 # $Id$
 
+SUBDIRS = . tests
+
 ocryptincludedir = $(includedir)/oniria/ocrypt
 
 EXTRA_DIST = ocrypt_config.h.in
