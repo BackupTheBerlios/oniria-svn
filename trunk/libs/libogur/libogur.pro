@@ -14,15 +14,14 @@ PRECOMPILED_HEADER  = src/ogur_dll.h src/ogur_config.h
 
 
 # Input
-HEADERS +=	src/ogur_dll.h \
-		src/ogur_config.h \
-		src/TreeList.h \
-		src/TreeListItem.h
-
-
-SOURCES +=	src/TreeListItem.cc \
-		src/TreeList.cc
-
+HEADERS       = src/ogur_dll.h \
+				src/gcore.h \
+				src/gtreelist.h \
+				src/gtreelistItem.h
+				
+SOURCES       = src/gcore.cc \
+				src/gtreelistItem.cc \
+				src/gtreelist.cc
 
 DOC_INPUT = doxygen.cfg
 PKG_CONFIG_IN_FILE = libogur.pc

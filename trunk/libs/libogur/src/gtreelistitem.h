@@ -17,48 +17,48 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef __TREE_LIST_ITEM_H
-#define __TREE_LIST_ITEM_H
+#ifndef __TREE_LIST_ITEM__
+#define __TREE_LIST_ITEM__
 
-#include "ogur_dll.h"
+#include "gcore.h"
+#include "ogur_dll.h" 
 #include <QWidget>
 
-class LIBOGUR_API TreeListItem :public QWidget{
-	Q_OBJECT;
-	public:
-		TreeListItem(QWidget * parent = 0);		
-		inline QString FirstTitle() { return _firstTitle; };
-		void FirstTitle(const QString & value);
+
+class GTreeListItem;
+
+class LIBOGUR_API GTreeListItem :public QWidget{
+	Q_OBJECT
+	public:		
+		GTreeListItem(QWidget * parent, const QString & ident);		
+		~GTreeListItem();
 		
-		inline QString SecondTitle() { return _secondTitle; }
-		void SecondTitle(const QString & value);
+		inline QString ident() { return _ident; }		
 		
-		inline QString Ident() { return _ident; }
-		inline void Ident(const QString & value) { _ident = value; }
+		inline bool selected() { return _selected; }
+		void selected(bool value);		
 		
-		inline bool Selected() { return _selected; }
-		void Selected(bool value);		
+		inline bool expanded() { return _expanded; }
+		void expanded(bool value);
 		
-		inline bool Expanded() { return _expanded; }
-		void Expanded(bool value);
+		inline bool visible() { return _visible; }
+		void visible(bool value);
 		
-		inline bool Visible() { return _visible; }
-		void Visible(bool value);
-		
-		QList<TreeListItem *> & Childs() { return _childs; }
-		QSize Draw();
+		QList<GTreeListItem *> & childs() { return _childs; }
+		QSize drawItem(bool draw = true);
+	signals:		
+		void itemMouseClick(GMouseEvent * sender);		
 	protected:
 		virtual void paintEvent(QPaintEvent *);
 		virtual void mousePressEvent(QMouseEvent * e);
+		virtual void mouseDoubleClickEvent(QMouseEvent * e);
 	private:		
-		QSize Draw(QPainter & paint);
+		QSize drawItem(QPainter & paint);
 		QString _ident;
-		QString _firstTitle;
-		QString _secondTitle;
 		bool _selected;
 		bool _expanded;	
 		bool _visible;
-		QList<TreeListItem *> _childs;				
+		QList<GTreeListItem *> _childs;				
 };
 
 #endif /* __TREE_LIST_ITEM__ */

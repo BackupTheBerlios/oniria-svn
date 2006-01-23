@@ -20,29 +20,26 @@
  
 #include <QApplication>
 #include <QPushButton>
-#include "../src/TreeList.h"
- 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <gtreelist.h>
+#include <gtreelistitem.h> 
  
 
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
-	TreeList rt;
+	GTreeList rt;
 	
-	TreeListItem * it = 0;
+	GTreeListItem * it = 0;
 	
-	it = rt.CreateItem("11", "");
-	it = rt.CreateItem("12", "");		
-	it = rt.CreateItem("121", "12");
-	it = rt.CreateItem("122", "12");
-	it = rt.CreateItem("13", "");
-	//it = rt.CreateItem("213", "21");
+	it = rt.createItem("11", "");
+	it = rt.createItem("12", "");		
+	it = rt.createItem("121", "12");
+	it = rt.createItem("122", "12");
+	it = rt.createItem("13", "");
+	it = rt.createItem("213", "21");
 	
 	rt.resize(400, 600);
 	rt.show();
-	rt.Redraw();
+	rt.redraw();
  	return app.exec();
 } 
