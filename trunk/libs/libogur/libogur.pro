@@ -15,18 +15,25 @@ PRECOMPILED_HEADER  = src/ogur_dll.h src/ogur_config.h
 
 # Input
 HEADERS +=	src/ogur_dll.h \
-			src/ogur_config.h \
-			src/TreeList.h \
-			src/TreeListItem.h
+		src/ogur_config.h \
+		src/TreeList.h \
+		src/TreeListItem.h
 
 
 SOURCES +=	src/TreeListItem.cc \
-			src/TreeList.cc
+		src/TreeList.cc
 
+
+DOC_INPUT = doxygen.cfg
+PKG_CONFIG_IN_FILE = libogur.pc
+		
 #output
 DESTDIR = ./bin
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
+
+#########################################################
+#########################################################
 
 win32:CONFIG(release, debug|release){		
 		message(Release build!)
@@ -42,6 +49,6 @@ win32:CONFIG(debug, debug|release){
 	CONFIG *= staticlib
 }
 
-DOC_INPUT = doxygen.cfg
-	 
+BASE_PATH = .
+unix:BASE_PATH = $$system(pwd)
 include(../../tools/qbuild/common.pro)

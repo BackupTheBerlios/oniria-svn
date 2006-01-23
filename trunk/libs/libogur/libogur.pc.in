@@ -9,5 +9,5 @@ Name: @PACKAGE@
 Description: Oniria GUI Resources
 Version: @VERSION@
 Libs: -L${libdir} -logur
-Cflags: -I${includedir} -I${includedir}/ogur @QT_CFLAGS@
+Cflags: -I${includedir} -I${includedir}/ogur
 

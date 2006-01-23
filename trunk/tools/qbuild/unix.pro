@@ -1,11 +1,14 @@
 # $Id$
 
 #NO_CACHE_FILE
+#PKG_CONFIG_IN_FILE
 
 message("Unix build")
 
+isEmpty(BASE_PATH):BASE_PATH=$$system(pwd)
+
 isEmpty(NO_CACHE_FILE){
-	CACHE_FILE = .$${TARGET}_cache.cse
+	CACHE_FILE = $${BASE_PATH}/.$${TARGET}_cache.cse
 
 	#Cache file
 	exists($${CACHE_FILE}){
@@ -17,8 +20,6 @@ isEmpty(NO_CACHE_FILE){
 isEmpty(PREFIX){
 	!isEmpty(_C_PREFIX):PREFIX = $${_C_PREFIX}
 	else:PREFIX =/usr
-}else{
-	
 }
 
 isEmpty(LIB_DIR){
@@ -41,7 +42,7 @@ isEmpty(DOC_DIR){
 
 # install header
 include.path = $${INCLUDE_DIR}/$${TARGET}
-include.files = $${HEADERS}
+include.files = $${HEADERS} 
 
 # install library
 target.path = $${LIB_DIR}
@@ -49,11 +50,19 @@ target.path = $${LIB_DIR}
 # "make install" configuration options
 INSTALLS += target include
 
+message(BASE_PATH = $${BASE_PATH})
 message(PREFIX = $${PREFIX})
 message(LIB_DIR = $${LIB_DIR})
 message(INCLUDE_DIR = $${INCLUDE_DIR})
 message(DOC_DIR = $${DOC_DIR})
 message(TARGET = $${TARGET})
+
+!isEmpty(PKG_CONFIG_IN_FILE){
+	PKG_CONFIG_WORKER=$${BASE_PATH}/$${PKG_CONFIG_IN_FILE}
+	exists($${PKG_CONFIG_WORKER}):system(rm -f $${PKG_CONFIG_WORKER})	
+	system(	cat $${PKG_CONFIG_WORKER}.in |sed 's!@prefix@!$${PREFIX}!g' | sed 's!@includedir@!$${INCLUDE_DIR}!g' |sed 's!@libdir@!$${LIB_DIR}!g'|sed 's!@VERSION@!$${VERSION}!g' |sed 's!@PACKAGE@!$${TARGET}!g' > $${PKG_CONFIG_WORKER})
+	message(PKG-CONFIG = $${PKG_CONFIG_WORKER})
+}
 
 isEmpty(NO_CACHE_FILE){
 	message(Write cache file into $${CACHE_FILE})
