@@ -41,17 +41,19 @@ size_t cptMD5::hashSize() const
 QString cptMD5::compute(const uint8_t * msg, size_t sz)
 {
 	QTextStream ss;
+	QString s;
 	uint8_t * hash;
 
 	init();
 	update(msg, sz);
 	finalize(&hash);
 
+	ss.setString(&s);
 	for (int i = 0; i < 16; i++)
 		ss << hex << qSetPadChar('0') << qSetFieldWidth(2) << static_cast<uint32_t>(hash[i]);
 	delete hash;
 
-	return ss.readAll();
+	return s;
 }
 
 bool cptMD5::init()

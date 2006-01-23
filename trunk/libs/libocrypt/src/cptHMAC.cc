@@ -88,16 +88,18 @@ size_t cptHMAC::compute(uint8_t ** hmac, const uint8_t * msg, size_t msg_sz, con
 
 QString cptHMAC::compute(const uint8_t * msg, size_t msg_sz, const uint8_t * key, size_t key_sz)
 {
+	QString s;
 	QTextStream ss;
 	uint8_t * hmac;
 	size_t hmac_sz;
 
 	hmac_sz = compute(&hmac, msg, msg_sz, key, key_sz);
+	ss.setString(&s);
 	for (size_t i = 0; i < hmac_sz; i++)
 		ss << hex << qSetPadChar('0') << qSetFieldWidth(2) << static_cast<uint32_t>(hmac[i]);
 	delete hmac;
 
-	return ss.readAll();
+	return s;
 }
 
 QString cptHMAC::compute(const QString& msg, const QString& key)
