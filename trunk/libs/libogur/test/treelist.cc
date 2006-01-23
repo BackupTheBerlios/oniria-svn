@@ -33,14 +33,14 @@ int main(int argc, char **argv)
 	TreeList rt;
 	
 	TreeListItem * it = 0;
-	/*
+	
 	it = rt.CreateItem("11", "");
 	it = rt.CreateItem("12", "");		
 	it = rt.CreateItem("121", "12");
 	it = rt.CreateItem("122", "12");
 	it = rt.CreateItem("13", "");
 	//it = rt.CreateItem("213", "21");
-	*/
+	
 	rt.resize(400, 600);
 	rt.show();
 	rt.Redraw();
