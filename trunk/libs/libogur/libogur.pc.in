@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/oniria
+
+Name: @PACKAGE@
+Description: Oniria GUI Resources
+Version: @VERSION@
+Libs: -L${libdir} -logur
+Cflags: -I${includedir} -I${includedir}/ogur @QT_CFLAGS@
+
