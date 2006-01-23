@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/oniria
+
+Name: @PACKAGE@
+Description: Oniria SASL library
+Version: @VERSION@
+Libs: -L${libdir} -loxml
+Cflags: -I${includedir} -I${includedir}/oim @QT_CFLAGS@
+

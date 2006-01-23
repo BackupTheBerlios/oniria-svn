@@ -1,0 +1,7 @@
+oim_config.h
+Makefile.in
+.libs
+.deps
+Makefile
+*.moc.cc
+liboim_la-saslSASL.loT
