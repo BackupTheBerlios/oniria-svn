@@ -2,7 +2,7 @@
 
 message("Unix build")
 
-isEmpty(BASE_PATH):error(You must set basedir in 'BASE_DIR' variable. eg. "BASE_DIR = \$$system(pwd)")
+isEmpty(BASE_PATH):error(You must set basedir in 'BASE_PATH' variable. eg. "BASE_PATH = \$$system(pwd)")
 include(funcs.pri)
 
 isEmpty(PREFIX){
