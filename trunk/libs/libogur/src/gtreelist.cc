@@ -34,7 +34,7 @@ QScrollArea(parent)
 	_items.insert(_rootItem->ident(), _rootItem);
 	setWidget(_canvas);
 	
-	_currentItem = 0;
+	_currentItem = _rootItem;
 }
 
 GTreeList::~GTreeList()
@@ -49,7 +49,13 @@ GTreeListItem * GTreeList::createItem(GTreeListItem * parent, const QString & id
 	GTreeListItem * childitem = new GTreeListItem(_canvas, ident, parent);
 	Q_CHECK_PTR(childitem);
 	_items.insert(childitem->ident(), childitem);
+	if (!parent->childs().empty()){
+		GTreeListItem * item = parent->childs().last();
+		item->next(childitem);
+		childitem->previous(item);
+	}
 	parent->childs().append(childitem);
+	connect(childitem, SIGNAL(itemMouseClick(GMouseEvent *)), this, SLOT(mouseEvent(GMouseEvent *)));
 	return childitem;
 }
 
@@ -64,14 +70,7 @@ GTreeListItem * GTreeList::createItem(const QString & ident, const QString & pid
 		
 	Q_ASSERT(pitem);
 	qDebug() << "Parentid:" << pitem->ident();
-	GTreeListItem * childitem = new GTreeListItem(_canvas, ident, pitem);
-	Q_CHECK_PTR(childitem);
-	
-	_items.insert(childitem->ident(), childitem);	
-	pitem->childs().append(childitem);
-	
-	connect(childitem, SIGNAL(itemMouseClick(GMouseEvent *)), this, SLOT(mouseEvent(GMouseEvent *)));
-	return childitem;
+	return createItem(pitem, ident);	
 }
 
 GTreeListItem * GTreeList::elementAt(const QString & ident)
@@ -85,37 +84,65 @@ GTreeListItem * GTreeList::elementAt(const QString & ident)
 
 GTreeListItem * GTreeList::nextVisible(GTreeListItem * current)
 {
-	if (current == NULL)
+	if (current == 0)
 		current = _currentItem;
 	Q_ASSERT(current);	
 	if (current->expanded()){		
 		if (!current->childs().empty()){			
-			return *current->childs().begin();
+			return current->childs().first();
 		}
 	}else{
-		QListIterator<GTreeListItem *> it(current->top()->childs());
-		GTreeListItem * lit;
-		while (it.hasNext()){
-			lit = it.next();
-			if (lit->ident() == current->ident()){
-				if (it.hasNext())
-					return it.next();				
-			}
-		}		
+		if (current->next())
+			return current->next();
+		else
+			if (current->top() && current->top()->next())
+				return current->top()->next();
 	}
+	return current;
+}
+
+GTreeListItem * GTreeList::previousVisible(GTreeListItem * current)
+{
+	if(current == 0)
+		current = _currentItem;
+	Q_ASSERT(current);
+	
+	if (current->previous()){
+		if (current->previous()->expanded()){
+			if (!current->previous()->childs().empty())
+				return current->previous()->childs().last();
+		}			
+		return current->previous();
+	}
+	if (current->top() && current->top() != _rootItem)
+		return current->top();
 	return current;
 }
 
 void GTreeList::keyPressEvent(QKeyEvent *e)
 {	
+	Q_ASSERT(_currentItem);
+	if (e->key() == Qt::Key_Left && _currentItem->expanded()){
+		_currentItem->expanded(false);
+		redraw();
+		return ;
+	}else if (e->key() == Qt::Key_Right && !_currentItem->expanded()){
+		_currentItem->expanded(true);
+		redraw();
+		return ;
+	}
+
 	if (e->modifiers() ^ Qt::ControlModifier){
 		clearSelected();
-		if (e->key() == Qt::Key_Down){			
-			_currentItem = nextVisible();
-			_currentItem->selected(true);
-			_selected.append(_currentItem);
-		}
-	}	
+	}
+	if (e->key() == Qt::Key_Down){
+		_currentItem = nextVisible();
+	}else if (e->key() == Qt::Key_Up){
+		_currentItem = previousVisible();
+	}
+	_currentItem->selected(true);
+	_selected.insert(_currentItem->ident(), _currentItem);
+		
 }
 
 void GTreeList::mouseEvent(GMouseEvent * ev)
@@ -125,15 +152,20 @@ void GTreeList::mouseEvent(GMouseEvent * ev)
 	
 	if (ev->modifiers() ^ Qt::ControlModifier){
 		clearSelected();	
-		it->selected(!it->selected());			
+		it->selected(true);			
 		if (!it->childs().empty())
 			it->expanded(!it->expanded());	
+		_selected.insert(it->ident(), it);
 	}else{
-		it->selected(true);
+		it->selected(!it->selected());
+		if (it->selected()){
+			_selected.insert(it->ident(), it);
+		}else{
+			_selected.remove(it->ident());
+		}
 	}
 	
-	redraw(qobject_cast<GTreeListItem*>(ev->sender()));		
-	_selected.append(it);
+	redraw(qobject_cast<GTreeListItem*>(ev->sender()));			
 	_currentItem = it;
 }
 
@@ -188,13 +220,13 @@ void GTreeList::drawItems(GTreeListItem * root, QRect & rc, bool show, GTreeList
 
 int GTreeList::clearSelected()
 {
-	QListIterator<GTreeListItem *> it(_selected);
+	QMapIterator<QString, GTreeListItem *> it(_selected);
 	int selected(0);
 	GTreeListItem *i;
 	while(it.hasNext()){
-		i = it.next();		
+		i = it.next().value();
 		selected++;
-		i->selected(false);		
+		i->selected(false);
 	}
 	_selected.clear();
 	return selected;

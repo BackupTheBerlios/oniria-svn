@@ -30,6 +30,8 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_expanded = false;
 	_visible = true;	
 	_top = top;
+	_next = 0;
+	_previous = 0;
 }
 
 GTreeListItem::~GTreeListItem()
@@ -52,6 +54,8 @@ void GTreeListItem::selected(bool value)
 void GTreeListItem::expanded(bool value)
 {
 	_expanded = value;
+	if (childs().empty())
+		_expanded = false;
 }
 
 void GTreeListItem::visible(bool value)
@@ -72,13 +76,13 @@ void GTreeListItem::mouseDoubleClickEvent(QMouseEvent * e)
 }
 
 QSize GTreeListItem::drawItem(bool draw)
-{
-	QPainter p(this);
-	return drawItem(p);	
-}
-
-QSize GTreeListItem::drawItem(QPainter & paint)
 {	
+	return size();
+}
+	
+void GTreeListItem::paintEvent(QPaintEvent *)
+{	
+	QPainter p(this);
 	QColor c1, c2;
 	if (selected()){
 		c1 = QColor(0, 0, 0, 255);
@@ -89,16 +93,9 @@ QSize GTreeListItem::drawItem(QPainter & paint)
 	}
 	
 	QLinearGradient fade(0, 0, 0, height());
-    fade.setColorAt(0, c1);
-    fade.setColorAt(1, c2);
-    paint.fillRect(rect(), fade);
-		
-	paint.drawText(10, 10, _ident);	
-	return size();
-}
+	fade.setColorAt(0, c1);
+	fade.setColorAt(1, c2);
+	p.fillRect(rect(), fade);
 
-void GTreeListItem::paintEvent(QPaintEvent *)
-{	
-	QPainter p(this);
-	drawItem(p);
+	p.drawText(10, 10, _ident);	
 }
