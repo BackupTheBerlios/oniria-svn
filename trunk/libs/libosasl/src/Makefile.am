@@ -8,7 +8,7 @@ lib_LTLIBRARIES = libosasl.la
 
 libosasl_la_CPPFLAGS = -Wall @QT_CFLAGS@ @OCRYPT_CFLAGS@ -DBUILDING_LIBOSASL_DLL
 libosasl_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-		       -release $(LT_RELEASE) \
+		       -release $(LT_RELEASE) @LIBTOOL_EXTRA_LDFLAGS@ \
 		       @QT_LIBS@ @OCRYPT_LIBS@
 
 

@@ -10,7 +10,7 @@ lib_LTLIBRARIES = libocrypt.la
 
 libocrypt_la_CPPFLAGS = -Wall @QT_CFLAGS@ -DBUILDING_LIBOCRYPT_DLL
 libocrypt_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-		       -release $(LT_RELEASE) \
+		       -release $(LT_RELEASE) @LIBTOOL_EXTRA_LDFLAGS@ \
 		       @QT_LIBS@
 
 

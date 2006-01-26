@@ -11,7 +11,7 @@ fi
 #autopoint
 
 echo "Running aclocal..."
-aclocal
+aclocal -I ../../tools/aclocal
 
 echo "Running autoheader..."
 autoheader
