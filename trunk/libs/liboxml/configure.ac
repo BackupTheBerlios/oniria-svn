@@ -19,6 +19,7 @@ AC_CONFIG_FILES([liboxml-config
 		 Makefile
 		 scripts/Makefile 
 		 src/Makefile
+		 src/tests/Makefile
 		 src/oxml_config.h
 		 liboxml.pc
 	 	 doxygen.cfg

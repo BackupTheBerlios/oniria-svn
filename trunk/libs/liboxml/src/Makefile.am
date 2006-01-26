@@ -2,6 +2,8 @@
 
 oxmlincludedir = $(includedir)/oniria/oxml
 
+SUBDIRS = . tests
+
 EXTRA_DIST = oxml_config.h.in
 
 lib_LTLIBRARIES = liboxml.la
