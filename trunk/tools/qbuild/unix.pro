@@ -1,8 +1,9 @@
 # $Id$
 
 message("Unix build")
+
+isEmpty(BASE_PATH):error(You must set basedir in 'BASE_DIR' variable. eg. "BASE_DIR = \$$system(pwd)")
 include(funcs.pri)
-isEmpty(BASE_PATH):BASE_PATH=$$system(pwd)
 
 isEmpty(PREFIX){
 	PREFIX = $$getFromCache(PREFIX)
