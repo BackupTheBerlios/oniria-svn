@@ -5,8 +5,6 @@
 
 QMAKE_EXT_MOC = .cc
 
-include(funcs.pri)
-
 unix:include(unix.pro)
 win32:include(win32.pro)
 
@@ -15,5 +13,4 @@ win32:include(win32.pro)
 	dox.commands = doxygen $${DOC_INPUT}
 	dox.depends =
 	QMAKE_EXTRA_TARGETS += doc
-	message(DOC: $${DOC_INPUT})
 }

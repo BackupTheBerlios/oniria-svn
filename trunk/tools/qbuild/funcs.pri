@@ -27,25 +27,30 @@ defineTest(keywordReplace){
 	return (true)	
 }
 
-defineTest(keywordFilesReplace){
+defineTest(keywordFilesReplace){	
 	files = $$eval($$1)
 	vars = $$2
 	isEmpty(vars):vars = $$REPLACE_KEYWORDS
 	for(file, files){
-		file_test = $$find(file, .in$)
-		count(file_test, 1){
-			fil = $$BASE_PATH/$$file		
-			exists($$fil){
-				keywordReplace($$fil, $$system(echo $$fil | sed -e's/.in$//'), $$vars)
-			}else:warning(file not found: $$fil)
-		}
+		fil = $$BASE_PATH/$${file}	
+		exists($${fil}.in){
+			keywordReplace($${fil}.in, $$fil, $$vars)
+		}else:warning(file not found: $${fil}.in)
 		
 	}
 	return (true)
 }
 
+defineTest(configFilesReplace){
+	!isEmpty(CONFIG_FILES){
+		keywordFilesReplace(CONFIG_FILES)
+		return (true)		
+	}
+	return(false)
+}
+
 #Cache file functions
-isEmpty(CACHE_FILE):CACHE_FILE = $${BASE_PATH}/$${TARGET}_cache.cse
+isEmpty(CACHE_FILE):CACHE_FILE = $${BASE_PATH}/.$${TARGET}_cache
 
 defineTest(addToCacheFile){
 	vars = $$eval($$1)
@@ -71,7 +76,9 @@ defineReplace(getFromCache){
 	varname = $$1
 	file = $$2
 	isEmpty(file):file = $$CACHE_FILE
-	var = $$system(sed -e'/^:_$${varname}_=/!d; /^:_$${varname}_=/{s/^:_$${varname}_=//}' $$file)
-	return ($$var)
+	exists($$file){
+		var = $$system(sed -e'/^:_$${varname}_=/!d; /^:_$${varname}_=/{s/^:_$${varname}_=//}' $$file)
+		return ($$var)
+	}
 }
 
