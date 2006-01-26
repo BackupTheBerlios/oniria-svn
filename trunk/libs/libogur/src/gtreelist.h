@@ -37,13 +37,20 @@ class LIBOGUR_API GTreeList: public QScrollArea
 		GTreeListItem * createItem(const QString & ident, const QString & pident);		
 		void redraw(GTreeListItem * from = 0);		
 		GTreeListItem * elementAt(const QString & ident);
+		GTreeListItem * nextVisible(GTreeListItem * current = 0);
+		int clearSelected();
+		inline QList<GTreeListItem *> & selected() { return _selected; }
 	public slots:
 		void mouseEvent(GMouseEvent * ev);
+	protected:
+		void keyPressEvent(QKeyEvent *e);
 	private:
 		void drawItems(GTreeListItem * root, QRect & rc, bool show, GTreeListItem * from = 0);
 		bool _candraw;
 		GTreeListItem * _rootItem;
+		GTreeListItem * _currentItem;
 		QWidget * _canvas;
 		QMap <QString, GTreeListItem *> _items;
+		QList<GTreeListItem *> _selected;
 };
 #endif /* __TREE_LIST__ */

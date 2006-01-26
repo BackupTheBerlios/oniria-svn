@@ -32,10 +32,12 @@ class LIBOGUR_API GMouseEvent{
 		inline QWidget * sender() { return _sender; }
 		inline Qt::MouseButton button() { return _button; }
 		inline Qt::MouseButtons buttons() { return _buttons; }
+		inline Qt::KeyboardModifiers modifiers() { return _modifiers; }
 		inline ClickType click() { return _clickType; } 
 	private:
 		Qt::MouseButton _button;
 		Qt::MouseButtons _buttons;
+		Qt::KeyboardModifiers _modifiers;
 		QPoint _pos, _globalPos;
 		QWidget * _sender;
 		ClickType _clickType;

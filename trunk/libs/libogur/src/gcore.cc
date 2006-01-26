@@ -30,5 +30,6 @@ GMouseEvent::GMouseEvent(QMouseEvent * me, QWidget * s, ClickType ct)
 		_globalPos = me->globalPos();
 		_button = me->button();
 		_buttons = me->buttons();
+		_modifiers = me->modifiers();
 	}
 }

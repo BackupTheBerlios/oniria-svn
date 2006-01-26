@@ -21,7 +21,7 @@
 #include "gtreelistitem.h"
 
 
-GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident)
+GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
 :QWidget(parent)
 {
 	hide();
@@ -29,6 +29,7 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident)
 	_selected = false;
 	_expanded = false;
 	_visible = true;	
+	_top = top;
 }
 
 GTreeListItem::~GTreeListItem()
@@ -45,6 +46,7 @@ GTreeListItem::~GTreeListItem()
 void GTreeListItem::selected(bool value)
 {
 	_selected = value;
+	repaint();
 }
 
 void GTreeListItem::expanded(bool value)
@@ -58,9 +60,7 @@ void GTreeListItem::visible(bool value)
 }
 
 void GTreeListItem::mousePressEvent(QMouseEvent * e)
-{
-	//selected(!selected());	
-	expanded(!expanded());	
+{		
 	GMouseEvent tlme(e, this, GMouseEvent::one_click);	
 	emit itemMouseClick(&tlme);
 }
@@ -82,10 +82,10 @@ QSize GTreeListItem::drawItem(QPainter & paint)
 	QColor c1, c2;
 	if (selected()){
 		c1 = QColor(0, 0, 0, 255);
-		c2 = QColor(0, 0, 0, 0);
+		c2 = QColor(0, 0, 255, 0);
 	}else{ 
 		c1 = QColor(0, 0, 0, 0);
-		c2 = QColor(0, 0, 0, 255);		
+		c2 = QColor(0, 255, 0, 255);		
 	}
 	
 	QLinearGradient fade(0, 0, 0, height());

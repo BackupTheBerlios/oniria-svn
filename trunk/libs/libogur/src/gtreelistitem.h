@@ -30,7 +30,7 @@ class GTreeListItem;
 class LIBOGUR_API GTreeListItem :public QWidget{
 	Q_OBJECT
 	public:		
-		GTreeListItem(QWidget * parent, const QString & ident);		
+		GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top);		
 		~GTreeListItem();
 		
 		inline QString ident() { return _ident; }		
@@ -46,6 +46,7 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		
 		QList<GTreeListItem *> & childs() { return _childs; }
 		QSize drawItem(bool draw = true);
+		GTreeListItem * top() { return _top; }
 	signals:		
 		void itemMouseClick(GMouseEvent * sender);		
 	protected:
@@ -58,6 +59,7 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		bool _selected;
 		bool _expanded;	
 		bool _visible;
+		GTreeListItem * _top;
 		QList<GTreeListItem *> _childs;				
 };
 
