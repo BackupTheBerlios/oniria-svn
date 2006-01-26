@@ -23,8 +23,9 @@ SOURCES       = src/gcore.cc \
 				src/gtreelistItem.cc \
 				src/gtreelist.cc
 
+
+CONFIG_FILES = libogur.pc 
 DOC_INPUT = doxygen.cfg
-PKG_CONFIG_IN_FILE = libogur.pc
 		
 #output
 DESTDIR = ./bin
