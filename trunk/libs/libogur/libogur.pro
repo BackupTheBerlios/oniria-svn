@@ -15,13 +15,17 @@ PRECOMPILED_HEADER  = src/ogur_dll.h src/ogur_config.h
 
 # Input
 HEADERS       = src/ogur_dll.h \
-				src/gcore.h \
-				src/gtreelist.h \
-				src/gtreelistItem.h
-				
+		src/gcore.h \
+		src/gtreelist.h \
+		src/gtreelistItem.h \
+		src/gaction.h \
+		src/gtreelistitemmoveaction.h
+			
 SOURCES       = src/gcore.cc \
-				src/gtreelistItem.cc \
-				src/gtreelist.cc
+		src/gtreelistItem.cc \
+		src/gtreelist.cc \
+		src/gaction.cc \
+		src/gtreelistitemmoveaction.cc
 
 
 CONFIG_FILES = libogur.pc 

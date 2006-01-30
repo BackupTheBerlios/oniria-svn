@@ -42,7 +42,7 @@ class LIBOGUR_API GTreeList: public QScrollArea
 		int clearSelected();
 		inline QMap<QString, GTreeListItem *> & selected() { return _selected; }
 	public slots:
-		void mouseEvent(GMouseEvent * ev);
+		void slotMouseEvent(GMouseEvent * ev);
 	protected:
 		void keyPressEvent(QKeyEvent *e);
 	private:

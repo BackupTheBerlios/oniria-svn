@@ -26,6 +26,7 @@
 
 
 class GTreeListItem;
+class GAction;
 
 class LIBOGUR_API GTreeListItem :public QWidget{
 	Q_OBJECT
@@ -44,9 +45,9 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		inline bool visible() { return _visible; }
 		void visible(bool value);
 		
-		QList<GTreeListItem *> & childs() { return _childs; }
-		QSize drawItem(bool draw = true);
-		GTreeListItem * top() { return _top; }
+		inline QList<GTreeListItem *> & childs() { return _childs; }
+		virtual QSize drawItem(bool draw = true);
+		inline GTreeListItem * top() { return _top; }
 		
 		inline GTreeListItem * next() { return _next; }
 		inline void next(GTreeListItem * i) { _next = i; }
@@ -54,11 +55,12 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		inline GTreeListItem * previous() { return _previous; }
 		inline void previous(GTreeListItem * i) { _previous = i; }
 	signals:
-		void itemMouseClick(GMouseEvent * sender);
+		void signalItemMouseClick(GMouseEvent * sender);
 	protected:
 		virtual void paintEvent(QPaintEvent *);
 		virtual void mousePressEvent(QMouseEvent * e);
 		virtual void mouseDoubleClickEvent(QMouseEvent * e);
+		virtual bool eventFilter(QObject *obj, QEvent * e);
 	private:
 		QString _ident;
 		bool _selected;
@@ -67,6 +69,7 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		GTreeListItem * _top;
 		GTreeListItem * _next;
 		GTreeListItem * _previous;
+		GAction * _action;
 		QList<GTreeListItem *> _childs;
 };
 

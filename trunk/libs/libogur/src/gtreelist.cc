@@ -55,21 +55,21 @@ GTreeListItem * GTreeList::createItem(GTreeListItem * parent, const QString & id
 		childitem->previous(item);
 	}
 	parent->childs().append(childitem);
-	connect(childitem, SIGNAL(itemMouseClick(GMouseEvent *)), this, SLOT(mouseEvent(GMouseEvent *)));
+	connect(childitem, SIGNAL(signalItemMouseClick(GMouseEvent *)), this, SLOT(slotMouseEvent(GMouseEvent *)));
+	if (!_currentItem)
+		_currentItem = childitem;
 	return childitem;
 }
 
 GTreeListItem * GTreeList::createItem(const QString & ident, const QString & pident)
 {	
-	qDebug() << "createItem ident:" << ident << " Parent:"<< pident;
 	GTreeListItem * pitem = 0;
 	if (_items.find(pident) != _items.end())
 		pitem = _items[pident];			
 	else
 		pitem = _rootItem;
 		
-	Q_ASSERT(pitem);
-	qDebug() << "Parentid:" << pitem->ident();
+	Q_ASSERT(pitem);	
 	return createItem(pitem, ident);	
 }
 
@@ -145,7 +145,7 @@ void GTreeList::keyPressEvent(QKeyEvent *e)
 		
 }
 
-void GTreeList::mouseEvent(GMouseEvent * ev)
+void GTreeList::slotMouseEvent(GMouseEvent * ev)
 {
 	GTreeListItem * it = elementAt(reinterpret_cast<GTreeListItem*>(ev->sender())->ident());	
 	Q_ASSERT(it);
@@ -164,9 +164,8 @@ void GTreeList::mouseEvent(GMouseEvent * ev)
 			_selected.remove(it->ident());
 		}
 	}
-	
-	redraw(qobject_cast<GTreeListItem*>(ev->sender()));			
 	_currentItem = it;
+	redraw(qobject_cast<GTreeListItem*>(ev->sender()));	
 }
 
 void GTreeList::redraw(GTreeListItem * from)
@@ -174,6 +173,8 @@ void GTreeList::redraw(GTreeListItem * from)
 	QRect r(_rootItem->pos(), QSize(0, 0));
 	_candraw = false;
 	drawItems(_rootItem, r, true, from);
+	if (r.width() < width())
+		r.setWidth(width());
 	_canvas->resize(r.size());
 	
 }

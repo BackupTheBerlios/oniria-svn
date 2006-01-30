@@ -19,11 +19,12 @@
 
 #include <QtGui>
 #include "gtreelistitem.h"
-
+#include "gtreelistitemmoveaction.h"
 
 GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
 :QWidget(parent)
 {
+	_action = new GTreeListItemMoveAction(this, 10);
 	hide();
 	_ident = ident;	
 	_selected = false;
@@ -32,6 +33,7 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_top = top;
 	_next = 0;
 	_previous = 0;
+	installEventFilter(this);
 }
 
 GTreeListItem::~GTreeListItem()
@@ -43,6 +45,8 @@ GTreeListItem::~GTreeListItem()
 		o->hide();
 		delete o;
 	}
+	//delete _action;
+	//_action = 0;
 }
 
 void GTreeListItem::selected(bool value)
@@ -66,13 +70,21 @@ void GTreeListItem::visible(bool value)
 void GTreeListItem::mousePressEvent(QMouseEvent * e)
 {		
 	GMouseEvent tlme(e, this, GMouseEvent::one_click);	
-	emit itemMouseClick(&tlme);
+	emit signalItemMouseClick(&tlme);
 }
 
 void GTreeListItem::mouseDoubleClickEvent(QMouseEvent * e)
 {
 	GMouseEvent tlme(e, this, GMouseEvent::db_click);	
-	emit itemMouseClick(&tlme);
+	emit signalItemMouseClick(&tlme);
+}
+
+bool GTreeListItem::eventFilter(QObject *obj, QEvent *e)
+{
+	if (_action != 0){
+		_action->relayEvent(e);
+	}
+	return QWidget::eventFilter(obj, e);
 }
 
 QSize GTreeListItem::drawItem(bool draw)
