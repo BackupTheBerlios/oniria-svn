@@ -11,8 +11,10 @@ defineTest(createFile){
 	return(true)
 }
 
-isEmpty(PACKAGE):PACKAGE = $${TARGET}
-REPLACE_KEYWORDS *= PREFIX LIB_DIR INCLUDE_DIR VERSION TARGET DOC_DIR PACKAGE
+isEmpty(package):package = $${TARGET}
+isEmpty(libdir):libdir = $${LIB_DIR}
+isEmpty(includedir):includedir = $${INCLUDE_DIR}
+REPLACE_KEYWORDS *= PREFIX LIB_DIR INCLUDE_DIR VERSION TARGET DOC_DIR PACKAGE package includedir libdir
 
 defineTest(keywordReplace){
 	infile = $$1
