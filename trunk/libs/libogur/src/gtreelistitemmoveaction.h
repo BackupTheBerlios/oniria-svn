@@ -23,6 +23,7 @@
 #include "gaction.h"
 
 class GTreeListItem;
+class GAction;
 
 class LIBOGUR_API GTreeListItemMoveAction : public GAction{
 	Q_OBJECT
@@ -30,6 +31,7 @@ class LIBOGUR_API GTreeListItemMoveAction : public GAction{
 		GTreeListItemMoveAction(GTreeListItem * parent, int interval);
 	protected:
 		virtual void relayEvent(QEvent * e);
+		virtual void reset();
 	protected slots:
 		virtual void slotTimer();	
 	private:

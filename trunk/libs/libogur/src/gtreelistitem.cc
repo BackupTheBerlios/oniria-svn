@@ -18,13 +18,12 @@
 */
 
 #include <QtGui>
+#include "gaction.h"
 #include "gtreelistitem.h"
-#include "gtreelistitemmoveaction.h"
 
 GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
 :QWidget(parent)
 {
-	_action = new GTreeListItemMoveAction(this, 20);
 	hide();
 	_ident = ident;	
 	_selected = false;
@@ -45,8 +44,6 @@ GTreeListItem::~GTreeListItem()
 		o->hide();
 		delete o;
 	}
-	//delete _action;
-	//_action = 0;
 }
 
 void GTreeListItem::selected(bool value)
@@ -79,11 +76,20 @@ void GTreeListItem::mouseDoubleClickEvent(QMouseEvent * e)
 	emit signalItemMouseClick(&tlme);
 }
 
+void GTreeListItem::resetActions()
+{
+	QListIterator<GAction *> it(_actions);
+	while(it.hasNext()){
+		it.next()->reset();
+	}	
+}
+
 bool GTreeListItem::eventFilter(QObject *obj, QEvent *e)
 {
-	if (_action != 0){
-		_action->relayEvent(e);
-	}
+	QListIterator<GAction *> it(_actions);
+	while(it.hasNext()){
+		it.next()->relayEvent(e);
+	}	
 	return QWidget::eventFilter(obj, e);
 }
 

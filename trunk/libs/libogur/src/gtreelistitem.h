@@ -54,6 +54,9 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 
 		inline GTreeListItem * previous() { return _previous; }
 		inline void previous(GTreeListItem * i) { _previous = i; }
+		
+		inline void addAction(GAction * act) { _actions.append(act); }
+		void resetActions();
 	signals:
 		void signalItemMouseClick(GMouseEvent * sender);
 	protected:
@@ -68,9 +71,9 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		bool _visible;
 		GTreeListItem * _top;
 		GTreeListItem * _next;
-		GTreeListItem * _previous;
-		GAction * _action;
+		GTreeListItem * _previous;		
 		QList<GTreeListItem *> _childs;
+		QList<GAction *> _actions;
 };
 
 #endif /* __TREE_LIST_ITEM__ */

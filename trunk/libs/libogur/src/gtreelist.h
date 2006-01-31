@@ -38,7 +38,7 @@ class LIBOGUR_API GTreeList: public QScrollArea
 		void redraw(GTreeListItem * from = 0);		
 		GTreeListItem * elementAt(const QString & ident);
 		GTreeListItem * nextVisible(GTreeListItem * current = 0);
-		GTreeListItem * previousVisible(GTreeListItem * current = 0);
+		GTreeListItem * previousVisible(GTreeListItem * current = 0);		
 		int clearSelected();
 		inline QMap<QString, GTreeListItem *> & selected() { return _selected; }
 	public slots:
@@ -47,6 +47,7 @@ class LIBOGUR_API GTreeList: public QScrollArea
 		void keyPressEvent(QKeyEvent *e);
 	private:
 		void drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeListItem * from = 0);
+		void setupItem(GTreeListItem * item);
 		bool _candraw;
 		GTreeListItem * _rootItem;
 		GTreeListItem * _currentItem;

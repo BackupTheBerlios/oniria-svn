@@ -28,6 +28,7 @@ class LIBOGUR_API GAction: public QObject{
 	public:
 		GAction(QObject * parent);
 		virtual void relayEvent(QEvent * e) = 0;
+		virtual void reset() {};
 	signals:
 		void signalProcess();
 };

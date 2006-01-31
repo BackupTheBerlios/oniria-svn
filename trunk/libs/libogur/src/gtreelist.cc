@@ -21,6 +21,7 @@
 
 #include "gtreelistitem.h"
 #include "gtreelist.h"
+#include "gtreelistitemmoveaction.h"
 
 GTreeList::GTreeList(QWidget * parent):
 QScrollArea(parent)
@@ -43,11 +44,18 @@ GTreeList::~GTreeList()
 	delete _canvas;
 }
 
+void GTreeList::setupItem(GTreeListItem * item)
+{
+	item->addAction(new GTreeListItemMoveAction(item, 20));
+}
+
 GTreeListItem * GTreeList::createItem(GTreeListItem * parent, const QString & ident)
 {
 	Q_ASSERT(parent);
 	GTreeListItem * childitem = new GTreeListItem(_canvas, ident, parent);
 	Q_CHECK_PTR(childitem);
+	setupItem(childitem);
+	
 	_items.insert(childitem->ident(), childitem);
 	if (!parent->childs().empty()){
 		GTreeListItem * item = parent->childs().last();
@@ -192,6 +200,7 @@ void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeList
 		if (i->visible()){
 			if (show){
 				i->prepare(false);					
+				i->resetActions();
 				i->move(_drawIdent, sz.height());				
 				sz.setHeight(sz.height() + i->height());
 				

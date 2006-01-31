@@ -32,8 +32,7 @@ GTreeListItemMoveAction::GTreeListItemMoveAction(GTreeListItem * parent, int int
 	_actStep = 1;
 	_maxStep = 10;
 	_currentStep = 1;
-	_intimer = false;
-	_baseX = 0;
+	_intimer = false;	
 }
 
 void GTreeListItemMoveAction::relayEvent(QEvent * e)
@@ -46,6 +45,12 @@ void GTreeListItemMoveAction::relayEvent(QEvent * e)
 		if (!_timer->isActive())
 			_timer->start(_interval);			
 	}
+}
+
+void GTreeListItemMoveAction::reset()
+{
+	_timer->stop();		
+	_currentStep = 0;
 }
 
 void GTreeListItemMoveAction::slotTimer()
