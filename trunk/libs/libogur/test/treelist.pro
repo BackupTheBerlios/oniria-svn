@@ -1,5 +1,5 @@
 
-CONFIG += warn_on debug
+CONFIG += warn_on debug console
 TEMPLATE = app
 #DEFINES += BUILDING_LIBOGUR_DLL
 INCLUDEPATH += ../src

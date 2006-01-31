@@ -24,7 +24,7 @@
 GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
 :QWidget(parent)
 {
-	_action = new GTreeListItemMoveAction(this, 10);
+	_action = new GTreeListItemMoveAction(this, 20);
 	hide();
 	_ident = ident;	
 	_selected = false;
@@ -87,7 +87,7 @@ bool GTreeListItem::eventFilter(QObject *obj, QEvent *e)
 	return QWidget::eventFilter(obj, e);
 }
 
-QSize GTreeListItem::drawItem(bool draw)
+QSize GTreeListItem::prepare(bool draw)
 {	
 	return size();
 }

@@ -38,6 +38,7 @@ class LIBOGUR_API GTreeListItemMoveAction : public GAction{
 		int _maxStep;
 		int _currentStep;
 		int _interval;
+		bool _intimer;		
 		QTimer * _timer;
 };
 

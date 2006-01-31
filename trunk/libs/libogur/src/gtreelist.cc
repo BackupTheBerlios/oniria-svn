@@ -33,7 +33,7 @@ QScrollArea(parent)
 	_rootItem->resize(0, 0);
 	_items.insert(_rootItem->ident(), _rootItem);
 	setWidget(_canvas);
-	
+	_drawIdent = 0;
 	_currentItem = _rootItem;
 }
 
@@ -170,16 +170,16 @@ void GTreeList::slotMouseEvent(GMouseEvent * ev)
 
 void GTreeList::redraw(GTreeListItem * from)
 {
-	QRect r(_rootItem->pos(), QSize(0, 0));
+	QSize r;//(_rootItem->pos(), QSize(0, 0));
 	_candraw = false;
 	drawItems(_rootItem, r, true, from);
 	if (r.width() < width())
 		r.setWidth(width());
-	_canvas->resize(r.size());
+	_canvas->resize(r);
 	
 }
 
-void GTreeList::drawItems(GTreeListItem * root, QRect & rc, bool show, GTreeListItem * from)
+void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeListItem * from)
 {
 	if ((!from) || (from == _rootItem))
 		_candraw = true;
@@ -191,30 +191,29 @@ void GTreeList::drawItems(GTreeListItem * root, QRect & rc, bool show, GTreeList
 			_candraw = true;
 		if (i->visible()){
 			if (show){
-				QSize s = i->drawItem(false);
-				i->move(rc.x(), rc.y());
-				rc.setY(rc.y() + s.height());
+				i->prepare(false);					
+				i->move(_drawIdent, sz.height());				
+				sz.setHeight(sz.height() + i->height());
 				
-				if (rc.width() < s.width())
-					rc.setWidth(s.width());
+				if (sz.width() < i->width())
+					sz.setWidth(i->width());
 				
-				rc.setHeight(rc.y());
+				sz.setHeight(sz.height());
 				if (_candraw){
 					i->show();					
 					i->repaint();
-				}
-				
+				}				
 			}else
 				i->hide();
 		}
 		
 		if (show && (i->expanded())){
 			int ident = 20;
-			rc.setX(rc.x() + ident);
-			drawItems(i, rc, true);
-			rc.setX(rc.x() - ident);
+			_drawIdent = ident;			
+			drawItems(i, sz, true);
+			_drawIdent = 0;			
 		}else
-			drawItems(i, rc, false);
+			drawItems(i, sz, false);
 			
 	}
 }

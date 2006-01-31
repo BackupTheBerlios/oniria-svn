@@ -32,38 +32,35 @@ GTreeListItemMoveAction::GTreeListItemMoveAction(GTreeListItem * parent, int int
 	_actStep = 1;
 	_maxStep = 10;
 	_currentStep = 1;
+	_intimer = false;
+	_baseX = 0;
 }
 
 void GTreeListItemMoveAction::relayEvent(QEvent * e)
-{
-
-	
+{	
 	if (e->type() == QEvent::Enter){
-
 		_actStep = 1;
+		_intimer = true;
 		if (_currentStep == 0)
 			_currentStep = 1;
-		_timer->start(_interval);
-			
-	}else if(e->type() == QEvent::Leave){
-		_actStep = -1;	
-		_timer->start(_interval);
+		if (!_timer->isActive())
+			_timer->start(_interval);			
 	}
-	
-	//e->ignore();
 }
 
 void GTreeListItemMoveAction::slotTimer()
 {
-	if ((_currentStep > 0) && (_actStep != 0)){
+	if (_intimer){
 		_parent->move(_parent->x() + _actStep, _parent->y());
 		_currentStep += _actStep;
 		if (_currentStep > _maxStep)
 			_actStep  = -1;
+		if (_currentStep <= 1){
+			_intimer = false;
+		}
 	}else{
-		_timer->stop();
-		_actStep = 0;
-	}
-	
+		_timer->stop();		
+		_currentStep = 0;
+	}	
 	emit signalProcess();
 }

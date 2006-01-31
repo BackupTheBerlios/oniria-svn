@@ -1,6 +1,6 @@
 # $Id$
 
-CONFIG 		*= debug precompile_header warn_on dll
+CONFIG 		*= debug warn_on dll
 TEMPLATE 	= lib
 LIBRARY_NAME 	= ogur
 TARGET		= $${LIBRARY_NAME}
@@ -10,7 +10,7 @@ VERSION		= 0.0.1
 DEFINES 	+= BUILDING_LIBOGUR_DLL QT_NO_CAST_TO_ASCII
 
 #Precompiled headers
-PRECOMPILED_HEADER  = src/ogur_dll.h src/ogur_config.h
+#PRECOMPILED_HEADER  = src/ogur_dll.h src/ogur_config.h
 
 
 # Input
