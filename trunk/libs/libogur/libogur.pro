@@ -36,6 +36,8 @@ DESTDIR = ./bin
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
 
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+
 #########################################################
 #########################################################
 

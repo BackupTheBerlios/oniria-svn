@@ -46,7 +46,7 @@ GTreeList::~GTreeList()
 
 void GTreeList::setupItem(GTreeListItem * item)
 {
-	item->addAction(new GTreeListItemMoveAction(item, 20));
+	item->addAction(new GTreeListItemMoveAction(item, 10));
 }
 
 GTreeListItem * GTreeList::createItem(GTreeListItem * parent, const QString & ident)
