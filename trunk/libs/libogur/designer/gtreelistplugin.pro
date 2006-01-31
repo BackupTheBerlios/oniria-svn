@@ -12,10 +12,26 @@ CONFIG(debug, debug|release) {
     else: TARGET = $$join(TARGET,,d)
 }
 
-HEADERS     = gtreelistplugin.h
-              
-SOURCES     = gtreelistplugin.cc
-              
+
+HEADERS       = ../src/ogur_dll.h \
+		../src/gcore.h \
+		../src/gtreelist.h \
+		../src/gtreelistItem.h \
+		../src/gaction.h \
+		../src/gtreelistitemmoveaction.h \
+		gtreelistplugin.h
+			
+SOURCES       = ../src/gcore.cc \
+		../src/gtreelistItem.cc \
+		../src/gtreelist.cc \
+		../src/gaction.cc \
+		../src/gtreelistitemmoveaction.cc \
+		gtreelistplugin.cc
+
+RESOURCES = resources.qrc
+
+MOC_DIR = .moc
+OBJECTS_DIR = .obj
 
 # install
 target.path = $$[QT_INSTALL_PLUGINS]/designer

@@ -21,7 +21,8 @@
 #ifndef __G_TREE_LIST__
 #define __G_TREE_LIST__
 
-#include <QDesignerCustomWidgetInterface>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtDesigner/QDesignerContainerExtension>
 
 class GTreeListPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

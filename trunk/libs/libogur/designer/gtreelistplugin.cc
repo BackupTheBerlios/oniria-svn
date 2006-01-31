@@ -17,9 +17,22 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <QtCore/qplugin.h>
 #include "gtreelistplugin.h"
-#include <gtreelist.h> 
-#include <QtPlugin>
+#include <gtreelist.h>
+
+class GTreeList_des : public GTreeList{
+	public:
+		GTreeList_des(QWidget * parent = 0):GTreeList(parent)
+		{
+			GTreeListItem * it = 0;
+			it = createItem("12", "");
+			it = createItem("121", "12");
+			it = createItem("122", "12");
+			it = createItem("13", "");
+			redraw();
+		}
+};
 
 GTreeListPlugin::GTreeListPlugin(QObject *parent)
     : QObject(parent)
@@ -42,37 +55,37 @@ bool GTreeListPlugin::isInitialized() const
 
 QWidget *GTreeListPlugin::createWidget(QWidget *parent)
 {
-    return new GTreeList(parent);
+	return new GTreeList_des(parent);
 }
 
 QString GTreeListPlugin::name() const
 {
-    return "GTreeList";
+	return "TreeList";
 }
 
 QString GTreeListPlugin::group() const
 {
-    return "Display Widgets [Examples]";
+	return "Ogur Controls";
 }
 
 QIcon GTreeListPlugin::icon() const
 {
-    return QIcon();
+	return QIcon(":/icon.png");
 }
 
 QString GTreeListPlugin::toolTip() const
 {
-    return "";
+	return "";
 }
 
 QString GTreeListPlugin::whatsThis() const
 {
-    return "";
+	return "";
 }
 
 bool GTreeListPlugin::isContainer() const
 {
-    return false;
+	return false;
 }
 
 QString GTreeListPlugin::domXml() const
@@ -83,7 +96,7 @@ QString GTreeListPlugin::domXml() const
            "   <x>0</x>\n"
            "   <y>0</y>\n"
            "   <width>100</width>\n"
-           "   <height>100</height>\n"
+           "   <height>150</height>\n"
            "  </rect>\n"
            " </property>\n"
            "</widget>\n";
@@ -91,7 +104,7 @@ QString GTreeListPlugin::domXml() const
 
 QString GTreeListPlugin::includeFile() const
 {
-    return "gtreelist.h";
+	return "ogur/gtreelist.h";
 }
 
 QString GTreeListPlugin::codeTemplate() const
@@ -99,4 +112,4 @@ QString GTreeListPlugin::codeTemplate() const
     return "";
 }
 
-Q_EXPORT_PLUGIN2(TreeListPlugin, GTreeListPlugin)
+Q_EXPORT_PLUGIN(GTreeListPlugin)
