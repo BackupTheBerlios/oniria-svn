@@ -60,7 +60,7 @@ QWidget *GTreeListPlugin::createWidget(QWidget *parent)
 
 QString GTreeListPlugin::name() const
 {
-	return "TreeList";
+	return "GTreeList";
 }
 
 QString GTreeListPlugin::group() const
@@ -112,4 +112,4 @@ QString GTreeListPlugin::codeTemplate() const
     return "";
 }
 
-Q_EXPORT_PLUGIN(GTreeListPlugin)
+Q_EXPORT_PLUGIN2(TreeList, GTreeListPlugin)

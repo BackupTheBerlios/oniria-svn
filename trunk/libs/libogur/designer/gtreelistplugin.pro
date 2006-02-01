@@ -12,6 +12,7 @@ CONFIG(debug, debug|release) {
     else: TARGET = $$join(TARGET,,d)
 }
 
+DEFINES += BUILD_LIB_OGUR_STATIC
 
 HEADERS       = ../src/ogur_dll.h \
 		../src/gcore.h \
@@ -28,7 +29,7 @@ SOURCES       = ../src/gcore.cc \
 		../src/gtreelistitemmoveaction.cc \
 		gtreelistplugin.cc
 
-RESOURCES = resources.qrc
+RESOURCES = gtreelistplugin.qrc 
 
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
