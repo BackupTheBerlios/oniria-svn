@@ -19,7 +19,7 @@
 
 #include <QtCore/qplugin.h>
 #include "gtreelistplugin.h"
-#include <gtreelist.h>
+#include <ogur/gtreelist.h>
 
 class GTreeList_des : public GTreeList{
 	public:
@@ -112,4 +112,4 @@ QString GTreeListPlugin::codeTemplate() const
     return "";
 }
 
-Q_EXPORT_PLUGIN2(TreeList, GTreeListPlugin)
+Q_EXPORT_PLUGIN(GTreeListPlugin)

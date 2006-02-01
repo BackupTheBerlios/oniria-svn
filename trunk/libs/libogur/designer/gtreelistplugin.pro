@@ -14,23 +14,13 @@ CONFIG(debug, debug|release) {
 
 DEFINES += BUILD_LIB_OGUR_STATIC
 
-HEADERS       = ../src/ogur_dll.h \
-		../src/gcore.h \
-		../src/gtreelist.h \
-		../src/gtreelistItem.h \
-		../src/gaction.h \
-		../src/gtreelistitemmoveaction.h \
-		gtreelistplugin.h
-			
-SOURCES       = ../src/gcore.cc \
-		../src/gtreelistItem.cc \
-		../src/gtreelist.cc \
-		../src/gaction.cc \
-		../src/gtreelistitemmoveaction.cc \
-		gtreelistplugin.cc
+HEADERS = gtreelistplugin.h
+
+SOURCES = gtreelistplugin.cc
 
 RESOURCES = gtreelistplugin.qrc 
 
+RCC_DIR = .res
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
 
@@ -39,3 +29,6 @@ target.path = $$[QT_INSTALL_PLUGINS]/designer
 sources.files = $$SOURCES $$HEADERS *.pro
 sources.path = $$[QT_INSTALL_EXAMPLES]/designer/gtreelistplugin
 INSTALLS += target sources
+
+BASE_PATH = $$system(pwd)
+include(../../../tools/qbuild/common.pro)
