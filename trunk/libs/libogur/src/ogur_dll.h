@@ -20,13 +20,23 @@
 #define __OGUR_DLL_H
 
 #if defined(WIN32)
-# if BUILDING_LIBOGUR_DLL
-#  define LIBOGUR_API __declspec (dllexport)
-# else /* Not BUILDING_LIBOGUR_DLL */
-#  define LIBOGUR_API __declspec (dllimport)
-# endif /* Not BUILDING_LIBOGUR_DLL */
-#else
-# define LIBOGUR_API
+# ifndef BUILD_LIB_OGUR_STATIC
+#  if BUILDING_LIBOGUR_DLL
+#   define LIBOGUR_API __declspec (dllexport)
+#  else /* Not BUILDING_LIBOGUR_DLL */
+#   define LIBOGUR_API __declspec (dllimport)
+#  endif /* Not BUILDING_LIBOGUR_DLL */
+# endif /* BUILD_LIB_OGUR_STATIC */
 #endif
+
+#ifndef WIN32 
+# define LIBOGUR_API 
+#else
+# if defined (BUILD_LIB_OGUR_STATIC)
+#  define LIBOGUR_API
+# endif 
+#endif
+
+
 
 #endif /* __DLL_H_ */
