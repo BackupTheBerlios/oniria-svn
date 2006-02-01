@@ -25,15 +25,20 @@ isEmpty(DOC_DIR){
 	isEmpty(DOC_DIR):DOC_DIR = $${PREFIX}/share/doc
 }
 
+INCLUDEPATH *= $${INCLUDE_DIR}
+INCLUDEPATH *= /usr/include
+
+LIBS *= -L$${LIB_DIR}
+LIBS *= -L/usr/lib
 
 !hpux:QMAKE_COPY_FILE = $${QMAKE_COPY_FILE} -P
 
 # install header
-include.path = $${INCLUDE_DIR}/$${TARGET}
-include.files = $${HEADERS} 
+include.path += $${INCLUDE_DIR}/$${TARGET}
+include.files += $${HEADERS} 
 
 # install library
-target.path = $${LIB_DIR}
+target.path += $${LIB_DIR}
 
 # "make install" configuration options
 INSTALLS += target include
