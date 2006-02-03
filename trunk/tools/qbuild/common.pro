@@ -5,8 +5,8 @@
 
 QMAKE_EXT_MOC = .cc
 
-unix:include(unix.pro)
-win32:include(win32.pro)
+unix:include(unix.pri)
+win32:include(win32.pri)
 
 !isEmpty(DOC_INPUT){
 	dox.target = doc
