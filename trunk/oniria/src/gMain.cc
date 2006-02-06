@@ -23,6 +23,7 @@
 
 
 gMain::gMain(QWidget * parent)
-:QWidget(parent)
+:QMainWindow(parent)
 {
+	ui.setupUi(this); 
 }

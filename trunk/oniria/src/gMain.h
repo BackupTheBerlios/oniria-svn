@@ -21,12 +21,14 @@
 #define __G_MAIN_H__
  
 #include <QWidget> 
+#include "ui_gMain.h" 
  
-class gMain : public QWidget {
+class gMain : public QMainWindow {
 	Q_OBJECT
 public:
 	gMain(QWidget * parent = 0);
-	
+private:
+	 Ui::gMain ui;	
 };
  
 #endif /* __G_MAIN_H__ */
