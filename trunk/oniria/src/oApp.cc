@@ -24,11 +24,25 @@
 #else
 # include "oniria_config.h"
 #endif
+#include "oApp.h"
+
+#include <QApplication>
+#include "gMain.h"
+
+int main(int argc, char *argv[])
+{
+	QApplication app(argc, argv);
+	gMain mainWindow;
+	mainWindow.show();	
+	return app.exec();
+}
+
+/*
 #include <onir/onir.h>
 #include <wx/utils.h>
 #include <wx/filefn.h>
 #include "gFrame.h"
-#include "gApp.h"
+
 #include "oPluginManager.h"
 #include "oEventManager.h"
 #include "oSessionManager.h"
@@ -179,3 +193,4 @@ void gApp::CloseApp()
 	if (wxMessageBox(_("Close program ?"), _("Question"), wxYES_NO | wxICON_QUESTION) == wxYES)
 		_main->Close();
 }
+*/

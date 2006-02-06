@@ -20,6 +20,7 @@
 #ifndef __GAPP_H
 #define __GAPP_H
 
+/*
 class gFrame;
 class oPluginManager;
 class oEventManager;
@@ -72,5 +73,6 @@ class gApp : public wxApp {
 };
 
 DECLARE_APP(gApp);
+*/
 
 #endif /* __MAIN_H */
