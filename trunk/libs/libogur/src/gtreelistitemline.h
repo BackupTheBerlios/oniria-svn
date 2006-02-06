@@ -26,12 +26,12 @@
 #include "gcore.h"
 #include "ogur_dll.h" 
 
-class LIBOGUR_API GTreeListItemTable : public QObject
+class LIBOGUR_API GTreeListItemLine : public QObject
 {
 	Q_OBJECT
 	public:
-		GTreeListItemTable(QObject * parent = 0);
-		virtual ~GTreeListItemTable();
+		GTreeListItemLine(QObject * parent = 0);
+		virtual ~GTreeListItemLine();
 		void draw(QPainter * painter, const QRect & rect);
 	signals:
 		void signalUpdateRequired();

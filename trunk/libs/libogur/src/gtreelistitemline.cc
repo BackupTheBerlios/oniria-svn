@@ -19,17 +19,17 @@
  
 #include "gtreelistitemline.h"
 
-GTreeListItemTable::GTreeListItemTable(QObject * parent)
+GTreeListItemLine::GTreeListItemLine(QObject * parent)
 :QObject(parent)
 {
 }
 
-GTreeListItemTable::~GTreeListItemTable()
+GTreeListItemLine::~GTreeListItemLine()
 {
 	
 }
 
-void GTreeListItemTable::draw(QPainter * painter, const QRect & rect)
+void GTreeListItemLine::draw(QPainter * painter, const QRect & rect)
 {
 	
 }
