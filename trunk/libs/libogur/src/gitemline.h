@@ -16,9 +16,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- 
-#ifndef __G_TREE_LIST_ITEM_COL_H__
-#define __G_TREE_LIST_ITEM_COL_H__
+
+#ifndef __G_ITEM_LINE_H__
+#define __G_ITEM_LINE_H__
 
 #include <QtGui/QPainter>
 #include <QtCore/QObject>
@@ -26,25 +26,22 @@
 #include "gcore.h"
 #include "ogur_dll.h" 
 
-class GTreeListItemLine;
+class GItemCol;
 
-class LIBOGUR_API GTreeListItemCol : public QObject
+class LIBOGUR_API GItemLine : public QObject
 {
-	enum GColDataType{ animation, image, text, html, user };
 	Q_OBJECT
 	public:
-		GTreeListItemCol(QObject * parent = 0);
-		virtual ~GTreeListItemCol();
+		GItemLine(QObject * parent = 0);
+		virtual ~GItemLine();
 		virtual void draw(QPainter * painter, const QRect & rect);
-		virtual void data(GColDataType type, const QString & filename);
-		inline GColDataType type() { return _type; }
 		virtual void start();
 		virtual void stop();
 	signals:
 		void signalUpdateRequired();
-	private:				
-		GColDataType _type;
-		QList<GTreeListItemLine *> _lines;		
+	private:
+		QList<GItemCol *> _cols;
 	
 };
-#endif /* __G_TREE_LIST_ITEM_COL_H__ */
+
+#endif /* __G_ITEM_LINE_H__ */

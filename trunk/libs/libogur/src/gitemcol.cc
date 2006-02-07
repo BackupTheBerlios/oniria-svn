@@ -16,31 +16,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- 
-#include "gtreelistitemline.h"
-#include "gtreelistitemcol.h"
 
-GTreeListItemLine::GTreeListItemLine(QObject * parent)
-:QObject(parent)
+#include "gitemcol.h"
+#include "gitemcanvas.h"
+#include "gitemline.h"
+
+GItemCol::GItemCol(QObject * parent)
+:QObject(parent),_type(user)
 {
 }
 
-GTreeListItemLine::~GTreeListItemLine()
-{
-	
-}
-
-void GTreeListItemLine::draw(QPainter * painter, const QRect & rect)
+GItemCol::~GItemCol()
 {
 	
 }
 
-void GTreeListItemLine::start()
+void GItemCol::draw(QPainter * painter, const QRect & rect)
+{
+	
+}
+
+void GItemCol::data(GColDataType type, const QString & filename)
+{
+	_type = type;
+}
+
+void GItemCol::start()
 {
 
 }
 
-void GTreeListItemLine::stop()
+void GItemCol::stop()
 {
 
 }

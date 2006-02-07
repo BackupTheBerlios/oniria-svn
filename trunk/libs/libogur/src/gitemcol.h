@@ -16,37 +16,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+ 
+#ifndef __G_ITEM_COL_H__
+#define __G_ITEM_COL_H__
 
-#include "gtreelistitemcol.h"
-#include "gtreelistitemcanvas.h"
-#include "gtreelistitemline.h"
+#include <QtGui/QPainter>
+#include <QtCore/QObject>
 
-GTreeListItemCol::GTreeListItemCol(QObject * parent)
-:QObject(parent),_type(user)
+#include "gcore.h"
+#include "ogur_dll.h" 
+
+class GItemLine;
+
+class LIBOGUR_API GItemCol : public QObject
 {
-}
-
-GTreeListItemCol::~GTreeListItemCol()
-{
+	enum GColDataType{ animation, image, text, html, user };
+	Q_OBJECT
+	public:
+		GItemCol(QObject * parent = 0);
+		virtual ~GItemCol();
+		virtual void draw(QPainter * painter, const QRect & rect);
+		virtual void data(GColDataType type, const QString & filename);
+		inline GColDataType type() { return _type; }
+		virtual void start();
+		virtual void stop();
+	signals:
+		void signalUpdateRequired();
+	private:				
+		GColDataType _type;
+		QList<GItemLine *> _lines;		
 	
-}
-
-void GTreeListItemCol::draw(QPainter * painter, const QRect & rect)
-{
-	
-}
-
-void GTreeListItemCol::data(GColDataType type, const QString & filename)
-{
-	_type = type;
-}
-
-void GTreeListItemCol::start()
-{
-
-}
-
-void GTreeListItemCol::stop()
-{
-
-}
+};
+#endif /* __G_ITEM_COL_H__ */

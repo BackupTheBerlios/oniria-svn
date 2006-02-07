@@ -17,13 +17,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
- #include "gtreelistitemcanvas.h"
- 
-GTtreeListItemCanvas::GTtreeListItemCanvas(QObject * parent)
-:QObject(parent)
-{
-}
+#ifndef __G_ITEM_CAVNAS_H__
+#define __G_ITEM_CANVAS_H__
 
-GTtreeListItemCanvas::~GTtreeListItemCanvas()
-{
-}
+#include <QtGui/QPainter>
+#include <QtCore/QObject>
+
+#include "gcore.h"
+#include "ogur_dll.h" 
+
+class LIBOGUR_API GItemCanvas : public QObject {
+	Q_OBJECT
+	public:
+		GItemCanvas(QObject * parent = 0);
+		virtual ~GItemCanvas();
+	signals:
+		void signalUpdateRequired();
+};
+
+#endif /* __G_ITEM_CANVAS_H__ */

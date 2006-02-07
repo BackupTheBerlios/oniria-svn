@@ -16,23 +16,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+ 
+#include "gitemline.h"
+#include "gitemcol.h"
 
-#ifndef __G_TREE_LIST_ITEM_CAVNAS_H__
-#define __G_TREE_LIST_ITEM_CANVAS_H__
+GItemLine::GItemLine(QObject * parent)
+:QObject(parent)
+{
+}
 
-#include <QtGui/QPainter>
-#include <QtCore/QObject>
+GItemLine::~GItemLine()
+{
+	
+}
 
-#include "gcore.h"
-#include "ogur_dll.h" 
+void GItemLine::draw(QPainter * painter, const QRect & rect)
+{
+	
+}
 
-class LIBOGUR_API GTtreeListItemCanvas : public QObject {
-	Q_OBJECT
-	public:
-		GTtreeListItemCanvas(QObject * parent = 0);
-		virtual ~GTtreeListItemCanvas();
-	signals:
-		void signalUpdateRequired();
-};
+void GItemLine::start()
+{
 
-#endif /* __G_TREE_LIST_ITEM_CANVAS_H__ */
+}
+
+void GItemLine::stop()
+{
+
+}
