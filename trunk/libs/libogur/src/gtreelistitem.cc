@@ -19,6 +19,8 @@
 
 #include <QtGui>
 #include "gaction.h"
+#include "gitemline.h"
+#include "gitemcol.h"
 #include "gtreelistitem.h"
 
 GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
@@ -32,18 +34,25 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_top = top;
 	_next = 0;
 	_previous = 0;
+	
+	_baseLine = new GItemLine(this);
+	_baseCol = new GItemCol(_baseLine);
+	_baseLine->addCol(_baseCol);
+	
 	installEventFilter(this);
 }
 
 GTreeListItem::~GTreeListItem()
 {
-	GTreeListItem * o = 0;
-	QListIterator<GTreeListItem *> it(_childs);
+	GTreeListItem * o = 0;	
+	QListIterator<GTreeListItem *> it(_childs);	
 	while (it.hasNext()){
 		o = it.next();
 		o->hide();
 		delete o;
-	}
+	}	
+	delete _baseCol;
+	delete _baseLine;
 }
 
 void GTreeListItem::selected(bool value)
@@ -78,17 +87,15 @@ void GTreeListItem::mouseDoubleClickEvent(QMouseEvent * e)
 
 void GTreeListItem::resetActions()
 {
-	QListIterator<GAction *> it(_actions);
-	while(it.hasNext()){
-		it.next()->reset();
+	foreach(GAction * i, _actions){
+		i->reset();
 	}	
 }
 
 bool GTreeListItem::eventFilter(QObject *obj, QEvent *e)
 {
-	QListIterator<GAction *> it(_actions);
-	while(it.hasNext()){
-		it.next()->relayEvent(e);
+	foreach(GAction * i, _actions){
+		i->relayEvent(e);
 	}	
 	return QWidget::eventFilter(obj, e);
 }
@@ -116,4 +123,5 @@ void GTreeListItem::paintEvent(QPaintEvent *)
 	p.fillRect(rect(), fade);
 
 	p.drawText(10, 10, _ident);	
+	_baseLine->draw(&p, rect());
 }

@@ -22,7 +22,7 @@
 #include "gitemline.h"
 
 GItemCol::GItemCol(QObject * parent)
-:QObject(parent),_type(user)
+:QObject(parent),_type(unknown)
 {
 }
 
@@ -31,22 +31,103 @@ GItemCol::~GItemCol()
 	
 }
 
+void GItemCol::updated(const QRect & rect)
+{
+		emit signalUpdateRequired();
+}
+
+void GItemCol::addLine(GItemLine * line)
+{
+	_lines.append(line);
+}
+
+void GItemCol::deleteData()
+{
+	switch (_type){
+		case animation:
+			delete _movie;
+			disconnect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
+			break;
+		case image:
+			delete _image;
+			break;			
+		case text:
+			delete _text;
+			break;
+			
+		default:
+			qWarning("GItemCol::deleteData (Unknown data format)");
+	}
+}
+
+
 void GItemCol::draw(QPainter * painter, const QRect & rect)
 {
-	
+	if (_lines.empty()){
+		switch (_type){
+			case animation:
+				if (_movie->state() == QMovie::Running)
+					painter->drawPixmap(rect.x(), rect.y(), _movie->currentPixmap());
+				break;
+			case image:			
+				painter->drawPicture(rect.x(), rect.y(), *_image); 
+				break;			
+			case text:			
+				break;
+				
+			default:
+				qWarning("GItemCol::data (Unknown data format)");
+		}
+	}else{
+		foreach(GItemLine * l, _lines){
+			l->draw(painter, rect);
+		}
+	}
 }
 
 void GItemCol::data(GColDataType type, const QString & filename)
 {
 	_type = type;
+	switch (_type){
+		case animation:
+			_movie = new QMovie(filename, QByteArray(), this);
+			connect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
+			break;
+		case image:
+			_image = new QPicture();
+			_image->load(filename);
+			break;
+			
+		case text:
+			_text = new QTextDocument(this);
+			//_text->setSource(filename);
+			break;
+			
+		default:
+			qWarning("GItemCol::data (Unknown data format)");
+	}
 }
 
 void GItemCol::start()
 {
-
+	if (_lines.empty()){
+		if (_type == animation)
+			_movie->start();
+	}else{
+		foreach(GItemLine * l, _lines){
+			l->start();
+		}
+	}
 }
 
 void GItemCol::stop()
 {
-
+	if (_lines.empty()){
+		if (_type == animation)
+			_movie->stop();
+	}else{
+		foreach(GItemLine * l, _lines){
+			l->stop();
+		}
+	}
 }

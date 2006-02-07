@@ -20,8 +20,11 @@
 #ifndef __G_ITEM_COL_H__
 #define __G_ITEM_COL_H__
 
-#include <QtGui/QPainter>
 #include <QtCore/QObject>
+#include <QtGui/QPainter>
+#include <QtGui/QTextDocument>
+#include <QtGui/QMovie>
+#include <QtGui/QPicture>
 
 #include "gcore.h"
 #include "ogur_dll.h" 
@@ -30,7 +33,7 @@ class GItemLine;
 
 class LIBOGUR_API GItemCol : public QObject
 {
-	enum GColDataType{ animation, image, text, html, user };
+	enum GColDataType{ animation, image, text, html, unknown };
 	Q_OBJECT
 	public:
 		GItemCol(QObject * parent = 0);
@@ -40,10 +43,17 @@ class LIBOGUR_API GItemCol : public QObject
 		inline GColDataType type() { return _type; }
 		virtual void start();
 		virtual void stop();
+		virtual void addLine(GItemLine * line);
 	signals:
 		void signalUpdateRequired();
+	private slots:
+		void updated(const QRect & rect);
 	private:				
+		void deleteData();
 		GColDataType _type;
+		QTextDocument * _text;
+		QPicture * _image;
+		QMovie * _movie;
 		QList<GItemLine *> _lines;		
 	
 };

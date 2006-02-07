@@ -32,15 +32,26 @@ GItemLine::~GItemLine()
 
 void GItemLine::draw(QPainter * painter, const QRect & rect)
 {
-	
+	foreach(GItemCol * l, _cols){
+		l->draw(painter, rect);
+	}		
+}
+
+void GItemLine::addCol(GItemCol * col)
+{
+	_cols.append(col);
 }
 
 void GItemLine::start()
 {
-
+	foreach(GItemCol * l, _cols){
+		l->start();
+	}	
 }
 
 void GItemLine::stop()
 {
-
+	foreach(GItemCol * l, _cols){
+		l->stop();
+	}	
 }

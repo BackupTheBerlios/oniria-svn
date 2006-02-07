@@ -27,6 +27,8 @@
 
 class GTreeListItem;
 class GAction;
+class GItemLine;
+class GItemCol;
 
 class LIBOGUR_API GTreeListItem :public QWidget{
 	Q_OBJECT
@@ -57,6 +59,8 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		
 		inline void addAction(GAction * act) { _actions.append(act); }
 		void resetActions();
+		inline GItemLine * line() { return _baseLine; }
+		inline GItemCol * col() { return _baseCol; }
 	signals:
 		void signalItemMouseClick(GMouseEvent * sender);
 	protected:
@@ -69,6 +73,8 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		bool _selected;
 		bool _expanded;
 		bool _visible;
+		GItemLine * _baseLine;
+		GItemCol * _baseCol;
 		GTreeListItem * _top;
 		GTreeListItem * _next;
 		GTreeListItem * _previous;		

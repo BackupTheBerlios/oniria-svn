@@ -37,6 +37,7 @@ class LIBOGUR_API GItemLine : public QObject
 		virtual void draw(QPainter * painter, const QRect & rect);
 		virtual void start();
 		virtual void stop();
+		virtual void addCol(GItemCol * col);
 	signals:
 		void signalUpdateRequired();
 	private:
