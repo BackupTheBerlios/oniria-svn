@@ -26,6 +26,7 @@ defineTest(keywordReplace){
 	for(var, vars){
 		sed_args += -e's!@$$var@!$$eval($$var)!g' 
 	}
+	message(Generate file: $$outfile)
 	system(sed $$sed_args $$infile > $$outfile)
 	return (true)	
 }
