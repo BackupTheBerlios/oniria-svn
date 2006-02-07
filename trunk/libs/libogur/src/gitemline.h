@@ -37,7 +37,10 @@ class LIBOGUR_API GItemLine : public QObject
 		virtual void draw(QPainter * painter, const QRect & rect);
 		virtual void start();
 		virtual void stop();
-		virtual void addCol(GItemCol * col);
+		virtual GItemCol * addCol();
+		QSize size();
+	public slots:
+		virtual void slotUpdateRequired();
 	signals:
 		void signalUpdateRequired();
 	private:

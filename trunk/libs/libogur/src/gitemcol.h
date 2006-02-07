@@ -33,9 +33,9 @@ class GItemLine;
 
 class LIBOGUR_API GItemCol : public QObject
 {
-	enum GColDataType{ animation, image, text, html, unknown };
 	Q_OBJECT
 	public:
+		enum GColDataType{ animation, image, text, html, unknown };
 		GItemCol(QObject * parent = 0);
 		virtual ~GItemCol();
 		virtual void draw(QPainter * painter, const QRect & rect);
@@ -43,18 +43,21 @@ class LIBOGUR_API GItemCol : public QObject
 		inline GColDataType type() { return _type; }
 		virtual void start();
 		virtual void stop();
-		virtual void addLine(GItemLine * line);
+		virtual GItemLine * addLine();
+		QSize size();
+	public slots:
+		virtual void slotUpdateRequired();
 	signals:
 		void signalUpdateRequired();
-	private slots:
-		void updated(const QRect & rect);
-	private:				
+	private:
 		void deleteData();
 		GColDataType _type;
 		QTextDocument * _text;
-		QPicture * _image;
+		QImage * _image;
 		QMovie * _movie;
-		QList<GItemLine *> _lines;		
+		QList<GItemLine *> _lines;
+	private slots:
+		void updated(const QRect & rect);
 	
 };
 #endif /* __G_ITEM_COL_H__ */

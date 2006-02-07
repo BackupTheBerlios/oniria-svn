@@ -36,9 +36,14 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_previous = 0;
 	
 	_baseLine = new GItemLine(this);
-	_baseCol = new GItemCol(_baseLine);
-	_baseLine->addCol(_baseCol);
-	
+	connect(_baseLine, SIGNAL(signalUpdateRequired()), this, SLOT(repaint()));
+	_baseCol = _baseLine->addCol();
+	/*
+	_baseCol->data(GItemCol::image, "/home/morg/ikony/box.png");
+	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/cut.png");
+	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/box.png");
+	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/cut.png");
+	*/
 	installEventFilter(this);
 }
 
@@ -50,8 +55,7 @@ GTreeListItem::~GTreeListItem()
 		o = it.next();
 		o->hide();
 		delete o;
-	}	
-	delete _baseCol;
+	}
 	delete _baseLine;
 }
 
@@ -100,9 +104,9 @@ bool GTreeListItem::eventFilter(QObject *obj, QEvent *e)
 	return QWidget::eventFilter(obj, e);
 }
 
-QSize GTreeListItem::prepare(bool draw)
+QSize GTreeListItem::prepare()
 {	
-	return size();
+	return _baseLine->size();
 }
 	
 void GTreeListItem::paintEvent(QPaintEvent *)

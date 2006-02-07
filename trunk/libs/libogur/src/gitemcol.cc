@@ -28,25 +28,68 @@ GItemCol::GItemCol(QObject * parent)
 
 GItemCol::~GItemCol()
 {
-	
+	GItemLine * o = 0;
+	QListIterator<GItemLine *> it(_lines);
+	while (it.hasNext()){
+		o = it.next();
+		disconnect(o,  SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
+		delete o;
+	}
+	_lines.clear();
 }
 
 void GItemCol::updated(const QRect & rect)
 {
-		emit signalUpdateRequired();
+	Q_UNUSED(rect)
+	slotUpdateRequired();
 }
 
-void GItemCol::addLine(GItemLine * line)
+void GItemCol::slotUpdateRequired()
 {
+	emit signalUpdateRequired();
+}
+
+QSize GItemCol::size()
+{
+	if (_lines.empty()){
+		switch (_type){
+			case animation:
+				return QSize();
+			case image:
+				return _image->size();
+			case text:
+				break;
+				
+			default:
+				qWarning("GItemCol::size (Unknown data format)");
+		}
+	}
+	QSize sz(0, 0);
+	QSize s;
+	foreach(GItemLine * l, _lines){
+		s = l->size();
+		if (sz.width() < s.width())
+			sz.setWidth(s.width());
+		sz.setHeight(sz.height() + s.height());
+	}
+	return sz;
+}
+
+
+GItemLine * GItemCol::addLine()
+{
+	GItemLine * line = new GItemLine(this);
+	connect (line, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
 	_lines.append(line);
+	return line;
 }
 
 void GItemCol::deleteData()
 {
 	switch (_type){
 		case animation:
-			delete _movie;
 			disconnect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
+			delete _movie;
 			break;
 		case image:
 			delete _image;
@@ -69,10 +112,10 @@ void GItemCol::draw(QPainter * painter, const QRect & rect)
 				if (_movie->state() == QMovie::Running)
 					painter->drawPixmap(rect.x(), rect.y(), _movie->currentPixmap());
 				break;
-			case image:			
-				painter->drawPicture(rect.x(), rect.y(), *_image); 
-				break;			
-			case text:			
+			case image:
+				painter->drawPixmap(rect, QPixmap::fromImage(*_image));
+				break;
+			case text:
 				break;
 				
 			default:
@@ -94,8 +137,7 @@ void GItemCol::data(GColDataType type, const QString & filename)
 			connect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
 			break;
 		case image:
-			_image = new QPicture();
-			_image->load(filename);
+			_image = new QImage(filename);
 			break;
 			
 		case text:

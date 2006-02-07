@@ -48,7 +48,7 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		void visible(bool value);
 		
 		inline QList<GTreeListItem *> & childs() { return _childs; }
-		virtual QSize prepare(bool draw = true);
+		virtual QSize prepare();
 		inline GTreeListItem * top() { return _top; }
 		
 		inline GTreeListItem * next() { return _next; }

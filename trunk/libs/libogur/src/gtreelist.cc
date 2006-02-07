@@ -199,9 +199,9 @@ void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeList
 			_candraw = true;
 		if (i->visible()){
 			if (show){
-				i->prepare(false);					
+				i->resize(i->prepare());
 				i->resetActions();
-				i->move(_drawIdent, sz.height());				
+				i->move(_drawIdent, sz.height());
 				sz.setHeight(sz.height() + i->height());
 				
 				if (sz.width() < i->width())

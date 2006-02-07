@@ -27,7 +27,19 @@ GItemLine::GItemLine(QObject * parent)
 
 GItemLine::~GItemLine()
 {
-	
+	GItemCol * o = 0;
+	QListIterator<GItemCol *> it(_cols);
+	while (it.hasNext()){
+		o = it.next();
+		disconnect(o,  SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
+		delete o;
+	}
+	_cols.clear();
+}
+
+void GItemLine::slotUpdateRequired()
+{
+	emit signalUpdateRequired();
 }
 
 void GItemLine::draw(QPainter * painter, const QRect & rect)
@@ -37,10 +49,27 @@ void GItemLine::draw(QPainter * painter, const QRect & rect)
 	}		
 }
 
-void GItemLine::addCol(GItemCol * col)
+GItemCol * GItemLine::addCol()
 {
+	GItemCol * col = new GItemCol(this);
+	connect (col, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
 	_cols.append(col);
+	return col;
 }
+
+QSize GItemLine::size()
+{
+	QSize sz(0, 0);
+	QSize s;
+	foreach(GItemCol * l, _cols){
+		s = l->size();
+		if (sz.height() < s.height())
+			sz.setHeight(s.height());
+		sz.setWidth(sz.width() + s.width());
+	}
+	return sz;
+}
+
 
 void GItemLine::start()
 {
