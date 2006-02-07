@@ -15,14 +15,18 @@ HEADERS       = src/ogur_dll.h \
 		src/gtreelistItem.h \
 		src/gaction.h \
 		src/gtreelistitemmoveaction.h \
-		src/gtreelistitemline.h
+		src/gtreelistitemline.h \
+		src/gtreelistitemcol.h \
+		src/gtreelistitemcanvas.h
 			
 SOURCES       = src/gcore.cc \
 		src/gtreelistItem.cc \
 		src/gtreelist.cc \
 		src/gaction.cc \
 		src/gtreelistitemmoveaction.cc \
-		src/gtreelistitemline.cc
+		src/gtreelistitemline.cc \
+		src/gtreelistitemcol.cc \
+		src/gtreelistitemcanvas.cc
 
 
 CONFIG_FILES = libogur.pc 

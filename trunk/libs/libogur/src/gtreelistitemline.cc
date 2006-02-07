@@ -18,6 +18,7 @@
  */
  
 #include "gtreelistitemline.h"
+#include "gtreelistitemcol.h"
 
 GTreeListItemLine::GTreeListItemLine(QObject * parent)
 :QObject(parent)
@@ -32,4 +33,14 @@ GTreeListItemLine::~GTreeListItemLine()
 void GTreeListItemLine::draw(QPainter * painter, const QRect & rect)
 {
 	
+}
+
+void GTreeListItemLine::start()
+{
+
+}
+
+void GTreeListItemLine::stop()
+{
+
 }

@@ -17,31 +17,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef __G_TREE_LIST_ITEM_LINE_H__
-#define __G_TREE_LIST_ITEM_LINE_H__
+#include "gtreelistitemcol.h"
+#include "gtreelistitemcanvas.h"
+#include "gtreelistitemline.h"
 
-#include <QtGui/QPainter>
-#include <QtCore/QObject>
-
-#include "gcore.h"
-#include "ogur_dll.h" 
-
-class GTreeListItemCol;
-
-class LIBOGUR_API GTreeListItemLine : public QObject
+GTreeListItemCol::GTreeListItemCol(QObject * parent)
+:QObject(parent),_type(user)
 {
-	Q_OBJECT
-	public:
-		GTreeListItemLine(QObject * parent = 0);
-		virtual ~GTreeListItemLine();
-		virtual void draw(QPainter * painter, const QRect & rect);
-		virtual void start();
-		virtual void stop();
-	signals:
-		void signalUpdateRequired();
-	private:
-		QList<GTreeListItemCol *> _cols;
-	
-};
+}
 
-#endif /* __G_TREE_LIST_ITEM_LINE_H__ */
+GTreeListItemCol::~GTreeListItemCol()
+{
+	
+}
+
+void GTreeListItemCol::draw(QPainter * painter, const QRect & rect)
+{
+	
+}
+
+void GTreeListItemCol::data(GColDataType type, const QString & filename)
+{
+	_type = type;
+}
+
+void GTreeListItemCol::start()
+{
+
+}
+
+void GTreeListItemCol::stop()
+{
+
+}
