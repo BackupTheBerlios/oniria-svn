@@ -80,6 +80,7 @@ QSize GItemCol::size()
 		}
 		return sz;
 	}
+	return QSize(0, 0);
 }
 
 
@@ -144,7 +145,7 @@ void GItemCol::data(GColDataType type, const QString & filename)
 	switch (_type){
 		case animation:			
 			_movie = new QMovie(filename, QByteArray(), this);
-			_movie->setCacheMode(QMovie::CacheAll);
+			//_movie->setCacheMode(QMovie::CacheAll);
 			_movie->setSpeed(100); 			
 			connect(_movie, SIGNAL(updated(const QRect &)), this, SLOT(updated(const QRect &)));
 			connect(_movie, SIGNAL(resized(const QSize&)), this, SLOT(resized(const QSize&)));
