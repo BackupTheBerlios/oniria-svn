@@ -38,7 +38,7 @@ class LIBOGUR_API GItemCol : public QObject
 		enum GColDataType{ animation, image, text, html, unknown };
 		GItemCol(QObject * parent = 0);
 		virtual ~GItemCol();
-		virtual void draw(QPainter * painter, const QRect & rect);
+		virtual void draw(QPainter * painter, const QRect & rect, bool torect = false);
 		virtual void data(GColDataType type, const QString & filename);
 		inline GColDataType type() { return _type; }
 		virtual void start();
@@ -55,8 +55,10 @@ class LIBOGUR_API GItemCol : public QObject
 		QTextDocument * _text;
 		QImage * _image;
 		QMovie * _movie;
+		QSize _animsize;
 		QList<GItemLine *> _lines;
 	private slots:
+		void resized(const QSize & rect);
 		void updated(const QRect & rect);
 	
 };

@@ -20,8 +20,10 @@
 #include <QtGui>
 
 #include "gtreelistitem.h"
-#include "gtreelist.h"
+#include "gitemline.h"
 #include "gtreelistitemmoveaction.h"
+#include "gtreelist.h"
+
 
 GTreeList::GTreeList(QWidget * parent):
 QScrollArea(parent)
@@ -198,7 +200,8 @@ void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeList
 		if (i == from)
 			_candraw = true;
 		if (i->visible()){
-			if (show){
+			if (show){			
+				i->line()->start();
 				i->resize(i->prepare());
 				i->resetActions();
 				i->move(_drawIdent, sz.height());
@@ -208,12 +211,14 @@ void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeList
 					sz.setWidth(i->width());
 				
 				sz.setHeight(sz.height());
-				if (_candraw){
+				if (_candraw){					
 					i->show();					
 					i->repaint();
 				}				
-			}else
+			}else{
+				i->line()->stop();
 				i->hide();
+			}
 		}
 		
 		if (show && (i->expanded())){

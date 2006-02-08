@@ -38,14 +38,14 @@ GItemLine::~GItemLine()
 }
 
 void GItemLine::slotUpdateRequired()
-{
+{	
 	emit signalUpdateRequired();
 }
 
-void GItemLine::draw(QPainter * painter, const QRect & rect)
-{
+void GItemLine::draw(QPainter * painter, const QRect & rect, bool torect)
+{	
 	foreach(GItemCol * l, _cols){
-		l->draw(painter, rect);
+		l->draw(painter, rect, torect);
 	}		
 }
 

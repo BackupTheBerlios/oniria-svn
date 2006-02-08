@@ -36,12 +36,13 @@ GItemCol::~GItemCol()
 		delete o;
 	}
 	_lines.clear();
+	deleteData();
 }
 
 void GItemCol::updated(const QRect & rect)
 {
-	Q_UNUSED(rect)
-	slotUpdateRequired();
+	Q_UNUSED(rect)	
+	slotUpdateRequired();	
 }
 
 void GItemCol::slotUpdateRequired()
@@ -49,12 +50,17 @@ void GItemCol::slotUpdateRequired()
 	emit signalUpdateRequired();
 }
 
+void GItemCol::resized(const QSize & rect)
+{
+	_animsize = rect;
+}
+
 QSize GItemCol::size()
 {
 	if (_lines.empty()){
 		switch (_type){
 			case animation:
-				return QSize();
+				return _movie->currentImage().size();//_animsize;
 			case image:
 				return _image->size();
 			case text:
@@ -63,16 +69,17 @@ QSize GItemCol::size()
 			default:
 				qWarning("GItemCol::size (Unknown data format)");
 		}
+	}else{
+		QSize sz(0, 0);
+		QSize s;
+		foreach(GItemLine * l, _lines){
+			s = l->size();
+			if (sz.width() < s.width())
+				sz.setWidth(s.width());
+			sz.setHeight(sz.height() + s.height());
+		}
+		return sz;
 	}
-	QSize sz(0, 0);
-	QSize s;
-	foreach(GItemLine * l, _lines){
-		s = l->size();
-		if (sz.width() < s.width())
-			sz.setWidth(s.width());
-		sz.setHeight(sz.height() + s.height());
-	}
-	return sz;
 }
 
 
@@ -88,7 +95,8 @@ void GItemCol::deleteData()
 {
 	switch (_type){
 		case animation:
-			disconnect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
+			disconnect(_movie, SIGNAL(updated(const QRect &)), this, SLOT(updated(const QRect &)));			
+			disconnect(_movie, SIGNAL(resized(const QSize&)), this, SLOT(resized(const QSize&)));
 			delete _movie;
 			break;
 		case image:
@@ -104,16 +112,18 @@ void GItemCol::deleteData()
 }
 
 
-void GItemCol::draw(QPainter * painter, const QRect & rect)
+void GItemCol::draw(QPainter * painter, const QRect & rect, bool torect)
 {
-	if (_lines.empty()){
+	//QRect rc = torect ? rect : QRect(QPoint(0, 0), size());
+	QRect rc = rect;
+	if (_lines.empty()){		
 		switch (_type){
-			case animation:
+			case animation:				
 				if (_movie->state() == QMovie::Running)
-					painter->drawPixmap(rect.x(), rect.y(), _movie->currentPixmap());
+					painter->drawPixmap(0, 0, _movie->currentPixmap());					
 				break;
 			case image:
-				painter->drawPixmap(rect, QPixmap::fromImage(*_image));
+				painter->drawImage(rc, *_image);
 				break;
 			case text:
 				break;
@@ -123,7 +133,7 @@ void GItemCol::draw(QPainter * painter, const QRect & rect)
 		}
 	}else{
 		foreach(GItemLine * l, _lines){
-			l->draw(painter, rect);
+			l->draw(painter, rect, torect);
 		}
 	}
 }
@@ -132,9 +142,12 @@ void GItemCol::data(GColDataType type, const QString & filename)
 {
 	_type = type;
 	switch (_type){
-		case animation:
+		case animation:			
 			_movie = new QMovie(filename, QByteArray(), this);
-			connect(_movie, SIGNAL(updated()), this, SLOT(updated(const QRect &)));
+			_movie->setCacheMode(QMovie::CacheAll);
+			_movie->setSpeed(100); 			
+			connect(_movie, SIGNAL(updated(const QRect &)), this, SLOT(updated(const QRect &)));
+			connect(_movie, SIGNAL(resized(const QSize&)), this, SLOT(resized(const QSize&)));
 			break;
 		case image:
 			_image = new QImage(filename);
@@ -153,8 +166,8 @@ void GItemCol::data(GColDataType type, const QString & filename)
 void GItemCol::start()
 {
 	if (_lines.empty()){
-		if (_type == animation)
-			_movie->start();
+		if ((_type == animation) && (_movie->state() == QMovie::NotRunning))
+			_movie->start();		
 	}else{
 		foreach(GItemLine * l, _lines){
 			l->start();
@@ -165,7 +178,7 @@ void GItemCol::start()
 void GItemCol::stop()
 {
 	if (_lines.empty()){
-		if (_type == animation)
+		if ((_type == animation)  && (_movie->state() == QMovie::Running))
 			_movie->stop();
 	}else{
 		foreach(GItemLine * l, _lines){

@@ -36,14 +36,8 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_previous = 0;
 	
 	_baseLine = new GItemLine(this);
-	connect(_baseLine, SIGNAL(signalUpdateRequired()), this, SLOT(repaint()));
+	connect(_baseLine, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
 	_baseCol = _baseLine->addCol();
-	/*
-	_baseCol->data(GItemCol::image, "/home/morg/ikony/box.png");
-	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/cut.png");
-	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/box.png");
-	_baseLine->addCol()->data(GItemCol::image, "/home/morg/ikony/cut.png");
-	*/
 	installEventFilter(this);
 }
 
@@ -57,6 +51,11 @@ GTreeListItem::~GTreeListItem()
 		delete o;
 	}
 	delete _baseLine;
+}
+
+void GTreeListItem::slotUpdateRequired()
+{
+		repaint();
 }
 
 void GTreeListItem::selected(bool value)
@@ -112,6 +111,7 @@ QSize GTreeListItem::prepare()
 void GTreeListItem::paintEvent(QPaintEvent *)
 {	
 	QPainter p(this);
+	
 	QColor c1, c2;
 	if (selected()){
 		c1 = QColor(0, 0, 0, 255);
@@ -127,5 +127,6 @@ void GTreeListItem::paintEvent(QPaintEvent *)
 	p.fillRect(rect(), fade);
 
 	p.drawText(10, 10, _ident);	
-	_baseLine->draw(&p, rect());
+	
+	_baseLine->draw(&p, rect(), false);
 }

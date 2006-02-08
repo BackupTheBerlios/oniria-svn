@@ -80,6 +80,8 @@ class LIBOGUR_API GTreeListItem :public QWidget{
 		GTreeListItem * _previous;		
 		QList<GTreeListItem *> _childs;
 		QList<GAction *> _actions;
+	private slots:
+		void slotUpdateRequired();
 };
 
 #endif /* __TREE_LIST_ITEM__ */
