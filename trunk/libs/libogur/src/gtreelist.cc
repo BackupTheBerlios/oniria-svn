@@ -223,9 +223,9 @@ void GTreeList::drawItems(GTreeListItem * root, QSize & sz, bool show, GTreeList
 		
 		if (show && (i->expanded())){
 			int ident = 20;
-			_drawIdent = ident;			
+			_drawIdent += ident;
 			drawItems(i, sz, true);
-			_drawIdent = 0;			
+			_drawIdent -= ident;			
 		}else
 			drawItems(i, sz, false);
 			

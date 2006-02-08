@@ -36,6 +36,7 @@ GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListI
 	_previous = 0;
 	
 	_baseLine = new GItemLine(this);
+	_baseLine->widget(this);
 	connect(_baseLine, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
 	_baseCol = _baseLine->addCol();
 	installEventFilter(this);
@@ -125,8 +126,6 @@ void GTreeListItem::paintEvent(QPaintEvent *)
 	fade.setColorAt(0, c1);
 	fade.setColorAt(1, c2);
 	p.fillRect(rect(), fade);
-
-	p.drawText(10, 10, _ident);	
 	
 	_baseLine->draw(&p, rect(), false);
 }

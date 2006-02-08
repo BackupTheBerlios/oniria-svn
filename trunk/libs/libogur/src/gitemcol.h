@@ -20,11 +20,13 @@
 #ifndef __G_ITEM_COL_H__
 #define __G_ITEM_COL_H__
 
-#include <QtCore/QObject>
-#include <QtGui/QPainter>
-#include <QtGui/QTextDocument>
-#include <QtGui/QMovie>
-#include <QtGui/QPicture>
+#include <QObject>
+#include <QPainter>
+#include <QMovie>
+#include <QPicture>
+#include <QLabel>
+#include <QWidget>
+#include <QTextEdit>
 
 #include "gcore.h"
 #include "ogur_dll.h" 
@@ -45,14 +47,16 @@ class LIBOGUR_API GItemCol : public QObject
 		virtual void stop();
 		virtual GItemLine * addLine();
 		QSize size();
+		inline void widget(QWidget * w) { _baseWidget = w; }
 	public slots:
 		virtual void slotUpdateRequired();
 	signals:
 		void signalUpdateRequired();
 	private:
 		void deleteData();
+		QWidget * _baseWidget;
 		GColDataType _type;
-		QTextDocument * _text;
+		QLabel * _text;
 		QImage * _image;
 		QMovie * _movie;
 		QSize _animsize;

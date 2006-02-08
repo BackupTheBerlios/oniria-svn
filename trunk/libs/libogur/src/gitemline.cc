@@ -43,16 +43,26 @@ void GItemLine::slotUpdateRequired()
 }
 
 void GItemLine::draw(QPainter * painter, const QRect & rect, bool torect)
-{	
-	foreach(GItemCol * l, _cols){
-		l->draw(painter, rect, torect);
-	}		
+{
+	QRect rc = rect;
+	rc.setSize(size());
+	GItemCol * l = 0;
+	QSize items;
+	QListIterator<GItemCol *> it(_cols);
+	while (it.hasNext()){
+		l = it.next();
+		items = l->size();
+		rc.setSize(items);
+		l->draw(painter, rc, torect);
+		rc.setX(rc.x() + items.width());
+	}
 }
 
 GItemCol * GItemLine::addCol()
 {
 	GItemCol * col = new GItemCol(this);
 	connect (col, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
+	col->widget(_baseWidget);
 	_cols.append(col);
 	return col;
 }

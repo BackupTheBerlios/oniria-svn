@@ -20,8 +20,9 @@
 #ifndef __G_ITEM_LINE_H__
 #define __G_ITEM_LINE_H__
 
-#include <QtGui/QPainter>
-#include <QtCore/QObject>
+#include <QPainter>
+#include <QObject>
+#include <QWidget>
 
 #include "gcore.h"
 #include "ogur_dll.h" 
@@ -38,12 +39,14 @@ class LIBOGUR_API GItemLine : public QObject
 		virtual void start();
 		virtual void stop();
 		virtual GItemCol * addCol();
+		inline void widget(QWidget * w) { _baseWidget = w; }
 		QSize size();
 	public slots:
 		virtual void slotUpdateRequired();
 	signals:
 		void signalUpdateRequired();
 	private:
+		QWidget * _baseWidget;
 		QList<GItemCol *> _cols;
 	
 };

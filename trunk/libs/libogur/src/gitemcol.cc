@@ -64,6 +64,7 @@ QSize GItemCol::size()
 			case image:
 				return _image->size();
 			case text:
+				return _text->size();
 				break;
 				
 			default:
@@ -87,6 +88,7 @@ QSize GItemCol::size()
 GItemLine * GItemCol::addLine()
 {
 	GItemLine * line = new GItemLine(this);
+	line->widget(_baseWidget);
 	connect (line, SIGNAL(signalUpdateRequired()), this, SLOT(slotUpdateRequired()));
 	_lines.append(line);
 	return line;
@@ -117,17 +119,22 @@ void GItemCol::draw(QPainter * painter, const QRect & rect, bool torect)
 {
 	//QRect rc = torect ? rect : QRect(QPoint(0, 0), size());
 	QRect rc = rect;
+	//rc.setSize(size());
 	if (_lines.empty()){		
 		switch (_type){
-			case animation:				
+			case animation:
+				Q_ASSERT(_movie);	
 				if (_movie->state() == QMovie::Running)
-					painter->drawPixmap(0, 0, _movie->currentPixmap());					
+					painter->drawPixmap(rc.x(), rc.y(), _movie->currentPixmap());
 				break;
 			case image:
+				Q_ASSERT(_image);
 				painter->drawImage(rc, *_image);
 				break;
 			case text:
-				break;
+				_text->move(rc.topLeft());
+				_text->resize(rc.size());
+			break;
 				
 			default:
 				qWarning("GItemCol::data (Unknown data format)");
@@ -146,7 +153,7 @@ void GItemCol::data(GColDataType type, const QString & filename)
 		case animation:			
 			_movie = new QMovie(filename, QByteArray(), this);
 			//_movie->setCacheMode(QMovie::CacheAll);
-			_movie->setSpeed(100); 			
+			_movie->setSpeed(100);
 			connect(_movie, SIGNAL(updated(const QRect &)), this, SLOT(updated(const QRect &)));
 			connect(_movie, SIGNAL(resized(const QSize&)), this, SLOT(resized(const QSize&)));
 			break;
@@ -155,8 +162,7 @@ void GItemCol::data(GColDataType type, const QString & filename)
 			break;
 			
 		case text:
-			_text = new QTextDocument(this);
-			//_text->setSource(filename);
+			_text = new QLabel(filename, _baseWidget);
 			break;
 			
 		default:
