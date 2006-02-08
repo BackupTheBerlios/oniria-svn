@@ -35,9 +35,36 @@
 		tree->setBackgroundRole(QPalette::Base);	
 		
 		item = tree->createItem("one", "");
-		item->col()->data(GItemCol::image, "d:\\1\\1.png");
-		item = tree->createItem("two", "one");
-		item->col()->data(GItemCol::image, "d:\\1\\1.png");
+		item->col()->data(GItemCol::image, ":/icon.png");
+		
+		item = tree->createItem("two", "");
+		item->col()->data(GItemCol::image, ":/icon.png");
+
+		item = tree->createItem("three", "two");
+		item->col()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<b><u>Test</u></b>");
+		item->line()->addCol()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<i>Test 2</i>");
+
+		item = tree->createItem("three2", "two");
+		item->col()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<b><u>Test</u></b>");
+		item->line()->addCol()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<i>Test 2</i>");
+
+
+		item = tree->createItem("three3", "one");
+		item->col()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<b><u>Test</u></b>");
+		item->line()->addCol()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<i>Test 2</i>");
+
+
+		item = tree->createItem("three4", "three2");
+		item->col()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<b><u>Test</u></b>");
+		item->line()->addCol()->data(GItemCol::image, ":/icon.png");
+		item->line()->addCol()->data(GItemCol::text, "<i>Test 2</i>");
 
 		tree->redraw();		
 		

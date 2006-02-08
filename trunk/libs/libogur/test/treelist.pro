@@ -10,7 +10,11 @@ SOURCES = treelist.cc
 unix:LIBS += -L../bin -logur
 win32:LIBS += -L ../bin -logur-debug0
 
-MOC_DIR = .moc
+RESOURCES = treelist.qrc
+
+RCC_DIR = res
+
+MOC_DIR = moc
 
 win32:{
 	DESTDIR = ../bin
