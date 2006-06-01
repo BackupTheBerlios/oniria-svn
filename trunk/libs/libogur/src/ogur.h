@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
+ * Copyright (C) 2005-2006 by Micha³ Wysoczañski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,27 +16,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#ifndef __OGUR_DLL_H
-#define __OGUR_DLL_H
+#ifndef __OGUR_H
+#define __OGUR_H
 
-#if defined(WIN32)
-# ifndef BUILD_LIB_OGUR_STATIC
-#  if BUILDING_LIBOGUR_DLL
-#   define LIBOGUR_API __declspec (dllexport)
-#  else /* Not BUILDING_LIBOGUR_DLL */
-#   define LIBOGUR_API __declspec (dllimport)
-#  endif /* Not BUILDING_LIBOGUR_DLL */
-# endif /* BUILD_LIB_OGUR_STATIC */
+#include "ogur_dll.h"
+
+#include <stdint.h>
+
+extern const uint32_t libogur_major_version;
+extern const uint32_t libogur_minor_version;
+extern const uint32_t libogur_micro_version;
+extern const uint32_t libogur_interface_age;
+extern const uint32_t libogur_binary_age;
+
 #endif
-
-#ifndef WIN32 
-# define LIBOGUR_API 
-#else
-# if defined (BUILD_LIB_OGUR_STATIC)
-#  define LIBOGUR_API
-# endif 
-#endif
-
-
-
-#endif /* __DLL_H_ */
