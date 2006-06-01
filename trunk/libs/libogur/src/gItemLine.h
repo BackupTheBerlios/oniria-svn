@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QWidget>
 
-#include "gcore.h"
+#include "gCore.h"
 #include "ogur_dll.h" 
 
 class GItemCol;

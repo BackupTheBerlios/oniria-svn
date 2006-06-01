@@ -23,7 +23,7 @@
 #include <QtGui/QPainter>
 #include <QtCore/QObject>
 
-#include "gcore.h"
+#include "gCore.h"
 #include "ogur_dll.h" 
 
 class LIBOGUR_API GItemCanvas : public QObject {

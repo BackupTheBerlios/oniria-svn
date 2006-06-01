@@ -20,7 +20,7 @@
 #ifndef __TREE_LIST_ITEM__
 #define __TREE_LIST_ITEM__
 
-#include "gcore.h"
+#include "gCore.h"
 #include "ogur_dll.h" 
 #include <QWidget>
 

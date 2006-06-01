@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "gitemcol.h"
-#include "gitemcanvas.h"
-#include "gitemline.h"
+#include "gItemCol.h"
+#include "gItemCanvas.h"
+#include "gItemLine.h"
 
 GItemCol::GItemCol(QObject * parent)
 :QObject(parent),_type(unknown)

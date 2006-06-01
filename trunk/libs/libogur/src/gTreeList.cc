@@ -19,10 +19,10 @@
 
 #include <QtGui>
 
-#include "gtreelistitem.h"
-#include "gitemline.h"
-#include "gtreelistitemmoveaction.h"
-#include "gtreelist.h"
+#include "gTreeListItem.h"
+#include "gItemLine.h"
+#include "gTreeListItemMoveAction.h"
+#include "gTreeList.h"
 
 
 GTreeList::GTreeList(QWidget * parent):

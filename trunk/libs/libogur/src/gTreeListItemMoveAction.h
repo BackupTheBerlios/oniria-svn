@@ -20,7 +20,7 @@
 #ifndef __TIMERACTION__H__
 #define __TIMERACTION__H__
 
-#include "gaction.h"
+#include "gAction.h"
 
 class GTreeListItem;
 class GAction;

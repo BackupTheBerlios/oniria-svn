@@ -18,8 +18,8 @@
 */
 
 #include <QtGui>
-#include "gtreelistitem.h"
-#include "gtreelistitemmoveaction.h"
+#include "gTreeListItem.h"
+#include "gTreeListItemMoveAction.h"
 
 
 GTreeListItemMoveAction::GTreeListItemMoveAction(GTreeListItem * parent, int interval)

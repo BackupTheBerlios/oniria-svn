@@ -18,7 +18,7 @@
  */
 
 #include <QtGui> 
-#include "gcore.h"
+#include "gCore.h"
 
 GMouseEvent::GMouseEvent(QMouseEvent * me, QWidget * s, ClickType ct)
 {	

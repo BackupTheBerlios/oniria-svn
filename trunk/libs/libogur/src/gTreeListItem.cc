@@ -18,10 +18,10 @@
 */
 
 #include <QtGui>
-#include "gaction.h"
-#include "gitemline.h"
-#include "gitemcol.h"
-#include "gtreelistitem.h"
+#include "gAction.h"
+#include "gItemLine.h"
+#include "gItemCol.h"
+#include "gTreeListItem.h"
 
 GTreeListItem::GTreeListItem(QWidget * parent, const QString & ident, GTreeListItem * top)
 :QWidget(parent)

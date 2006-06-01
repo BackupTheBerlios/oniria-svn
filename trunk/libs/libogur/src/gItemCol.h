@@ -28,7 +28,7 @@
 #include <QWidget>
 #include <QTextEdit>
 
-#include "gcore.h"
+#include "gCore.h"
 #include "ogur_dll.h" 
 
 class GItemLine;

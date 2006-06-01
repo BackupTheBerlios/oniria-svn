@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "gaction.h"
+#include "gAction.h"
 
 GAction::GAction(QObject * parent)
 :QObject(parent){
