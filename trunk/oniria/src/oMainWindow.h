@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,18 +17,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
-#ifndef __G_MAIN_H__
-#define __G_MAIN_H__
+#ifndef __OMAINWINDOW_H
+#define __OMAINWINDOW_H
  
-#include <QWidget> 
-#include "ui_gMain.h" 
+#include <QMainWindow> 
  
-class gMain : public QMainWindow {
+class oMainWindow : public QMainWindow {
+
 	Q_OBJECT
-public:
-	gMain(QWidget * parent = 0);
-private:
-	 Ui::gMain ui;	
+
+	public:
+		oMainWindow(QWidget * parent = 0);
+		
+	private:
+		//Ui::gMain ui;	
 };
  
-#endif /* __G_MAIN_H__ */
+#endif

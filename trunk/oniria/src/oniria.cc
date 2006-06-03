@@ -24,14 +24,15 @@
 #else
 # include "oniria_config.h"
 #endif
-
 #include <QApplication>
+#include <QToolBar>
+#include "oMainWindow.h"
 
 int main(int argc, char ** argv)
 {
 	QApplication app(argc, argv);
-	//gMain mainWindow;
-	//mainWindow.show();	
+	oMainWindow mainWindow;
+	mainWindow.show();	
 	return app.exec();
 }
 

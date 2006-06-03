@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,11 @@
 
 #include <QtGui>
  
-#include "gMain.h"
+#include "oMainWindow.h"
 
 
-gMain::gMain(QWidget * parent)
-:QMainWindow(parent)
+oMainWindow::oMainWindow(QWidget * parent)
+: QMainWindow(parent)
 {
-	ui.setupUi(this); 
+	//ui.setupUi(this); 
 }

@@ -20,3 +20,4 @@ oniria.depend
 .objs
 .deps
 docs-output
+*.moc.cc

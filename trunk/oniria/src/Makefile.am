@@ -12,7 +12,19 @@ oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@
 
 bin_PROGRAMS = oniria
 
-oniria_SOURCES = oniria.cc
+noinst_HEADERS_moc = oMainWindow.h
+
+oniria_SOURCES = oniria.cc			\
+		 oMainWindow.cc			\
+		 $(noinst_HEADERS_moc)		\
+		 $(noinst_HEADERS_moc:.h=.moc.cc)
 		 
 noinst_DATA = oniria_config.h
 #data_DATA = xrc/oniria.xrc
+
+CLEANFILES = *.moc.cc
+
+%.moc.cc: %.h
+	$(QTMOC) $< -o $@
+
+
