@@ -8,13 +8,10 @@ docsdir = $(prefix)/share/doc/@PACKAGE@
 EXTRA_DIST = oniria.m4 oniria.pro win32-install.sh
 bin_SCRIPTS = oniria-config
 BUILT_SOURCES = oniria-config
-oxml-config: liboxml-config.in
+oniria-config: oniria-config.in
 
 m4datadir = $(datadir)/aclocal
-m4data_DATA = liboxml.m4
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = liboxml.pc
+m4data_DATA = oniria.m4
 
 gen-docs: doxygen.cfg
 	doxygen doxygen.cfg

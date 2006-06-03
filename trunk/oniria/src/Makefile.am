@@ -7,8 +7,8 @@ datadir = @datadir@/@PACKAGE@
 
 EXTRA_DIST = oniria_config.h.in
 
-oniria_CPPFLAGS = -Wall @OGUR_CFLAGS@ -DPLUGINDIR=\"@PLUGINDIR@\" -DDATADIR=\"@datadir@/@PACKAGE@\"
-oniria_LDFLAGS = @OGUR_LIBS@
+oniria_CPPFLAGS = -Wall @QT_CFLAGS@ @OGUR_CFLAGS@ -DPLUGINDIR=\"@PLUGINDIR@\" -DDATADIR=\"@datadir@/@PACKAGE@\"
+oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@
 
 bin_PROGRAMS = oniria
 

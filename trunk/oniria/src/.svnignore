@@ -12,6 +12,7 @@ Makefile.win
 oniria_config.h
 oniria.layout
 oniria.exe
+oniria
 intl
 m4
 ABOUT-NLS
