@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,27 +19,23 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <iostream>
-#include "jProtocol.h"
+//#include "jProtocol.h"
 #include "jPlugin.h"
 
-DEFINE_OOBJECT(jPlugin, oPlugin);
-
 jPlugin::jPlugin()
+: oPlugin()
 {
-	INIT_OOBJECT;
+	description()->addChild("name", "jabber");
 }
 
 jPlugin::~jPlugin()
 {
 }
 
-bool jPlugin::Create(oOniria * o)
+bool jPlugin::create(oOniria * o)
 {
-	wxLog::SetActiveTarget(o->Log());
-	wxLog::SetVerbose(true);
-	_protocol = new jProtocol;
-	o->RegisterProtocol(_protocol);
+	//_protocol = new jProtocol;
+	//o->RegisterProtocol(_protocol);
 	return true;
 }
 

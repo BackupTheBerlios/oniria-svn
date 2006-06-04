@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 #define __JPLUGIN_H
 
 #include <onir/oPlugin.h>
-#include <onir/oOniria.h>
+//#include <onir/oOniria.h>
 
 using namespace std;
 using onir::oPlugin;
@@ -33,9 +33,7 @@ class jPlugin : public oPlugin {
 		jPlugin();
 		virtual ~jPlugin();
 
-		virtual bool Create(oOniria * o);
-
-		DECLARE_OOBJECT;
+		virtual bool create(oOniria * o);
 
 	private:
 		jProtocol * _protocol;
