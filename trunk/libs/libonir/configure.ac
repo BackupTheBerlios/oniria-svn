@@ -92,7 +92,8 @@ dnl	          your system is a bit strange.])])
 
 #AC_CHECK_LIB(idn, stringprep_convert, [], [AC_MSG_ERROR([libidn not found])])
 AC_LANG_PUSH(C++)
-PKG_CHECK_MODULES(QT, [QtCore >= 4.0.1 QtXml >= 4.0.1])
+PKG_CHECK_MODULES(QT, [QtCore >= 4.0.1])
+PKG_CHECK_MODULES(OXML, [liboxml >= 0.1.0])
 AC_LANG_POP(C++)
 
 
