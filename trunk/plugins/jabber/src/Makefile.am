@@ -1,28 +1,15 @@
 # $Id$
 
-SUBDIRS = win32
+#SUBDIRS = win32
 
-localedir = @ONIRIA_PLUGINLOCALEDIR@
 plugindir = @ONIRIA_PLUGINDIR@
 
 
 plugin_LTLIBRARIES = libjabber.la
-libjabber_la_CPPFLAGS = -Wall @LIBONIR_CFLAGS@
-libjabber_la_LDFLAGS = @LTLIBINTL@ @LIBONIR_LIBS@
+libjabber_la_CPPFLAGS = -Wall #@LIBONIR_CFLAGS@
+libjabber_la_LDFLAGS = #@LTLIBINTL@ @LIBONIR_LIBS@
 
 INCLUDES = -DLOCALEDIR=\"$(localedir)\"
 
-libjabber_la_SOURCES = jabber.cpp		\
-		       jPlugin.cpp		\
-		       jPlugin.h		\
-		       jProtocol.cpp		\
-		       jProtocol.h		\
-		       jSession.cpp		\
-		       jSession.h		\
-		       jJid.cpp			\
-		       jJid.h			\
-		       jRosterItem.cpp		\
-		       jRosterItem.h		\
-		       jRosterSubItem.cpp	\
-		       jRosterSubItem.h
+libjabber_la_SOURCES = jabber.cc
 
