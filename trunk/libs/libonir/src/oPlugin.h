@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,8 @@
 #ifndef __OPLUGIN_H
 #define __OPLUGIN_H
 
+#include <oxml/xmlElement.h>
 #include "onir_dll.h"
-
-#include <list>
-#include <string>
-#include "oObject.h"
 
 using namespace std;
 
@@ -36,7 +33,7 @@ class oOniria;
  *
  * All plugins should implement interface provided by this class.
  */
-class LIBONIR_API oPlugin : public oObject {
+class LIBONIR_API oPlugin {
 
 	public:
 		/*!\name Constructor and destructor
@@ -46,9 +43,21 @@ class LIBONIR_API oPlugin : public oObject {
 		 * \brief Constructor
 		 */
 		oPlugin();
-		//@}
 
-		/*!\fn virtual bool Create(oOniria * o) = 0
+		/*!\fn virtual ~oPlugin()
+		 * \brief Destructor
+		 */
+		virtual ~oPlugin();
+		//@}
+		
+
+		/**!\fn inline xmlElement * description() const;
+		 * \brief Returns plugin XML description.
+		 * \return Pointer to XML element containing plugin description.
+		 */
+		inline onirXML::xmlElement * description() const { return _description; };
+
+		/*!\fn virtual bool create(oOniria * o) = 0
 		 * \brief Method called by Oniria when plugins are loaded.
 		 * \param o Pointer to oOniria interface. Plugin should store
 		 * this pointer for further use.
@@ -60,14 +69,15 @@ class LIBONIR_API oPlugin : public oObject {
 		 * by Oniria, all main subsystems are already created, so you can
 		 * use these through pointer passed as parameter.
 		 * 
-		 * \warning If your Create() returns false, there should be no 
+		 * \warning If your create() returns false, there should be no 
 		 * handlers, protocols, etc. registered by your plugin.
-		 * It's possible that if Create() returns false, the plugin
+		 * It's possible that if create() returns false, the plugin
 		 * will be immediatelly unloaded.
 		 */
-		virtual bool Create(oOniria * o) = 0;
+		virtual bool create(oOniria * o) = 0;
 
-		DECLARE_OOBJECT;
+	protected:
+		onirXML::xmlElement * _description;
 };
 
 

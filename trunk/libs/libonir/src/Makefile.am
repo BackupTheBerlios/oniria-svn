@@ -19,9 +19,11 @@ libonir_la_HEADERS_moc =
 
 nobase_onirinclude_HEADERS = onir.h				\
 			     onir_dll.h				\
+			     oPlugin.h				\
 			     $(libonir_la_HEADERS_moc)
 
 libonir_la_SOURCES = onir.cc					\
+		     oPlugin.cc					\
 		     $(libonir_la_HEADERS_moc:.h=.moc.cc)
 
 CLEANFILES = *.moc.cc

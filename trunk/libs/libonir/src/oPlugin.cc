@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,13 +21,19 @@
 #endif
 #include "oPlugin.h"
 
-namespace onir {
+using namespace onirXML;
 
-DEFINE_OOBJECT(oPlugin, oObject);
+namespace onir {
 
 oPlugin::oPlugin()
 {
-	INIT_OOBJECT;
+	_description = new xmlElement("plugin");
+}
+
+oPlugin::~oPlugin()
+{
+	delete _description;
 }
 	
 };
+
