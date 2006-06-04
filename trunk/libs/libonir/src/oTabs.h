@@ -20,7 +20,7 @@
 #ifndef _O_TABS
 #define _O_TABS
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <map>
 #include <string>

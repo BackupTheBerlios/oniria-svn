@@ -19,7 +19,7 @@
 #ifndef __ONIR_H
 #define __ONIR_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <stdint.h>
 #include <QString>

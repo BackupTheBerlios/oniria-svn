@@ -19,7 +19,7 @@
 #ifndef __OEVENTQUEUE_H
 #define __OEVENTQUEUE_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <string>
 #include "oObject.h"

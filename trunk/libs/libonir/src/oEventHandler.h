@@ -19,7 +19,7 @@
 #ifndef __OHANDLER_H
 #define __OHANDLER_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <list>
 #include <string>

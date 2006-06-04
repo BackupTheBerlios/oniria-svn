@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #else
 # include "onir_config.h"
 #endif
-#include "dll.h"
+#include "onir_dll.h"
 #include "onir.h"
 
 const uint32_t libonir_major_version = ONIR_MAJOR_VERSION;

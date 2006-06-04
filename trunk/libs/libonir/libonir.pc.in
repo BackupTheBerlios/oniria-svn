@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/oniria
+
+Name: @PACKAGE@
+Description: Oniria library
+Version: @VERSION@
+Libs: -L${libdir} -lonir
+Cflags: -I${includedir} -I${includedir}/onir @QT_CFLAGS@
+

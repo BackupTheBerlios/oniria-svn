@@ -19,7 +19,7 @@
 #ifndef __OPLUGIN_H
 #define __OPLUGIN_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <list>
 #include <string>

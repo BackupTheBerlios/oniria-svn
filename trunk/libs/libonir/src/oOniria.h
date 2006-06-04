@@ -19,7 +19,7 @@
 #ifndef __OONIRIA_H
 #define __OONIRIA_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <QString>
 #include "oObject.h"

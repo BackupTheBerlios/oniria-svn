@@ -19,7 +19,7 @@
 #ifndef __ORESOURCES_H
 #define __ORESOURCES_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <string>
 #include <wx/image.h>

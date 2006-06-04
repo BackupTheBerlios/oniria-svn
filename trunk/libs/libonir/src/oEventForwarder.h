@@ -19,7 +19,7 @@
 #ifndef __OEVENTFORWARDER_H
 #define __OEVENTFORWARDER_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <list>
 #include <string>

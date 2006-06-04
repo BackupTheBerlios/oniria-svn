@@ -19,7 +19,7 @@
 #ifndef __OEVENTTARGET_H
 #define __OEVENTTARGET_H
 
-#include "dll.h"
+#include "onir_dll.h"
 
 #include <string>
 #include "oEvent.h"
