@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -135,6 +135,20 @@ xmlElement * xmlElement::addChild(const QString& aname, int avalue)
 	xmlElement * elem = new xmlElement(aname, avalue);
 	elem->encoding(encoding());
 	return addChild(elem);
+}
+
+xmlElement * xmlElement::addChild(const QString& aname, const QString& avalue, const QString& attrname, const QString& attrvalue)
+{
+	xmlElement * elem = addChild(aname, avalue);
+	elem->addAttribute(attrname, attrvalue);
+	return elem;
+}
+
+xmlElement * xmlElement::addChild(const QString& aname, int avalue, const QString& attrname, const QString& attrvalue)
+{
+	xmlElement * elem = addChild(aname, avalue);
+	elem->addAttribute(attrname, attrvalue);
+	return elem;
 }
 
 xmlElement * xmlElement::addChild(xmlElement * elem)

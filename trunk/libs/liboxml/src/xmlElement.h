@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -199,6 +199,22 @@ class LIBOXML_API xmlElement : public QObject {
 		/*!\overload xmlElement * addChild(const QString& name, int value)
 		 */
 		xmlElement * addChild(const QString& name, int value);
+
+		/*!\fn xmlElement * addChild(const QString& name, const QString& value, const QString& attrname, const QString& attrval)
+		 * \brief Adds child element.
+		 * \param name Child name.
+		 * \param value Child value.
+		 * \param attrname Attribute name.
+		 * \param attrbal Attribute value.
+		 * \return Pointer to newly added element.
+		 *
+		 * This version of addChild() adds new child element and set attribute on it.
+		 */
+		xmlElement * addChild(const QString& name, const QString& value, const QString& attrname, const QString& attrval);
+
+		/*!\overload xmlElement * addChild(const QString& name, int value, const QString& attrname, const QString& attrval)
+		 */
+		xmlElement * addChild(const QString& name, int value, const QString& attrname, const QString& attrval);
 
 		/*!\fn xmlElement * addChild(xmlElement * elem)
 		 * \brief Adds child element.
