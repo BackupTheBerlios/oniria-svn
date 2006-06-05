@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,11 +23,8 @@
 
 namespace onir {
 
-DEFINE_OOBJECT(oEventHandler, oEventTarget);
-
 oEventHandler::oEventHandler()
 {
-	INIT_OOBJECT;
 }
 
 oEventHandler::~oEventHandler()

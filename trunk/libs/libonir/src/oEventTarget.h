@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,10 +21,9 @@
 
 #include "onir_dll.h"
 
-#include <string>
+#include <QString>
 #include "oEvent.h"
 
-using std::string;
 using onir::oEvent;
 
 namespace onir {
@@ -35,7 +34,7 @@ namespace onir {
  *
  * To implement your own event handler, use rather oEventHandler than this class.
  */
-class LIBONIR_API oEventTarget : public oObject {
+class LIBONIR_API oEventTarget {
 
 	public:
 		/*!\name Contructors and destructor
@@ -55,23 +54,18 @@ class LIBONIR_API oEventTarget : public oObject {
 		
 
 
-		/*!\fn virtual bool ProcessEvent(oEvent * event)
+		/*!\fn virtual bool processEvent(oEvent * event)
 		 * \brief Process event.
 		 * \param event Event.
 		 * \return true if event manager should call next event handler in chain. 
 		 *
 		 * Override this method to implement your own event processing method.
 		 */
-		virtual bool ProcessEvent(oEvent * event) = 0;
-
-
-	private:
-
-		DECLARE_OOBJECT;
+		virtual bool processEvent(oEvent * event) = 0;
 };
 
 #define ROUTE_EVENT(__event, __id, __func)	\
-	if ((__event)->Id() == (__id))		\
+	if ((__event)->id() == (__id))		\
 		return __func(event);
 
 };

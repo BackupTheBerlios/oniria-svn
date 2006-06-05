@@ -21,11 +21,8 @@
 
 #include "onir_dll.h"
 
-#include <string>
-#include "oObject.h"
-#include "xml/xmlElement.h"
+#include <oxml/xmlElement.h>
 
-using std::string;
 using onirXML::xmlElement;
 
 namespace onir {
@@ -33,18 +30,18 @@ namespace onir {
 /*!\class oEvent
  * \brief Event.
  */
-class LIBONIR_API oEvent : public oObject {
+class LIBONIR_API oEvent {
 
 	public:
 		/*!\name Contructors and destructor
 		 */
 		//@{
 
-		/*!\fn oEvent(const string& id)
+		/*!\fn oEvent(const QString& id)
 		 * \brief Constructor.
 		 * \param id Event id.
 		 */
-		oEvent(const string& id);
+		oEvent(const QString& id);
 
 		/*!\fn virtual ~oEvent()
 		 * \brief Destructor.
@@ -54,23 +51,21 @@ class LIBONIR_API oEvent : public oObject {
 		
 
 
-		/*!\fn inline const string& Id() const
+		/*!\fn inline const QString& id() const
 		 * \brief Returns event id.
 		 * \return Event id.
 		 */
-		inline const string& Id() const { return _id; };
+		inline const QString& id() const { return _id; };
 
-		/*!\fn inline xmlElement * XML() const
+		/*!\fn inline xmlElement * xml() const
 		 * \brief Returns event XML data.
 		 * \return Event XML data.
 		 */
-		inline xmlElement * XML() const { return _xml; };
+		inline xmlElement * xml() const { return _xml; };
 
 	private:
-		string _id;
+		QString _id;
 		xmlElement * _xml;
-
-		DECLARE_OOBJECT;
 };
 
 };

@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,10 +21,7 @@
 
 #include "onir_dll.h"
 
-#include <string>
-#include "oObject.h"
-
-using std::string;
+#include <QString>
 
 namespace onir {
 
@@ -34,7 +31,7 @@ class oEventHandler;
 /*!\class oEventQueue
  * \brief Event queue.
  */
-class LIBONIR_API oEventQueue : public oObject {
+class LIBONIR_API oEventQueue {
 
 	public:
 		/*!\name Contructors and destructor
@@ -45,10 +42,15 @@ class LIBONIR_API oEventQueue : public oObject {
 		 * \brief Constructor.
 		 */
 		oEventQueue();
+
+		/*!\fn virtual ~oEventQueue()
+		 * \brief Destructor.
+		 */
+		virtual ~oEventQueue();
 		//@}
 
 
-		/*!\fn virtual bool RegisterHandler(const string& id, oEventHandler * hnd) = 0
+		/*!\fn virtual bool registerHandler(const QString& id, oEventHandler * hnd) = 0
 		 * \brief Registers new event handler.
 		 * \param id Event id.
 		 * \param hnd Handler for given event.
@@ -57,9 +59,9 @@ class LIBONIR_API oEventQueue : public oObject {
 		 *
 		 * Plugins should call this method to register new event handler.
 		 */
-		virtual bool RegisterHandler(const string& id, oEventHandler * hnd) = 0;
+		virtual bool registerHandler(const QString& id, oEventHandler * hnd) = 0;
 
-		/*!\fn virtual bool Process(oEvent * event) = 0
+		/*!\fn virtual bool process(oEvent * event) = 0
 		 * \brief Process event.
 		 * \param event Event.
 		 * \return true if ok
@@ -68,9 +70,9 @@ class LIBONIR_API oEventQueue : public oObject {
 		 * This method process event immediately, and returns when event handling
 		 * finished. If possible, you should rather use Queue() than this method.
 		 */
-		virtual bool Process(oEvent * event) = 0;
+		virtual bool process(oEvent * event) = 0;
 
-		/*!\fn virtual bool Queue(oEvent * event) = 0
+		/*!\fn virtual bool queue(oEvent * event) = 0
 		 * \brief Queues event for processing.
 		 * \param event Event.
 		 * \return true if ok.
@@ -78,11 +80,10 @@ class LIBONIR_API oEventQueue : public oObject {
 		 *
 		 * Queued event will be processed in next event handling cycle.
 		 */
-		virtual bool Queue(oEvent * event) = 0;
-
-		DECLARE_OOBJECT;
+		virtual bool queue(oEvent * event) = 0;
 };
 
 };
 
 #endif
+

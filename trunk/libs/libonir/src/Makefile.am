@@ -21,11 +21,21 @@ nobase_onirinclude_HEADERS = onir.h				\
 			     onir_dll.h				\
 			     oPlugin.h				\
 			     oOniria.h				\
+			     oEvent.h				\
+			     oEventTarget.h			\
+			     oEventHandler.h			\
+			     oEventForwarder.h			\
+			     oEventQueue.h			\
 			     $(libonir_la_HEADERS_moc)
 
 libonir_la_SOURCES = onir.cc					\
 		     oPlugin.cc					\
 		     oOniria.cc					\
+		     oEvent.cc					\
+		     oEventTarget.cc				\
+		     oEventHandler.cc				\
+		     oEventForwarder.cc				\
+		     oEventQueue.cc				\
 		     $(libonir_la_HEADERS_moc:.h=.moc.cc)
 
 CLEANFILES = *.moc.cc

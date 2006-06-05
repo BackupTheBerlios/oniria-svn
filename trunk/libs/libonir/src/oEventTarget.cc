@@ -23,11 +23,8 @@
 
 namespace onir {
 
-DEFINE_OOBJECT(oEventTarget, oObject);
-
 oEventTarget::oEventTarget()
 {
-	INIT_OOBJECT;
 }
 
 oEventTarget::~oEventTarget()

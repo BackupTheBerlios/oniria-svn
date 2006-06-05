@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,17 +23,13 @@
 
 namespace onir {
 
-DEFINE_OOBJECT(oEvent, oObject);
-
-oEvent::oEvent(const string& id)
+oEvent::oEvent(const QString& id)
 {
 	_id = id;
 
 	_xml = new xmlElement;
-	_xml->Name("event");
-	_xml->AddAttribute("id", id);
-	
-	INIT_OOBJECT;
+	_xml->name("event");
+	_xml->addAttribute("id", id);
 }
 
 oEvent::~oEvent()

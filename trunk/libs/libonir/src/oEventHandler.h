@@ -21,11 +21,7 @@
 
 #include "onir_dll.h"
 
-#include <list>
-#include <string>
 #include "oEventTarget.h"
-
-using namespace std;
 
 namespace onir {
 
@@ -54,16 +50,14 @@ class LIBONIR_API oEventHandler : public oEventTarget {
 
 
 
-		/*!\fn virtual bool ProcessEvent(oEvent * event) = 0
+		/*!\fn virtual bool processEvent(oEvent * event) = 0
 		 * \brief Handles event.
 		 * \param event Event.
 		 * \return true if event manager should call next event handler in chain. 
 		 *
 		 * Override this method to implement your own event handler.
 		 */
-		virtual bool ProcessEvent(oEvent * event) = 0;
-
-		DECLARE_OOBJECT;
+		virtual bool processEvent(oEvent * event) = 0;
 };
 
 };

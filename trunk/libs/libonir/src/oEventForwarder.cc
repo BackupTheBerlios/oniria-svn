@@ -23,21 +23,18 @@
 
 namespace onir {
 
-DEFINE_OOBJECT(oEventForwarder, oEventHandler);
-
 oEventForwarder::oEventForwarder(oEventTarget * target)
 {
 	_target = target;
-	INIT_OOBJECT;
 }
 
 oEventForwarder::~oEventForwarder()
 {
 }
 
-bool oEventForwarder::ProcessEvent(oEvent * event)
+bool oEventForwarder::processEvent(oEvent * event)
 {
-	return _target->ProcessEvent(event);
+	return _target->processEvent(event);
 }
 
 };

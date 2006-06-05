@@ -21,11 +21,7 @@
 
 #include "onir_dll.h"
 
-#include <list>
-#include <string>
 #include "oEventHandler.h"
-
-using namespace std;
 
 namespace onir {
 
@@ -63,12 +59,10 @@ class LIBONIR_API oEventForwarder : public oEventHandler {
 		 *
 		 * Forwards event to another event target.
 		 */
-		virtual bool ProcessEvent(oEvent * event);
+		virtual bool processEvent(oEvent * event);
 
 	private:
 		oEventTarget * _target;
-
-		DECLARE_OOBJECT;
 };
 
 };
