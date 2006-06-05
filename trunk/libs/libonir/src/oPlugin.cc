@@ -28,12 +28,60 @@ namespace onir {
 oPlugin::oPlugin()
 {
 	_description = new xmlElement("plugin");
+	_description->addChild("author", "");
+	_description->addChild("build", "");
+	_description->addChild("features", "");
 }
 
 oPlugin::~oPlugin()
 {
 	delete _description;
 }
-	
+
+void oPlugin::id(const QString& s)
+{
+	_description->addAttribute("id", s);
+}
+
+const QString& oPlugin::id() const
+{
+	return _description->attributeValue("id");
+}
+
+xmlElement * oPlugin::descriptionField(const QString& n, const QString& v)
+{
+	return _description->addChild(n, v);
+}
+
+const QString& oPlugin::descriptionField(const QString& n) const
+{
+	return _description->childValue(n);
+}
+
+xmlElement * oPlugin::descriptionAuthorField(const QString& n, const QString& v)
+{
+	return _description->child("author")->addChild(n, v);
+}
+
+const QString& oPlugin::descriptionAuthorField(const QString& n) const
+{
+	return _description->child("author")->childValue(n);
+}
+
+xmlElement * oPlugin::descriptionBuildField(const QString& n, const QString& v)
+{
+	return _description->child("build")->addChild(n, v);
+}
+
+const QString& oPlugin::descriptionBuildField(const QString& n) const
+{
+	return _description->child("build")->childValue(n);
+}
+
+xmlElement * oPlugin::addFeature(const QString& n, const QString& fid)
+{
+	return _description->child("features")->addChild(n, "", "id", fid);
+}
+
 };
 

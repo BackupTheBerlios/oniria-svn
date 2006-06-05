@@ -51,11 +51,36 @@ class LIBONIR_API oPlugin {
 		//@}
 		
 
-		/**!\fn inline xmlElement * description() const;
+		/*!\name Plugin XML description methods
+		 */
+		//@{
+		/**!\fn inline xmlElement * xmlDescription() const;
 		 * \brief Returns plugin XML description.
 		 * \return Pointer to XML element containing plugin description.
 		 */
-		inline onirXML::xmlElement * description() const { return _description; };
+		inline onirXML::xmlElement * xmlDescription() const { return _description; };
+
+		const QString& id() const;
+		void id(const QString& s);
+
+		const QString& descriptionField(const QString& n) const;
+		onirXML::xmlElement * descriptionField(const QString& n, const QString& v);
+		const QString& descriptionAuthorField(const QString& n) const;
+		onirXML::xmlElement * descriptionAuthorField(const QString& n, const QString& v);
+		const QString& descriptionBuildField(const QString& n) const;
+		onirXML::xmlElement * descriptionBuildField(const QString& n, const QString& v);
+
+		inline const QString& name() const { return descriptionField("name"); };
+		inline onirXML::xmlElement * name(const QString& s) { return descriptionField("name", s); };
+		inline const QString& description() const { return descriptionField("description"); };
+		inline onirXML::xmlElement * description(const QString& s) { return descriptionField("description", s); };
+		inline const QString& author() const { return descriptionField("author"); };
+		inline onirXML::xmlElement * author(const QString& s) { return descriptionField("author", s); };
+		inline const QString& version() const { return descriptionField("version"); };
+		inline onirXML::xmlElement * version(const QString& s) { return descriptionField("version", s); };
+
+		onirXML::xmlElement * addFeature(const QString& n, const QString& fid);
+		//@}
 
 		/*!\fn virtual bool create(oOniria * o) = 0
 		 * \brief Method called by Oniria when plugins are loaded.
