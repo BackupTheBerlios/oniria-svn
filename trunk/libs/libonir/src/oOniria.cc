@@ -23,11 +23,12 @@
 
 namespace onir {
 
-DEFINE_OOBJECT(oOniria, oObject);
-
 oOniria::oOniria()
 {
-	INIT_OOBJECT;
+}
+
+oOniria::~oOniria()
+{
 }
 	
 };

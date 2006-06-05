@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 #include "onir_dll.h"
 
 #include <QString>
-#include "oObject.h"
 
 namespace onirIM {
 	class imProtocol;
@@ -42,7 +41,7 @@ class oEventQueue;
  * This is abstract class, implemented by oOniriaImpl. Plugins use this class
  * to communicate with Oniria.
  */
-class LIBONIR_API oOniria : public oObject {
+class LIBONIR_API oOniria {
 
 	public:
 		/*!\name Contructors and destructor
@@ -53,6 +52,11 @@ class LIBONIR_API oOniria : public oObject {
 		 * \brief Constructor
 		 */
 		oOniria();
+
+		/*!\fn virtual ~oOniria()
+		 * \brief Destructor.
+		 */
+		virtual ~oOniria();
 		/* @} */
 
 		/*!\name Registration
@@ -91,11 +95,11 @@ class LIBONIR_API oOniria : public oObject {
 		 */
 		virtual const QString& programVersion() const = 0;
 
-		/*!\fn virtual const QString& programQString() const = 0
-		 * \brief Returns QString with program name and program version (for example "Oniria 0.1.0")
+		/*!\fn virtual const QString& programString() const = 0
+		 * \brief Returns string with program name and program version (for example "Oniria 0.1.0")
 		 * \return Program name and version.
 		 */
-		virtual const QString& programQString() const = 0;
+		virtual const QString& programString() const = 0;
 
 		/*!\fn virtual const QString& OSDescription() const = 0
 		 * \brief Returns OS description (for example "Windows XP", "Linux 2.4.20 i686")
@@ -142,8 +146,6 @@ class LIBONIR_API oOniria : public oObject {
 		 */
 		virtual oEventQueue * eventQueue() const = 0;
 		/* @} */
-
-		DECLARE_OOBJECT;
 };
 
 
