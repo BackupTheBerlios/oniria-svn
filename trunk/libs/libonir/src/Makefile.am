@@ -26,6 +26,7 @@ nobase_onirinclude_HEADERS = onir.h				\
 			     oEventHandler.h			\
 			     oEventForwarder.h			\
 			     oEventQueue.h			\
+			     oConfig.h				\
 			     $(libonir_la_HEADERS_moc)
 
 libonir_la_SOURCES = onir.cc					\
@@ -36,6 +37,7 @@ libonir_la_SOURCES = onir.cc					\
 		     oEventHandler.cc				\
 		     oEventForwarder.cc				\
 		     oEventQueue.cc				\
+		     oConfig.cc					\
 		     $(libonir_la_HEADERS_moc:.h=.moc.cc)
 
 CLEANFILES = *.moc.cc
