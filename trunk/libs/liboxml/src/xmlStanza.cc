@@ -19,6 +19,7 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
+#include <QXmlAttributes>
 #include "xmlElement.h"
 #include "xmlStanza.h"
 
@@ -39,7 +40,7 @@ xmlStanza::~xmlStanza()
 	delete _element;
 }
 
-bool xmlStanza::parseStartTag(const char * el, const char ** attrs)
+bool xmlStanza::parseStartTag(const QString& el, const QXmlAttributes& attrs)
 {
 	xmlElement * elem;
 	if (_level == 0) {	// start new stanza
@@ -50,8 +51,8 @@ bool xmlStanza::parseStartTag(const char * el, const char ** attrs)
 
 	elem->name(el);
 	elem->encoding(encoding());
-	for (int i = 0; attrs[i]; i += 2)
-		elem->addAttribute(attrs[i], attrs[i+1]);
+	for (int i = 0; i < attrs.count(); i++)
+		elem->addAttribute(attrs.qName(i), attrs.value(i));
 
 	if (_active != NULL)
 		_active->addChild(elem);
@@ -61,7 +62,7 @@ bool xmlStanza::parseStartTag(const char * el, const char ** attrs)
 	return true;
 }
 
-bool xmlStanza::parseEndTag(const char * el)
+bool xmlStanza::parseEndTag(const QString& el)
 {
 	if (_active != NULL) {
 		if (_active->name() != el)	// something wrong with XML

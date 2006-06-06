@@ -24,6 +24,7 @@
 #include <QXmlDefaultHandler>
 #include <QXmlInputSource>
 #include <QXmlSimpleReader>
+#include <QtDebug>
 #include "xmlElement.h"
 #include "xmlStanza.h"
 #include "xmlStream.h"
@@ -31,24 +32,6 @@
 namespace onirXML {
 
 /*
-void XMLCALL _xml_start_tag(void * data, const char * el, const char ** attr)
-{
-	xmlStream * ps = static_cast<xmlStream *>(data);
-	ps->ParseStartTag(el, attr);
-}
-
-void XMLCALL _xml_end_tag(void * data, const char * el)
-{
-	xmlStream * ps = static_cast<xmlStream *>(data);
-	ps->ParseEndTag(el);
-}
-
-void XMLCALL _xml_character_data(void * data, const XML_Char * s, int len)
-{
-	xmlStream * ps = static_cast<xmlStream *>(data);
-	ps->ParseCharacterData(QString(s, len));
-}
-
 void XMLCALL _xml_decl(void * data, const XML_Char * version, const XML_Char * encoding, int standalone)
 {
 	xmlStream * ps = static_cast<xmlStream *>(data);
@@ -61,9 +44,31 @@ class _xmlStreamHandler : public QXmlDefaultHandler {
 	public:
 		inline _xmlStreamHandler(xmlStream * stream) { _stream = stream; };
 
+		virtual bool characters(const QString& ch);
+		virtual bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& atts);
+		virtual bool endElement(const QString& namespaceURI, const QString& localName, const QString& qName);
+
 	private:
 		xmlStream * _stream;
 };
+
+bool _xmlStreamHandler::characters(const QString& ch)
+{
+	_stream->parseCharacterData(ch);
+	return true;
+}
+
+bool _xmlStreamHandler::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attrs)
+{
+	_stream->parseStartTag(qName, attrs);
+	return true;
+}
+
+bool _xmlStreamHandler::endElement(const QString& namespaceURI, const QString& localName, const QString& qName)
+{
+	_stream->parseEndTag(qName);
+	return true;
+}
 
 struct xmlStream::__private {
 	QXmlSimpleReader * reader;
@@ -142,13 +147,12 @@ void xmlStream::cleanup()
 			delete _private->source;
 			_private->source = NULL;
 		}
-		//XML_ParserFree(_private->parser);
 		delete _private;
 		_private = NULL;
 	}
 
-	_input = "";
-	_output = "";
+	_input_b = "";
+	_output_b = "";
 	
 	_state = unknown;
 }
@@ -166,6 +170,8 @@ bool xmlStream::prepare()
 	_private->handler = new _xmlStreamHandler(this);
 	_private->reader = new QXmlSimpleReader();
 
+	_private->reader->setContentHandler(_private->handler);
+
 	_in_root = new xmlElement;
 
 	_out_root = new xmlElement;
@@ -181,6 +187,8 @@ bool xmlStream::prepare()
 
 void xmlStream::readyRead()
 {
+	_input_b.append(input()->readAll());
+	parse();
 }
 
 bool xmlStream::initiate()
@@ -193,11 +201,11 @@ bool xmlStream::initiate()
 	if (state() != ready)
 		return false;
 
-	_input = "";
-	_output = "<?xml version='1.0'?>";
+	_input_b = "";
+	_output_b = "<?xml version='1.0'?>";
 
 	// Prepare root element, and add to queue
-	_output += _out_root->formatOpening(true, true);	// open stream
+	_output_b.append(_out_root->formatOpening(true, true));	// open stream
 	
 	_state = initiating;
 
@@ -211,53 +219,44 @@ bool xmlStream::poll()
 	if (state() != initiating && state() != established && state() != stanza && state() != closing)
 		return false;
 
-/*	if (input()->Read(&buf, 0, false) > 0)
-		_input += buf.str();
+	readyRead();
+	flush();
 
-	// format and send stanzas
-	if (State() == established) {
-		for (list<xmlStanza *>::iterator it = _out_stanzas.begin(); it != _out_stanzas.end(); it++) {
-			_output += (*it)->Format();
-			delete (*it);
-		}
-		_out_stanzas.clear();
-	}
-	if (!_output.empty()) {
-		size_t wr;
-		buf.Copy(_output.c_str(), _output.size());
-		wr = Output()->Write(&buf, 0, false);
-		if (wr > 0)
-			_output.erase(0, wr);
-	}
-*/
-	return parse();
+	return true;
 }
 
 bool xmlStream::close()
 {
 	_state = closing;
-	_output += _out_root->formatClosing(true, true);
+	_output_b.append(_out_root->formatClosing(true, true));
 	return false;
 }
 
 bool xmlStream::parse()
 {
-	if (_input.isEmpty())
-		return false;
+	QByteArray b;
 
-	//XML_Parse(_private->parser, _input.c_str(), _input.size(), 0);
-	_input = "";
+	b.append(_private->source->data());
+	b.append(_input_b);
+	_private->source->setData(b);
+	_input_b = "";
+
+	if (state() == initiating) {
+		_private->reader->parse(_private->source, true);
+	} else {
+		_private->reader->parseContinue();
+	}
 
 	return true;
 }
 
-void xmlStream::parseStartTag(const char * elem, const char ** attrs)
+void xmlStream::parseStartTag(const QString& elem, const QXmlAttributes& attrs)
 {
 	if (state() == initiating) {
 		if (QString(elem) == QString("stream:stream")) {		// input root
 			_in_root->name(elem);
-			for (int i = 0; attrs[i]; i += 2)
-				_in_root->addAttribute(attrs[i], attrs[i+1]);
+			for (int i = 0; i < attrs.count(); i++)
+				_in_root->addAttribute(attrs.qName(i), attrs.value(i));
 
 			_state = established;
 		} else {
@@ -266,7 +265,7 @@ void xmlStream::parseStartTag(const char * elem, const char ** attrs)
 
 			/*!\todo Prepare error response. */
 
-			_output += "</stream:stream>";
+			_output_b.append("</stream:stream>");
 		}
 		
 	} else if (state() == established) {	// new stanza arrived
@@ -288,7 +287,7 @@ void xmlStream::parseStartTag(const char * elem, const char ** attrs)
 	}
 }
 
-void xmlStream::parseEndTag(const char * elem)
+void xmlStream::parseEndTag(const QString& elem)
 {
 	if (state() == stanza) {		// forward parsing to active stanza
 		if (_active_stanza != NULL) {
@@ -318,6 +317,25 @@ void xmlStream::addStanza(xmlStanza * stanza)
 {
 	if (stanza != NULL)
 		_out_stanzas.push_back(stanza);
+	flush();
+}
+
+void xmlStream::flush()
+{
+	// format and send stanzas
+	if (state() == established) {
+		for (QList<xmlStanza *>::iterator it = _out_stanzas.begin(); it != _out_stanzas.end(); it++) {
+			_output_b.append((*it)->format());
+			delete (*it);
+		}
+		_out_stanzas.clear();
+	}
+	if (!_output_b.isEmpty()) {
+		qint64 wr;
+		wr = output()->write(_output_b);
+		if (wr > 0)
+			_output_b.remove(0, wr);
+	}
 }
 
 };

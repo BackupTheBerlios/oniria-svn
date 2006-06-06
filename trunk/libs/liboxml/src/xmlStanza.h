@@ -22,6 +22,8 @@
 #include "oxml_dll.h"
 #include <QObject>
 
+class QXmlAttributes;
+
 namespace onirXML {
 
 class xmlElement;
@@ -91,20 +93,20 @@ class LIBOXML_API xmlStanza : public QObject {
 		 */
 		//@{
 
-		/*!\fn bool parseStartTag(const char * el, const char ** attrs)
+		/*!\fn bool parseStartTag(const QString& el, const QXmlAttributes& attrs)
 		 * \brief Parses openning tag.
 		 * \param el Element.
 		 * \param attrs Attributes.
 		 * \return true if stream should enter or belong in stanza state.
 		 */
-		bool parseStartTag(const char * el, const char ** attrs);
+		bool parseStartTag(const QString& el, const QXmlAttributes& attrs);
 		
-		/*!\fn bool parseEndTag(const char * el)
+		/*!\fn bool parseEndTag(const QString& el)
 		 * \brief Parses openning tag.
 		 * \param el Element.
 		 * \return true if stream should belong in stanza state.
 		 */
-		bool parseEndTag(const char * el);
+		bool parseEndTag(const QString& el);
 
 		/*!\fn void parseCharacterData(const QString& s)
 		 * \brief Parse element data.

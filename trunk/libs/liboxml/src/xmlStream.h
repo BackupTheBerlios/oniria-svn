@@ -21,8 +21,11 @@
 
 #include <QIODevice>
 #include <QString>
+#include <QByteArray>
 #include <QList>
 #include "oxml_dll.h"
+
+class QXmlAttributes;
 
 namespace onirXML {
 
@@ -208,6 +211,9 @@ class LIBOXML_API xmlStream : public QObject {
 		 * to be send, receive new data, parse it, and whatever else
 		 * is required. You should check return value to decide if any
 		 * reaction is needed. If true, you can expect new stanzas, etc.
+		 *
+		 * Please note, that if your stream is signal driven there is no
+		 * need to call this method.
 		 */
 		bool poll();
 
@@ -238,18 +244,18 @@ class LIBOXML_API xmlStream : public QObject {
 		 */
 		bool parse();
 
-		/*!\fn void parseStartTag(const char * el, const char ** attrs)
+		/*!\fn void parseStartTag(const QString& el, const QXmlAttributes& attrs)
 		 * \brief Parse XML openning tag. Called internally by expat handler.
 		 * \param el Element name.
 		 * \param attr Attributes list.
 		 */
-		void parseStartTag(const char * el, const char ** attrs);
+		void parseStartTag(const QString& el, const QXmlAttributes& attrs);
 
-		/*!\fn void parseEndTag(const char * el)
+		/*!\fn void parseEndTag(const QString& el)
 		 * \brief Parse XML openning tag. Called internally by expat handler.
 		 * \param el Element name.
 		 */
-		void parseEndTag(const char * el);
+		void parseEndTag(const QString& el);
 		
 		/*!\fn void parseCharacterData(const QString& s)
 		 * \brief Parse element data.
@@ -259,6 +265,8 @@ class LIBOXML_API xmlStream : public QObject {
 		 */
 		void parseCharacterData(const QString& s);
 		//@}
+		
+		void flush();
 
 
 	protected slots:
@@ -270,8 +278,11 @@ class LIBOXML_API xmlStream : public QObject {
 		QIODevice * _ostream;
 		QString _encoding;
 
-		QString _output;
-		QString _input;
+		//QString _output;
+		//QString _input;
+
+		QByteArray _output_b;
+		QByteArray _input_b;
 
 		streamState _state;
 
