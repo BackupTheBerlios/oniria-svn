@@ -43,9 +43,10 @@ xmlAttribute::xmlAttribute(const QString& aname, int avalue)
 
 void xmlAttribute::value(int avalue)
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 	ss << avalue;
-	value(ss.readAll());
+	value(s);
 }
 
 void xmlAttribute::value(const QString& avalue)
@@ -60,7 +61,8 @@ bool xmlAttribute::valid() const
 
 QString xmlAttribute::format() const
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 	char quot;
 	QByteArray conv;
 
@@ -78,7 +80,7 @@ QString xmlAttribute::format() const
 	conv.replace("\"", "&quot;");
 
 	ss << name() << "=" << quot << conv.data() << quot;
-	return ss.readAll();
+	return s;
 }
 
 };

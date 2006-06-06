@@ -236,7 +236,8 @@ xmlElement * xmlElement::detach(const QString& name)
 
 QString xmlElement::formatOpening(bool one_line, bool force_non_empty, const QString& indent_string, unsigned int indent_level) const
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 
 	if (!valid())
 		return "";
@@ -256,12 +257,13 @@ QString xmlElement::formatOpening(bool one_line, bool force_non_empty, const QSt
 	else
 		ss << ">";
 
-	return ss.readAll();
+	return s;
 }
 
 QString xmlElement::formatContent(bool one_line, const QString& indent_string, unsigned int indent_level) const
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 
 	if (!valid() || empty())
 		return "";
@@ -287,12 +289,13 @@ QString xmlElement::formatContent(bool one_line, const QString& indent_string, u
 			ss << endl;
 	}
 
-	return ss.readAll();
+	return s;
 }
 
 QString xmlElement::formatClosing(bool one_line, bool force, const QString& indent_string, unsigned int indent_level) const
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 	if ((empty() && !force) || !valid())
 		return "";
 
@@ -300,12 +303,13 @@ QString xmlElement::formatClosing(bool one_line, bool force, const QString& inde
 		for (unsigned int i = 0; i < indent_level; i++)
 			ss << indent_string;
 	ss << "</" << name() << ">";
-	return ss.readAll();
+	return s;
 }
 
 QString xmlElement::format(bool one_line, bool force_non_empty, const QString& indent_string, unsigned int indent_level) const
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 
 	if (!valid())
 		return "";
@@ -316,7 +320,7 @@ QString xmlElement::format(bool one_line, bool force_non_empty, const QString& i
 	}
 	if (!empty() || force_non_empty)
 		ss << formatClosing(one_line, force_non_empty, indent_string, indent_level);
-	return ss.readAll();
+	return s;
 }
 
 };
