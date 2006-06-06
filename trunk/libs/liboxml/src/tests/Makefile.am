@@ -1,10 +1,18 @@
 # $Id$
 
-noinst_PROGRAMS = xmpp-stream
+noinst_PROGRAMS = xmppTest
 
 INCLUDES = -I.. @QT_CFLAGS@
 LDADD = -L../ -loxml @QT_LIBS@
 DEPENDENCIES = ../liboxml.la
 
-xmpp_stream_SOURCES = xmpp-stream.cc
+#xmppTest_HEADERS_moc = xmppTest.h
+xmppTest_SOURCES = xmppTest.cc	\
+		   xmppTest.h	\
+		   xmppTest.moc.cc
+
+CLEANFILES = *.moc.cc
+
+%.moc.cc: %.h
+	$(QTMOC) $< -o $@
 
