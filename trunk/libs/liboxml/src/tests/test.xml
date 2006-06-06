@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<resource-file>
+	<resource type="pack" id="oniria">
+
+		<name>Base</name>
+		<author>Oniria</author>
+		<date>xxxxx</date>
+		<description>Base oniria resource pack</description>
+
+		<resource type="pack" id="base">
+
+			<resource type="pack" id="icons">
+				<resource type="pack" class="imageset" id="roster" imageset-id="roster" origin="default">
+					<name>Default roster icons</name>
+					<resource type="image" id="avail" file="icons/roster/online.png" />
+					<resource type="image" id="avail-e" file="icons/roster/online.png" />
+					<resource type="image" id="chat" file="icons/roster/chat.png" />
+					<resource type="image" id="chat-e" file="icons/roster/chat.png" />
+					<resource type="image" id="away" file="icons/roster/away.png" />
+					<resource type="image" id="away-e" file="icons/roster/away.png" />
+					<resource type="image" id="xa" file="icons/roster/xa.png" />
+					<resource type="image" id="xa-e" file="icons/roster/xa.png" />
+					<resource type="image" id="dnd" file="icons/roster/dnd.png" />
+					<resource type="image" id="dnd-e" file="icons/roster/dnd.png" />
+					<resource type="image" id="na" file="icons/roster/na.png" />
+					<resource type="image" id="na-e" file="icons/roster/na.png" />
+					<resource type="image" id="inv" file="icons/roster/inv.png" />
+					<resource type="image" id="inv-e" file="icons/roster/inv.png" />
+					<resource type="image" id="unsp" file="icons/roster/na.png" />
+					<resource type="image" id="unsp-e" file="icons/roster/na.png" />
+				</resource>
+
+				<resource type="pack" class="imageset" id="buttons" imageset-id="buttons" origin="default">
+				          <name>Default buttons icons</name>
+				          <resource type="image" id="frame-tab-dock" file="icons/buttons/tab-dock.png" />
+       				          <resource type="image" id="frame-tab-dock-disable" file="icons/buttons/tab-dock-disable.png" />
+       				          <resource type="image" id="frame-tab-close" file="icons/buttons/tab-close.png" />
+       				          <resource type="image" id="frame-tab-close-disable" file="icons/buttons/tab-close-disable.png" />
+				</resource>
+
+			</resource>
+
+			<resource type="skin" id="default-skin" skin-id="default" file="skins/default/default.xml" />
+
+		</resource>
+	</resource>
+</resource-file>
+

@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,14 @@
 #ifndef _XMLPARSER_H
 #define _XMLPARSER_H
 
+#include <QString>
+#include <QByteArray>
+#include <QObject>
+
 #include "oxml_dll.h"
+
+class QXmlAttributes;
+class QIODevice;
 
 
 namespace onirXML {
@@ -64,42 +71,42 @@ class LIBOXML_API xmlParser : public QObject {
 
 
 
-		/*!\fn inline parserState State() const
+		/*!\fn inline parserState state() const
 		 * \brief Returns parser state.
 		 * \return Parser state
 		 * \sa parserState
 		 */
-		inline parserState State() const { return _state; };
+		inline parserState state() const { return _state; };
 
-		/*!\fn inline xmlElement * Root() const
+		/*!\fn inline xmlElement * root() const
 		 * \brief Returns root element.
 		 * \return Root element.
 		 */
-		inline xmlElement * Root() const { return _root; };
+		inline xmlElement * root() const { return _root; };
 
-		/*!\fn inline xmlElement * Detach()
+		/*!\fn inline xmlElement * detach()
 		 * \brief Detaches root element from parser.
 		 * \return Root element pointer.
 		 *
 		 * Detaching root element means, that XML tree will not be
 		 * deleted when parser is destroyed. After detaching root
 		 * element you should manually free XML tree. Only first call
-		 * to Detach() is valid. Any subsequent calls will return NULL,
+		 * to detach() is valid. Any subsequent calls will return NULL,
 		 * until next parsing proccess finished.
 		 */
-		inline xmlElement * Detach() { xmlElement * o = _root; _root = NULL; return o; };
+		inline xmlElement * detach() { xmlElement * o = _root; _root = NULL; return o; };
 
-		/*!\fn inline const string& Encoding() const
+		/*!\fn inline const QString& encoding() const
 		 * \brief Returns XML encoding.
 		 * \return Encoding.
 		 */
-		inline const string& Encoding() const { return _encoding; };
+		inline const QString& encoding() const { return _encoding; };
 		
-		/*!\fn inline void Encoding(const string& encoding)
+		/*!\fn inline void encoding(const QString& encoding)
 		 * \brief Sets XML encoding.
 		 * \param encoding Encoding.
 		 */
-		inline void Encoding(const string& encoding) { _encoding = encoding; };
+		inline void encoding(const QString& encoding) { _encoding = encoding; };
 
 		//@}	
 
@@ -107,18 +114,18 @@ class LIBOXML_API xmlParser : public QObject {
 		 */
 		//@{
 		
-		/*!\fn bool Prepare()
+		/*!\fn bool prepare()
 		 * \brief Prepares parser.
 		 * \return true if success.
 		 */
-		bool Prepare();
+		bool prepare();
 
-		/*!\fn void Cleanup()
+		/*!\fn void cleanup()
 		 * \brief Cleanups internal state, for parser re-use.
 		 */
-		void Cleanup();
+		void cleanup();
 
-		/*!\fn bool Parse(const string& xml)
+		/*!\fn bool parse(const QByteArray& xml)
 		 * \brief Parses input buffer.
 		 * \param xml Input data.
 		 * \return true if ok.
@@ -126,22 +133,19 @@ class LIBOXML_API xmlParser : public QObject {
 		 * You can call this method subsequently, providing more input data to
 		 * parser.
 		 */
-		bool Parse(const string& xml);
+		bool parse(const QByteArray& xml);
+		bool parse(const QString& xml);
 
-		/*!\overload bool Parse(const char * xml, size_t sz = 0)
-		 */
-		bool Parse(const char * xml, size_t sz = 0);
-
-		/*!\fn bool ParseFile(const string& f)
+		/*!\fn bool parseFile(const QString& f)
 		 * \brief Parses input file.
 		 * \param f File name.
 		 * \return true if ok.
 		 */
-		bool ParseFile(const string& fn);
+		bool parseFile(const QString& fn);
 		
-		/*!\overload bool ParseFile(wxFSFile * f)
+		/*!\overload bool parseFile(QIODevice * f)
 		 */
-		bool ParseFile(wxFSFile * f);
+		bool parseFile(QIODevice * f);
 		//@}
 		//
 
@@ -153,26 +157,26 @@ class LIBOXML_API xmlParser : public QObject {
 		 */
 		//@{
 		
-		/*!\fn void ParseStartTag(const char * el, const char ** attrs)
-		 * \brief Parse XML openning tag. Called internally by expat handler.
+		/*!\fn void parseStartTag(const QString& el, const QXmlAttributes& attrs)
+		 * \brief Parse XML openning tag. Called internally by XML parser..
 		 * \param el Element name.
 		 * \param attr Attributes list.
 		 */
-		bool ParseStartTag(const char * el, const char ** attrs);
+		bool parseStartTag(const QString& el, const QXmlAttributes& attrs);
 
-		/*!\fn void ParseEndTag(const char * el)
-		 * \brief Parse XML openning tag. Called internally by expat handler.
+		/*!\fn void parseEndTag(const QString& el)
+		 * \brief Parse XML openning tag. Called internally by XML parser.
 		 * \param el Element name.
 		 */
-		bool ParseEndTag(const char * el);
+		bool parseEndTag(const QString& el);
 		
-		/*!\fn void ParseCharacterData(const string& s)
+		/*!\fn void parseCharacterData(const QString& s)
 		 * \brief Parse element data.
 		 * \param s Element data.
 		 *
 		 * \attention This method may be called multiple times for the same element.
 		 */
-		bool ParseCharacterData(const string& s);
+		bool parseCharacterData(const QString& s);
 		//@}
 
 	private:
@@ -181,19 +185,12 @@ class LIBOXML_API xmlParser : public QObject {
 		xmlElement * _root;
 		xmlElement * _active;
 		
-		string _encoding;
+		QString _encoding;
 
 		struct __private;
 		struct __private * _private;
 
-		DECLARE_OOBJECT;
-
-		friend void _xml_p_start_tag(void * data, const char * el, const char ** attr);
-		friend void _xml_p_end_tag(void * data, const char * el);
-		friend void _xml_p_character_data(void * data, const char * s, int len);
-		friend void _xml_p_character_data(void * data, const wchar_t * s, int len);
-		friend void _xml_p_decl(void * data, const char * version, const char * encoding, int standalone);
-		friend void _xml_p_decl(void * data, const wchar_t * version, const wchar_t * encoding, int standalone);
+		friend class _xmlParserHandler;
 };
 
 };

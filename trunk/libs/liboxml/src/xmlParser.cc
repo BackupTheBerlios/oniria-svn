@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,72 +19,76 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <sstream>
-#include <fstream>
-#include <wx/filesys.h>
-#include <expat.h>
-#include "../utils/uBuffer.h"
+#include <QTextStream>
+#include <QByteArray>
+#include <QXmlDefaultHandler>
+#include <QXmlInputSource>
+#include <QXmlSimpleReader>
 #include "xmlAttribute.h"
 #include "xmlElement.h"
 #include "xmlParser.h"
 
-
-using namespace std;
-using onirUtils::uBuffer;
-
 namespace onirXML {
 
-DEFINE_OOBJECT(xmlParser, oObject);
 
-struct xmlParser::__private {
-	XML_Parser parser;
-};
-
-void XMLCALL _xml_p_start_tag(void * data, const char * el, const char ** attr)
-{
-	xmlParser * p = static_cast<xmlParser *>(data);
-	if (!p->ParseStartTag(el, attr))
-		XML_StopParser(p->_private->parser, FALSE);
-}
-
-void XMLCALL _xml_p_end_tag(void * data, const char * el)
-{
-	xmlParser * p = static_cast<xmlParser *>(data);
-	if (!p->ParseEndTag(el))
-		XML_StopParser(p->_private->parser, FALSE);
-}
-
-void XMLCALL _xml_p_character_data(void * data, const XML_Char * s, int len)
-{
-	xmlParser * p = static_cast<xmlParser *>(data);
-	if (!p->ParseCharacterData(string(s, len)))
-		XML_StopParser(p->_private->parser, FALSE);
-}
-
-void XMLCALL _xml_p_decl(void * data, const XML_Char * version, const XML_Char * encoding, int standalone)
+/*void XMLCALL _xml_p_decl(void * data, const XML_Char * version, const XML_Char * encoding, int standalone)
 {
 	xmlParser * p = static_cast<xmlParser *>(data);
 	if (encoding != NULL)
 		p->Encoding(encoding);
+}*/
+
+class _xmlParserHandler : public QXmlDefaultHandler {
+	public:
+		inline _xmlParserHandler(xmlParser * parser) { _parser = parser; };
+
+		virtual bool characters(const QString& ch);
+		virtual bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& atts);
+		virtual bool endElement(const QString& namespaceURI, const QString& localName, const QString& qName);
+
+	private:
+		xmlParser * _parser;
+};
+
+bool _xmlParserHandler::characters(const QString& ch)
+{
+	_parser->parseCharacterData(ch);
+	return true;
 }
+
+bool _xmlParserHandler::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attrs)
+{
+	_parser->parseStartTag(qName, attrs);
+	return true;
+}
+
+bool _xmlParserHandler::endElement(const QString& namespaceURI, const QString& localName, const QString& qName)
+{
+	_parser->parseEndTag(qName);
+	return true;
+}
+
+struct xmlParser::__private {
+	QXmlSimpleReader * reader;
+	QXmlInputSource * source;
+	_xmlParserHandler * handler;
+};
 
 xmlParser::xmlParser()
 {
-	INIT_OOBJECT;
-
 	_state = unknown;
 	_root = _active = NULL;
 	_private = NULL;
 
-	Prepare();
+	prepare();
 }
 
 xmlParser::~xmlParser()
 {
-	Cleanup();
+	cleanup();
 }
 
-void xmlParser::Cleanup()
+void xmlParser::cleanup()
 {
 	if (_root != NULL) {
 		delete _root;
@@ -93,82 +97,99 @@ void xmlParser::Cleanup()
 	_active = NULL;
 
 	if (_private != NULL) {
-		XML_ParserFree(_private->parser);
+		if (_private->reader != NULL) {
+			delete _private->reader;
+			_private->reader = NULL;
+		}
+		if (_private->handler != NULL) {
+			delete _private->handler;
+			_private->handler = NULL;
+		}
+		if (_private->source != NULL) {
+			delete _private->source;
+			_private->source = NULL;
+		}
 		delete _private;
 		_private = NULL;
 	}
-	
+
 	_state = unknown;
 }
 
-bool xmlParser::Prepare()
+bool xmlParser::prepare()
 {
-	Cleanup();
+	cleanup();
 
-	Encoding("UTF-8");	// set default encoding
+	encoding("UTF-8");	// set default encoding
 
 	_private = new __private;
-	_private->parser = XML_ParserCreate(NULL);
-	XML_SetUserData(_private->parser, this);
-	XML_SetElementHandler(_private->parser, _xml_p_start_tag, _xml_p_end_tag);
-	XML_SetCharacterDataHandler(_private->parser, _xml_p_character_data);
+	_private->handler = NULL;
+	_private->source = NULL;
+	_private->reader = NULL;
+	_private->source = new QXmlInputSource();
+	_private->handler = new _xmlParserHandler(this);
+	_private->reader = new QXmlSimpleReader();
+
+	_private->reader->setContentHandler(_private->handler);
 
 	_state = ready;
 
 	return true;
 }
 
-bool xmlParser::Parse(const char * xml, size_t sz)
+bool xmlParser::parse(const QByteArray& xml)
 {
-	if (sz == 0)
-		sz = strlen(xml);
+	QByteArray buf;
 
-	return XML_Parse(_private->parser, xml, sz, 0) == XML_STATUS_OK;
-}
-
-bool xmlParser::Parse(const string& xml)
-{
-	return Parse(xml.c_str(), xml.size());
-}
-
-
-bool xmlParser::ParseFile(const string& fn)
-{
-	wxFileSystem fs;
-	wxFSFile * f;
-	bool b;
-
-	f = fs.OpenFile(fn);
-	if (f == NULL)
-		return false;
-	b = ParseFile(f);
-	delete f;
-	return b;
-}
-
-bool xmlParser::ParseFile(wxFSFile * f)
-{
-	static char buf[8192];
-	
-	if (f == NULL)
+	if (state() != ready)
 		return false;
 
-	while (!f->GetStream()->Eof()) {
-		f->GetStream()->Read(buf, 8192);
-		if (!Parse(buf, f->GetStream()->LastRead()))
+	buf.append(_private->source->data());
+	buf.append(xml);
+	_private->source->setData(buf);
+	if (state() == ready)
+		return _private->reader->parse(_private->source, true);
+	else if (state() == parsing)
+		return _private->reader->parseContinue();
+	else
+		return false;
+}
+
+bool xmlParser::parse(const QString& xml)
+{
+	QByteArray buf;
+	buf.append(xml);
+	return parse(buf);
+}
+
+bool xmlParser::parseFile(const QString& fn)
+{
+	QFile f(fn);
+	if (!f.open(QIODevice::ReadOnly))
+		return false;
+	return parseFile(&f);
+}
+
+bool xmlParser::parseFile(QIODevice * f)
+{
+	if (f == NULL)
+		return false;
+
+	while (!f->atEnd()) {
+		if (!parse(f->readAll()))
 			return false;
 	}
 	return true;
 }
 
-bool xmlParser::ParseStartTag(const char * el, const char ** attrs)
+bool xmlParser::parseStartTag(const QString& el, const QXmlAttributes& attrs)
 {
 	xmlElement * elem;
 
-	if (State() != ready && State() != parsing)
+	if (state() != ready && state() != parsing)
 		return false;
 
-	if (State() == ready && _active == NULL) {
+	if (state() == ready && _active == NULL) {
 		_root = new xmlElement;
 		elem = _root;
 		_state = parsing;
@@ -176,27 +197,27 @@ bool xmlParser::ParseStartTag(const char * el, const char ** attrs)
 		elem = new xmlElement;
 	}
 
-	elem->Name(el);
-	elem->Encoding(Encoding());
-	for (int i = 0; attrs[i]; i += 2)
-		elem->AddAttribute(attrs[i], attrs[i+1]);
+	elem->name(el);
+	elem->encoding(encoding());
+	for (int i = 0; i < attrs.count(); i++)
+		elem->addAttribute(attrs.qName(i), attrs.value(i));
 
 	if (_active != NULL)
-		_active->AddChild(elem);
+		_active->addChild(elem);
 
 	_active = elem;
 
 	return true;
 }
 
-bool xmlParser::ParseEndTag(const char * el)
+bool xmlParser::parseEndTag(const QString& el)
 {
-	if (State() != parsing || _active == NULL)
+	if (state() != parsing || _active == NULL)
 		return false;
 
-	if (_active->Name() != el)	// something wrong with XML
+	if (_active->name() != el)	// something wrong with XML
 		return false;
-	_active = _active->Parent();
+	_active = _active->parent();
 
 	if (_active == NULL)
 		_state = finished;
@@ -204,14 +225,15 @@ bool xmlParser::ParseEndTag(const char * el)
 	return true;
 }
 
-bool xmlParser::ParseCharacterData(const string& s)
+bool xmlParser::parseCharacterData(const QString& s)
 {
-	if (State() != parsing || _active == NULL)
+	if (state() != parsing || _active == NULL)
 		return false;
 
-	_active->Value(_active->Value() + s);
+	_active->value(_active->value() + s);
 
 	return true;
 }
 
 };
+

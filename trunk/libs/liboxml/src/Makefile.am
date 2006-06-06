@@ -18,7 +18,8 @@ liboxml_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 liboxml_la_HEADERS_moc = xmlAttribute.h			\
 			 xmlElement.h			\
 			 xmlStanza.h			\
-			 xmlStream.h
+			 xmlStream.h			\
+			 xmlParser.h
 
 nobase_oxmlinclude_HEADERS = oxml.h				\
 			     oxml_dll.h				\
@@ -29,6 +30,7 @@ liboxml_la_SOURCES = xml.cc					\
 		     xmlElement.cc				\
 		     xmlStanza.cc				\
 		     xmlStream.cc				\
+		     xmlParser.cc				\
 		     $(liboxml_la_HEADERS_moc:.h=.moc.cc)
 
 CLEANFILES = *.moc.cc
