@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,14 +27,11 @@ class jRosterSubItem : public jRosterItem {
 		jRosterSubItem(jSession * session, jRosterItem * parent = NULL);
 		virtual ~jRosterSubItem();
 		
-		unsigned int Priority() const { return _priority; };
-		void Priority(unsigned int pri) { _priority = pri; };
+		unsigned int priority() const { return _priority; };
+		void priority(unsigned int pri) { _priority = pri; };
 
 	private:
 		unsigned int _priority;
-
-		DECLARE_OOBJECT;
-
 };
 
 #endif

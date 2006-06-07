@@ -22,15 +22,11 @@
 #include "jSession.h"
 #include "jRosterSubItem.h"
 
-DEFINE_OOBJECT(jRosterSubItem, jRosterItem);
-
 jRosterSubItem::jRosterSubItem(jSession * session, jRosterItem * parent)
 : jRosterItem(session, parent)
 {
-	INIT_OOBJECT;
-	
 	_priority = 0;
-	SkinRoot("roster:subitem");
+	skinRoot("roster:subitem");
 }
 
 jRosterSubItem::~jRosterSubItem()

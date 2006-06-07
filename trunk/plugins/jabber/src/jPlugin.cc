@@ -25,7 +25,12 @@
 jPlugin::jPlugin()
 : oPlugin()
 {
-	description()->addChild("name", "jabber");
+	descriptionField("name", "jabber");
+	descriptionField("description", "Jabber (XMPP) protocol.");
+	descriptionField("version", VERSION);
+	descriptionAuthorField("name", "Michal Wysoczanski");
+	descriptionAuthorField("email", "choman@foto-koszalin.pl");
+	descriptionAuthorField("www", "http://foto-koszalin.pl");
 }
 
 jPlugin::~jPlugin()

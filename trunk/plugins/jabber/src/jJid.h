@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,9 +19,7 @@
 #ifndef __JJID_H
 #define __JJID_H
 
-#include <string>
-
-using namespace std;
+#include <QString>
 
 /*!\class jJid
  * \brief Represents a JID
@@ -35,87 +33,88 @@ class jJid {
 		 */
 		jJid();
 
-		/*!\fn jJid(const string& full)
+		/*!\fn jJid(const QString& full)
 		 * \brief Constructor
 		 * \param full JID in form node@domain/resource
 		 */
-		jJid(const string& full);
+		jJid(const QString& full);
 
-		/*!\fn jJid(const string& node, const string& domain, const string& resource = "")
+		/*!\fn jJid(const QString& node, const QString& domain, const QString& resource = "")
 		 * \brief Constructor
 		 * \param node Node name
 		 * \param domain Domain
 		 * \param resource Resource
 		 */
-		jJid(const string& node, const string& domain, const string& resource = "");
+		jJid(const QString& node, const QString& domain, const QString& resource = "");
 
-		/*!\fn bool Set(const string& full)
+		/*!\fn bool set(const QString& full)
 		 * \brief Initialize jJid object
 		 * \param full JID in form node@domain/resource
 		 * \return JID in form node@domain/resource
 		 */
-		const string& Set(const string& full);
+		const QString& set(const QString& full);
 
-		/*!\fn bool Set(const string& bare, const string& resource)
+		/*!\fn bool set(const QString& bare, const QString& resource)
 		 * \brief Initialize jJid object
 		 * \param bare JID in bare form (node@domain).
 		 * \param resource Resource name.
 		 * \return JID in form node@domain/resource
 		 */
-		const string& Set(const string& bare, const string& resource);
+		const QString& set(const QString& bare, const QString& resource);
 
-		/*!\fn bool Set(const string& node, const string& domain, const string& resource)
+		/*!\fn bool set(const QString& node, const QString& domain, const QString& resource)
 		 * \brief Initialize jJid object.
 		 * \param node Node name
 		 * \param domain Domain
 		 * \param resource Resource
-		 * \return JID in form node@domain/resource or empty string if given arguments
+		 * \return JID in form node@domain/resource or empty QString if given arguments
 		 * are invalid.
 		 */
-		const string& Set(const string& node, const string& domain, const string& resource);
+		const QString& set(const QString& node, const QString& domain, const QString& resource);
 
-		/*!\fn const string& Jid() const
+		/*!\fn const QString& jid() const
 		 * \brief Returns JID in full form.
 		 * \return JID
 		 */
-		const string& Jid() const { return _full; };
+		const QString& jid() const { return _full; };
 
-		/*!\fn const string& Node() const
+		/*!\fn const QString& node() const
 		 * \brief Returns node name.
 		 * \return Node name
 		 */
-		const string& Node() const { return _node; };
+		const QString& node() const { return _node; };
 
-		/*!\fn const string& Domain() const
+		/*!\fn const QString& domain() const
 		 * \brief Returns domain.
 		 * \return Domain
 		 */
-		const string& Domain() const { return _domain; };
+		const QString& domain() const { return _domain; };
 
-		/*!\fn const string& Resource() const
+		/*!\fn const QString& resource() const
 		 * \brief Returns resource name.
 		 * \return Resource name
 		 */
-		const string& Resource() const { return _resource; };
+		const QString& resource() const { return _resource; };
 
-		/*!\fn const string& Bare() const
+		/*!\fn const QString& bare() const
 		 * \brief Returns JID in bare form (node@domain).
 		 * \return JID in bare form.
 		 */
-		const string& Bare() const { return _bare; };
+		const QString& bare() const { return _bare; };
 
-		/*!\fn bool Valid() const
+		/*!\fn bool valid() const
 		 * \brief Checks if JID is valid.
 		 * \return true if JID is valid
 		 */
-		bool Valid() const;
+		bool valid() const;
 		
 	private:
-		string _full;
-		string _node;
-		string _domain;
-		string _resource;
-		string _bare;
+		QString _full;
+		QString _node;
+		QString _domain;
+		QString _resource;
+		QString _bare;
 };
 
 #endif
+

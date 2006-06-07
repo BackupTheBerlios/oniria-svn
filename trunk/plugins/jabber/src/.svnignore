@@ -2,3 +2,5 @@ Makefile.in
 .libs
 .deps
 Makefile
+*.loT
+*.moc.cc

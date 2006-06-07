@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +19,10 @@
 #ifndef __JMESSAGEQUEUE_H
 #define __JMESSAGEQUEUE_H
 
-#include <onir/im/imMessageQueue.h>
-#include <onir/im/imMessageThread.h>
+#include <QString>
+#include <oim/imMessageQueue.h>
+#include <oim/imMessageThread.h>
 
-using namespace std;
 using onirIM::imMessageQueue;
 using onirIM::imMessageThread;
 class jSession;
@@ -33,11 +33,8 @@ class jMessageQueue : public imMessageQueue {
 		jMessageQueue(jSession * session);
 		virtual ~jMessageQueue();
 
-		virtual imMessageThread * GetThread(const string& type, const string& roster_id, const string& id = "");
+		virtual imMessageThread * getThread(const QString& type, const QString& roster_id, const QString& id = "");
 	private:
-
-		DECLARE_OOBJECT;
-
 };
 
 #endif

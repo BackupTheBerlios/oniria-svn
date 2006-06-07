@@ -22,38 +22,35 @@
 #include "jSession.h"
 #include "jProtocol.h"
 
-DEFINE_OOBJECT(jProtocol, imProtocol);
-
 jProtocol::jProtocol()
 {
-	INIT_OOBJECT;
 }
 
 jProtocol::~jProtocol()
 {
 }
 
-string jProtocol::ProtocolId() const
+QString jProtocol::protocolId() const
 {
 	return "jabber";
 }
 
-string jProtocol::ProtocolName() const
+QString jProtocol::protocolName() const
 {
 	return "Jabber";
 }
 
-string jProtocol::ProtocolDescription() const
+QString jProtocol::protocolDescription() const
 {
 	return "Jabber protocol";
 }
 
-string jProtocol::ProtocolVersion() const
+QString jProtocol::protocolVersion() const
 {
 	return "1.0";
 }
 
-imSession * jProtocol::CreateSession(oOniria * o)
+imSession * jProtocol::createSession(oOniria * o)
 {
 	jSession * p;
 	p = new jSession(o, this);

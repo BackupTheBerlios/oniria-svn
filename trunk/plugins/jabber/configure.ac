@@ -26,6 +26,7 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PATH_PROG(QTMOC, moc)
 
 dnl Checks for header files.
 dnl AC_CHECK_HEADERS([stdio.h stdlib.h stdint.h errno.h string.h strings.h assert.h \
@@ -51,7 +52,7 @@ dnl	       [AC_ERROR([cannot find one of required functions..
 dnl	          your system is a bit strange.])])
 
 PKG_CHECK_MODULES(QT, [QtCore >= 4.0.1 QtXml >= 4.0.1])
-PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0])
+PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0 liboim >= 0.1.0 liboxml >= 0.1.0 libosasl >= 0.1.0])
 AM_PATH_ONIRIA
 
 AC_OUTPUT

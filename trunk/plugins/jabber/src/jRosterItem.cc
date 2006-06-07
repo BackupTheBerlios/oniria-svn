@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,26 +24,21 @@
 #include "jRosterItem.h"
 #include "jRosterSubItem.h"
 
-using namespace std;
-
-DEFINE_OOBJECT(jRosterItem, imRosterItem);
-
 jRosterItem::jRosterItem(jSession * session, jRosterItem * parent)
 : imRosterItem(session, parent)
 {
-	INIT_OOBJECT;
 }
 
 jRosterItem::~jRosterItem()
 {
 }
 
-bool jRosterItem::FixedOrder(vector<string>& olist)
+bool jRosterItem::fixedOrder(QVector<QString>& olist)
 {
-	multimap<unsigned int, string> order;
-	for (map<string, imRosterItem *>::iterator it = SubItems()->begin(); it != SubItems()->end(); it++)
-		order.insert(make_pair(static_cast<jRosterSubItem *>(it->second)->Priority(), it->second->Id()));
-	for (multimap<unsigned int, string>::reverse_iterator it = order.rbegin(); it != order.rend(); it++)
-		olist.push_back(it->second);
+	QMultiMap<unsigned int, QString> order;
+	for (QMap<QString, imRosterItem *>::iterator it = subItems()->begin(); it != subItems()->end(); it++)
+		order.insert(static_cast<jRosterSubItem *>(it.value())->priority(), it.value()->id());
+	for (QMultiMap<unsigned int, QString>::iterator it = order.begin(); it != order.end(); it++)
+		olist.push_front(it.value());
 	return true;
 }

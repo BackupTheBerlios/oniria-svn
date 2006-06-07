@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +19,9 @@
 #ifndef __JROSTERITEM_H
 #define __JROSTERITEM_H
 
-#include <onir/im/imRosterItem.h>
+#include <oim/imRosterItem.h>
 #include "jJid.h"
 
-using namespace std;
 using onirIM::imRosterItem;
 class jSession;
 
@@ -32,25 +31,23 @@ class jRosterItem : public imRosterItem {
 		jRosterItem(jSession * session, jRosterItem * parent = NULL);
 		virtual ~jRosterItem();
 
-		const jJid& Jid() const { return _jid; };
-		void Jid(const jJid& jid) { _jid = jid; };
+		const jJid& jid() const { return _jid; };
+		void jid(const jJid& jid) { _jid = jid; };
 		
-		virtual bool FixedOrder(vector<string>& olist);
+		virtual bool fixedOrder(QVector<QString>& olist);
 		
-		inline void SoftwareName(const string& s) { _soft_name = s; };
-		inline void SoftwareVersion(const string& s) { _soft_version = s; };
-		inline void OS(const string& s) { _os = s; };
+		// JEP-0092 stuff (version info)
+		inline void softwareName(const QString& s) { _soft_name = s; };
+		inline void softwareVersion(const QString& s) { _soft_version = s; };
+		inline void OS(const QString& s) { _os = s; };
 
 	private:
 		jJid _jid;
 		
 		// JEP-0092 stuff (version info)
-		string _soft_name;
-		string _soft_version;
-		string _os;
-
-		DECLARE_OOBJECT;
-
+		QString _soft_name;
+		QString _soft_version;
+		QString _os;
 };
 
 #endif

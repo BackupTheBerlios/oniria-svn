@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,16 +19,10 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <map>
 #include "jPeer.h"
-
-using namespace std;
-
-DEFINE_OOBJECT(jPeer, imPeer);
 
 jPeer::jPeer()
 {
-	INIT_OOBJECT;
 }
 
 jPeer::~jPeer()

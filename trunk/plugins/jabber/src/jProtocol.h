@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,10 @@
 #ifndef __JPROTOCOL_H
 #define __JPROTOCOL_H
 
-#include <onir/im/imProtocol.h>
-#include <onir/im/imSession.h>
+#include <oim/imProtocol.h>
+#include <oim/imSession.h>
 #include <onir/oOniria.h>
 
-using namespace std;
 using onirIM::imProtocol;
 using onirIM::imSession;
 using onir::oOniria;
@@ -34,14 +33,13 @@ class jProtocol : public imProtocol {
 		jProtocol();
 		virtual ~jProtocol();
 
-		virtual string ProtocolId() const;
-		virtual string ProtocolName() const;
-		virtual string ProtocolDescription() const;
-		virtual string ProtocolVersion() const;
+		virtual QString protocolId() const;
+		virtual QString protocolName() const;
+		virtual QString protocolDescription() const;
+		virtual QString protocolVersion() const;
 
-		virtual imSession * CreateSession(oOniria * o);
+		virtual imSession * createSession(oOniria * o);
 
-		DECLARE_OOBJECT;
 };
 
 #endif

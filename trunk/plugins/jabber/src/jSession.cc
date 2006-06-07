@@ -19,28 +19,24 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <set>
-#include <wx/socket.h>
+#include <QTcpSocket>
 #include <onir/onir.h>
 #include <onir/oOniria.h>
 #include <onir/oConfig.h>
 #include <onir/oEvent.h>
 #include <onir/oEventQueue.h>
-#include <onir/io/ioSocketStream.h>
-#include <onir/xml/xmlAttribute.h>
-#include <onir/xml/xmlElement.h>
-#include <onir/xml/xmlStanza.h>
-#include <onir/xml/xmlStream.h>
-#include <onir/utils/uBuffer.h>
-#include <onir/utils/uBase64.h>
-#include <onir/utils/dconv.h>
-#include <onir/sasl/saslSASL.h>
-#include <onir/sasl/saslMechanism.h>
-#include <onir/im/imRoster.h>
-#include <onir/im/imRosterGroup.h>
-#include <onir/im/imMessageQueue.h>
-#include <onir/im/imMessageThread.h>
-#include <onir/im/imMessage.h>
+#include <oxml/xmlAttribute.h>
+#include <oxml/xmlElement.h>
+#include <oxml/xmlStanza.h>
+#include <oxml/xmlStream.h>
+#include <ocrypt/cptBase64.h>
+#include <osasl/saslSASL.h>
+#include <osasl/saslMechanism.h>
+#include <oim/imRoster.h>
+#include <oim/imRosterGroup.h>
+#include <oim/imMessageQueue.h>
+#include <oim/imMessageThread.h>
+#include <oim/imMessage.h>
 #include "jPeer.h"
 #include "jRoster.h"
 #include "jRosterItem.h"
@@ -50,335 +46,325 @@
 
 using onirXML::xmlStanza;
 using onirXML::xmlElement;
-using onirUtils::uBase64;
-using onirUtils::uBuffer;
-using onirUtils::ToUInt;
+using onirCrypt::cptBase64;
 using onir::oEvent;
 using namespace onirIM;
 
-DEFINE_OOBJECT(jSession, imSession);
-
 jSession::jSession(oOniria * o, imProtocol * proto)
-	: imSession(o, proto)
+	: imSession(proto)
 {
-	INIT_OOBJECT;
-
 	_xml = NULL;
-	_socket = NULL;
-	_iostream = NULL;
 	_state = unknown;
 	_sasl = NULL;
 	_force_no_sasl = false;
 	_feat_sess = false;
 	_feat_bind = false;
 	_roster = NULL;
+	_oniria = o;
+	_socket = NULL;
 }
 
 jSession::~jSession()
 {
 }
 
-bool jSession::Load(xmlElement *cnode)
+bool jSession::load(xmlElement *cnode)
 {
-	string jid, resource;
+	QString jid, resource;
 
-	if (!imSession::Load(cnode))
+	if (!imSession::load(cnode))
 		return false;
 
-	jid = Oniria()->Config()->Value(cnode, "jid", "");
-	resource = Oniria()->Config()->Value(cnode, "resource", "Oniria");
-	_priority = Oniria()->Config()->Value(cnode, "priority", 15);
-	_jid.Set(jid, resource);
-	if (!_jid.Valid())
+	jid = oniria()->config()->value(cnode, "jid", "");
+	resource = oniria()->config()->value(cnode, "resource", "Oniria");
+	_priority = oniria()->config()->value(cnode, "priority", 15);
+	_jid.set(jid, resource);
+	if (!_jid.valid())
 		return false;
 
-	_password = Oniria()->Config()->Value(cnode, "password", "");
-	_force_no_sasl = (Oniria()->Config()->NodeAt(cnode, "force-no-sasl") != NULL);
+	_password = oniria()->config()->value(cnode, "password", "");
+	_force_no_sasl = (oniria()->config()->nodeAt(cnode, "force-no-sasl") != NULL);
 
 
 	return true;
 }
 
-bool jSession::Connect(bool ac)
+bool jSession::connect(bool ac)
 {
-	wxIPV4address addr;
+	//wxIPV4address addr;
 
 	_roster = new jRoster(this);
 
-	_socket = new wxSocketClient;
-	addr.Hostname(_jid.Domain());
-	addr.Service(5222);
-	_socket->SetNotify(0);
-	_socket->Notify(false);
-	_socket->Connect(addr, false);
+	_socket = new QTcpSocket;
+	QObject::connect(_socket, SIGNAL(connected()), SLOT(connected()));
+	_socket->connectToHost(_jid.domain(), 5222);	// TODO: resolve host using dns SRV records
 	_state = connecting;
 
 	return true;
 }
 
-bool jSession::Poll()
+void jSession::connected()
+{
+	_xml = new xmlStream(_socket, _socket);
+	QObject::connect(_xml, SIGNAL(receivedStanza(xmlStanza *)), SLOT(receivedStanza(xmlStanza *)));
+	_xml->prepare();
+	_xml->outRoot()->name("stream:stream");
+	_xml->outRoot()->addAttribute("to", _jid.domain());
+	_xml->outRoot()->addAttribute("xmlns", "jabber:client");
+	_xml->outRoot()->addAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
+	_xml->outRoot()->addAttribute("version", "1.0");
+	_xml->initiate();
+}
+
+void jSession::receivedStanza(xmlStanza * stanza)
+{
+	if (_state == authenticating) {
+		doSASLAuth(stanza);
+	} else if (stanza->element()->name() == "stream:features") {
+		parseFeatures(stanza);
+	} else if (stanza->element()->name() == "iq") {
+		parseIQ(stanza);
+	} else if (stanza->element()->name() == "presence") {
+		parsePresence(stanza);
+	} else if (stanza->element()->name() == "message") {
+		parseMessage(stanza);
+	}
+	delete stanza;
+}
+
+bool jSession::poll()
 {
 	if (_socket != NULL && _xml == NULL) {	// we are establishing connection
-	
-	        _socket->WaitOnConnect(0, 0);
-		if (_socket->IsConnected()) {
 
-			// create and setup I/O stream
-			_iostream = new ioSocketStream;
-			_iostream->Socket(_socket);
-			_iostream->NonBlocking();
-			
-			// create and setup XML stream
-			_xml = new xmlStream(_iostream, _iostream);
-			_xml->Prepare();
-			_xml->OutRoot()->Name("stream:stream");
-			_xml->OutRoot()->AddAttribute("to", _jid.Domain());
-			_xml->OutRoot()->AddAttribute("xmlns", "jabber:client");
-			_xml->OutRoot()->AddAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
-			_xml->OutRoot()->AddAttribute("version", "1.0");
-			_xml->Initiate();
+		_socket->waitForConnected(0);
 
-		}
 	} else if (_xml != NULL) {
-		xmlStanza * stanza;
-	
-		_xml->Poll();
 
-		while ((stanza = _xml->NextStanza())) {
+		_xml->poll();
+
+/*		while ((stanza = _xml->nextStanza())) {
 			bool ret = true;
-			wxLogVerbose("jSession: Received stanza: %s", stanza->Format().c_str());
+			//wxLogVerbose("jSession: Received stanza: %s", stanza->Format().c_str());
 
-			if (_state == authenticating) {
-				ret = DoSASLAuth(stanza);
-			} else if (stanza->Element()->Name() == "stream:features") {
-				ret = ParseFeatures(stanza);
-			} else if (stanza->Element()->Name() == "iq") {
-				ret = ParseIQ(stanza);
-			} else if (stanza->Element()->Name() == "presence") {
-				ret = ParsePresence(stanza);
-			} else if (stanza->Element()->Name() == "message") {
-				ret = ParseMessage(stanza);
-			}
-			delete stanza;
 			return ret;
-		}
+		}*/
 	}
 	return true;
 }
 
-imMessageQueue * jSession::CreateMessageQueue()
+imMessageQueue * jSession::createMessageQueue()
 {
 	return new jMessageQueue(this);
 }
 
-bool jSession::SetStatus()
+bool jSession::setStatus()
 {
-	string status, type;
+	QString st, type;
 
 	type = "";
-	switch (Status().Status()) {
+	switch (status().status()) {
 		case imStatus::chat:
-			status = "chat";
+			st = "chat";
 			break;
 		case imStatus::avail:
-			status = "avail";
+			st = "avail";
 			break;
 		case imStatus::away:
-			status = "away";
+			st = "away";
 			break;
 		case imStatus::xa:
-			status = "xa";
+			st = "xa";
 			break;
 		case imStatus::dnd:
-			status = "dnd";
+			st = "dnd";
 			break;
 		case imStatus::inv:
-			status = "";
+			st = "";
 			type = "unavailable";
 			break;
 		default:
 			return false;
 	}
 
-	return Presence(status, Status().Description(), type);
+	return presence(st, status().description(), type);
 }
 
-imRoster * jSession::Roster()
+imRoster * jSession::roster()
 {
 	return _roster;
 }
 
-bool jSession::SyncRoster(bool send)
+bool jSession::syncRoster(bool send)
 {
 	if (!send) {
 		xmlStanza * p;
 		
-		p = IQQuery("jabber:iq:private", "get", "roster_delim_1");
-		p->Element()->Child("query")->AddChild("roster", "");
-		p->Element()->Child("query")->Child("roster")->AddAttribute("xmlns", "roster:delimiter");
-		_xml->AddStanza(p);
+		p = iqQuery("jabber:iq:private", "get", "roster_delim_1");
+		p->element()->child("query")->addChild("roster", "");
+		p->element()->child("query")->child("roster")->addAttribute("xmlns", "roster:delimiter");
+		_xml->addStanza(p);
 
-		p = IQQuery("jabber:iq:roster", "get", "roster_1", "", _jid.Jid());
-		_xml->AddStanza(p);
+		p = iqQuery("jabber:iq:roster", "get", "roster_1", "", _jid.jid());
+		_xml->addStanza(p);
 	}
 
 	return true;
 }
 
-imMessageThread * jSession::GetMessageThread(const string& type, const jJid& jid, const string& id)
+imMessageThread * jSession::getMessageThread(const QString& type, const jJid& jid, const QString& id)
 {
 	jPeer * peer;
 	jPeer * lpeer;
 	jRosterItem * ri;
 	imMessageThread * thr;
-	string thid;
+	QString thid;
 
-	if (id.empty())
-		thid = jid.Jid();
+	if (id.isEmpty())
+		thid = jid.jid();
 	else
 		thid = id;
 
-	thr = MessageQueue()->FindThread(thid);
+	thr = messageQueue()->findThread(thid);
 	if (thr == NULL) {
 
 		thr = new imMessageThread(this);
 		
 		peer = new jPeer;
-		peer->Jid(jid);
-		peer->Name(jid.Jid());
-		ri = static_cast<jRosterItem *>(Roster()->Item(string("jid:") + jid.Bare(), true));
+		peer->jid(jid);
+		peer->name(jid.jid());
+		ri = static_cast<jRosterItem *>(roster()->item(QString("jid:") + jid.bare(), true));
 		if (ri == NULL)
-			ri = static_cast<jRosterItem *>(Roster()->Item(string("jid:") + jid.Jid(), true));
+			ri = static_cast<jRosterItem *>(roster()->item(QString("jid:") + jid.jid(), true));
 		if (ri != NULL)
-			peer->Name(ri->Name());
+			peer->name(ri->name());
 	
-		thr->AddPeer(peer);
-		thr->Id(thid);
+		thr->addPeer(peer);
+		thr->id(thid);
 				
 		lpeer = new jPeer;
-		lpeer->Jid(_jid);
-		lpeer->Name(_jid.Node());
-		thr->LocalPeer(lpeer);
-		MessageQueue()->AddThread(thr);
+		lpeer->jid(_jid);
+		lpeer->name(_jid.node());
+		thr->localPeer(lpeer);
+		messageQueue()->addThread(thr);
 
 	}
 	
 	return thr;
 }
 
-bool jSession::SendMessage(imMessage * msg)
+bool jSession::sendMessage(imMessage * msg)
 {
-	for (list<imPeer *>::iterator it = msg->Thread()->Peers()->begin(); it != msg->Thread()->Peers()->end(); it++) {
+	for (QList<imPeer *>::iterator it = msg->thread()->peers()->begin(); it != msg->thread()->peers()->end(); it++) {
 		xmlStanza * stanza;
 
 		stanza = new xmlStanza;
-		stanza->Element()->Name("message");
-		stanza->Element()->AddAttribute("type", "chat"); // TODO: support for other message types
-		stanza->Element()->AddAttribute("from", _jid.Jid());
-		stanza->Element()->AddAttribute("to", static_cast<jPeer *>(*it)->Jid().Jid());
-		if (!msg->Subject().empty())
-			stanza->Element()->AddChild("subject", msg->Subject());
-		stanza->Element()->AddChild("body", msg->Body());
-		stanza->Element()->AddChild("thread", msg->Thread()->Id());
-		_xml->AddStanza(stanza);
+		stanza->element()->name("message");
+		stanza->element()->addAttribute("type", "chat"); // TODO: support for other message types
+		stanza->element()->addAttribute("from", _jid.jid());
+		stanza->element()->addAttribute("to", static_cast<jPeer *>(*it)->jid().jid());
+		if (!msg->subject().isEmpty())
+			stanza->element()->addChild("subject", msg->subject());
+		stanza->element()->addChild("body", msg->body());
+		stanza->element()->addChild("thread", msg->thread()->id());
+		_xml->addStanza(stanza);
 	}
 	
 	return true;
 }
 
-imStatus jSession::PresenceToStatus(xmlStanza * stanza)
+imStatus jSession::presenceToStatus(xmlStanza * stanza)
 {
 	imStatus st;
-	imStatus::status status;
+	imStatus::contactStatus e_st;
 
-	if (stanza->Element()->AttributeValue("type") == "unavailable") {
-		status = imStatus::na;
+	if (stanza->element()->attributeValue("type") == "unavailable") {
+		e_st = imStatus::na;
 	} else {
 		xmlElement * show;
 		
-		status = imStatus::avail;
-		show = stanza->Element()->Child("show");
+		e_st = imStatus::avail;
+		show = stanza->element()->child("show");
 		if (show != NULL) {
-			if (show->Value() == "away")
-				status = imStatus::away;
-			else if (show->Value() == "xa")
-				status = imStatus::xa;
-			else if (show->Value() == "dnd")
-				status = imStatus::dnd;
-			else if (show->Value() == "chat")
-				status = imStatus::chat;
+			if (show->value() == "away")
+				e_st = imStatus::away;
+			else if (show->value() == "xa")
+				e_st = imStatus::xa;
+			else if (show->value() == "dnd")
+				e_st = imStatus::dnd;
+			else if (show->value() == "chat")
+				e_st = imStatus::chat;
 		}
 	}
 	
-	st.Set(status, stanza->Element()->ChildValue("status"));
+	st.set(e_st, stanza->element()->childValue("status"));
 	
 	return st;
 }
 
-bool jSession::Presence(const string& status, const string& desc, const string& type, const string& to)
+bool jSession::presence(const QString& status, const QString& desc, const QString& type, const QString& to)
 {
 	xmlStanza * stanza;
 
 	stanza = new xmlStanza;
-	stanza->Element()->Name("presence");
-	if (!type.empty())
-		stanza->Element()->AddAttribute("type", type);
-	if (!to.empty())
-		stanza->Element()->AddAttribute("to", to);
-	if (!status.empty())
-		stanza->Element()->AddChild("show", status);
-	if (!desc.empty())
-		stanza->Element()->AddChild("status", desc);
-	stanza->Element()->AddChild("priority", _priority);
+	stanza->element()->name("presence");
+	if (!type.isEmpty())
+		stanza->element()->addAttribute("type", type);
+	if (!to.isEmpty())
+		stanza->element()->addAttribute("to", to);
+	if (!status.isEmpty())
+		stanza->element()->addChild("show", status);
+	if (!desc.isEmpty())
+		stanza->element()->addChild("status", desc);
+	stanza->element()->addChild("priority", _priority);
 
-	_xml->AddStanza(stanza);
+	_xml->addStanza(stanza);
 
 	return true;
 }
 
-xmlStanza * jSession::IQ(const string& type, const string& id, const string& to, const string& from)
+xmlStanza * jSession::iq(const QString& type, const QString& id, const QString& to, const QString& from)
 {
 	xmlStanza * p;
 
 	p = new xmlStanza;
-	p->Element()->Name("iq");
-	p->Element()->AddAttribute("type", type);
-	p->Element()->AddAttribute("id", id);
-	if (!from.empty())
-		p->Element()->AddAttribute("from", from);
-	if (!to.empty())
-		p->Element()->AddAttribute("to", to);
+	p->element()->name("iq");
+	p->element()->addAttribute("type", type);
+	p->element()->addAttribute("id", id);
+	if (!from.isEmpty())
+		p->element()->addAttribute("from", from);
+	if (!to.isEmpty())
+		p->element()->addAttribute("to", to);
 
 	return p;
 }
 
-xmlElement * jSession::Query(const string& xmlns)
+xmlElement * jSession::query(const QString& xmlns)
 {
 	xmlElement * p;
 	p = new xmlElement;
-	p->Name("query");
-	p->AddAttribute("xmlns", xmlns);
+	p->name("query");
+	p->addAttribute("xmlns", xmlns);
 	return p;
 }
 
-xmlStanza * jSession::IQQuery(const string& xmlns, const string& type, const string& id, const string& to, const string& from)
+xmlStanza * jSession::iqQuery(const QString& xmlns, const QString& type, const QString& id, const QString& to, const QString& from)
 {
 	xmlStanza * p;
 
-	p = IQ(type, id, to, from);
-	p->Element()->AddChild(Query(xmlns));
+	p = iq(type, id, to, from);
+	p->element()->addChild(query(xmlns));
 	return p;
 }
 
-oEvent * jSession::Event(const string& id)
+oEvent * jSession::event(const QString& id)
 {
 	oEvent * event;
 	event = new oEvent(id);
-	event->XML()->AddChild("session-id", SessionId());
+	event->xml()->addChild("session-id", sessionId());
 	return event;
 }
 
-bool jSession::SASLAuth(const list<string>& mechs)
+bool jSession::SASLAuth(const QList<QString>& mechs)
 {
 	xmlStanza * stanza;
 
@@ -386,74 +372,74 @@ bool jSession::SASLAuth(const list<string>& mechs)
 		delete _sasl;
 
 	_sasl = new saslSASL;
-	if (_sasl->ChooseMechanism(mechs) == NULL) {
-		wxLogError("jSession: No supported SASL mechanisms found.");
+	if (_sasl->chooseMechanism(mechs) == NULL) {
+		//wxLogError("jSession: No supported SASL mechanisms found.");
 		return false;
 	}
-	wxLogVerbose("jSession: Using %s SASL mechanism.", _sasl->Mechanism()->Name().c_str());
+	//wxLogVerbose("jSession: Using %s SASL mechanism.", _sasl->Mechanism()->Name().c_str());
 
-	_sasl->Mechanism()->AddProperty("username", _jid.Node());
-	_sasl->Mechanism()->AddProperty("passwd", _password);
-	_sasl->Mechanism()->AddProperty("host", _jid.Domain());
-	_sasl->Mechanism()->AddProperty("serv-type", "xmpp");
+	_sasl->mechanism()->addProperty("username", _jid.node());
+	_sasl->mechanism()->addProperty("passwd", _password);
+	_sasl->mechanism()->addProperty("host", _jid.domain());
+	_sasl->mechanism()->addProperty("serv-type", "xmpp");
 	
 	stanza = new xmlStanza;
-	stanza->Element()->Name("auth");
-	stanza->Element()->AddAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
-	stanza->Element()->AddAttribute("mechanism", _sasl->Mechanism()->Name());
-	_xml->AddStanza(stanza);
+	stanza->element()->name("auth");
+	stanza->element()->addAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
+	stanza->element()->addAttribute("mechanism", _sasl->mechanism()->name());
+	_xml->addStanza(stanza);
 
 	_state = authenticating;
 
 	return true;
 }
 
-bool jSession::DoSASLAuth(xmlStanza * stanza)
+bool jSession::doSASLAuth(xmlStanza * stanza)
 {
-	if (stanza->Element()->AttributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-sasl") {
-		if (stanza->Element()->Name() == "challenge") {
-			uBuffer challenge, response;
+	if (stanza->element()->attributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-sasl") {
+		if (stanza->element()->name() == "challenge") {
+			QByteArray challenge, response;
 
-			uBase64::Decode(&challenge, stanza->Element()->Value());
-			wxLogVerbose("jSession: SASL challenge: %s", challenge.str().c_str());
-			if (!_sasl->Mechanism()->Response(&challenge, &response))
+			cptBase64::decode(&challenge, stanza->element()->value());
+			//wxLogVerbose("jSession: SASL challenge: %s", challenge.str().c_str());
+			if (!_sasl->mechanism()->response(&challenge, &response))
 				return false;
-			wxLogVerbose("jSession: SASL response: %s", response.str().c_str());
+			//wxLogVerbose("jSession: SASL response: %s", response.str().c_str());
 
 			stanza = new xmlStanza;
-			stanza->Element()->Name("response");
-			stanza->Element()->AddAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
-			stanza->Element()->Value(uBase64::Encode(&response));
-			_xml->AddStanza(stanza);
+			stanza->element()->name("response");
+			stanza->element()->addAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-sasl");
+			stanza->element()->value(cptBase64::encode(&response));
+			_xml->addStanza(stanza);
 
 			return true;
-		} else if (stanza->Element()->Name() == "success") {
+		} else if (stanza->element()->name() == "success") {
 
-			wxLogMessage("jSession: Authenticated.");
+			//wxLogMessage("jSession: Authenticated.");
 
 			// destroy current and create new stream
 			delete _xml;
-			_xml = new xmlStream(_iostream, _iostream);
-			_xml->Prepare();
-			_xml->OutRoot()->Name("stream:stream");
-			_xml->OutRoot()->AddAttribute("to", _jid.Domain());
-			_xml->OutRoot()->AddAttribute("xmlns", "jabber:client");
-			_xml->OutRoot()->AddAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
-			_xml->OutRoot()->AddAttribute("version", "1.0");
-			_xml->Initiate();
+			_xml = new xmlStream(/*_iostream, _iostream*/);				// XXX
+			_xml->prepare();
+			_xml->outRoot()->name("stream:stream");
+			_xml->outRoot()->addAttribute("to", _jid.domain());
+			_xml->outRoot()->addAttribute("xmlns", "jabber:client");
+			_xml->outRoot()->addAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
+			_xml->outRoot()->addAttribute("version", "1.0");
+			_xml->initiate();
 
 			_state = authenticated;
 
 			return true;
 
-		} else if (stanza->Element()->Name() == "failure") {
-			multimap<string, xmlElement *> children;
-			string auth_err = "unknown";
+		} else if (stanza->element()->name() == "failure") {
+			QMultiMap<QString, xmlElement *> children;
+			QString auth_err = "unknown";
 			
-			stanza->Element()->Children(children);
+			stanza->element()->children(children);
 			if (!children.empty())
-				auth_err = children.begin()->second->Name();
-			wxLogError("jSession: Authentication failed: %s", auth_err.c_str());
+				auth_err = children.begin().value()->name();
+			//wxLogError("jSession: Authentication failed: %s", auth_err.c_str());
 
 			// TODO: allow authentication retries
 			_state = closed;
@@ -464,70 +450,70 @@ bool jSession::DoSASLAuth(xmlStanza * stanza)
 	return true;
 }
 
-bool jSession::BindResource()
+bool jSession::bindResource()
 {
-	xmlStanza * iq;
+	xmlStanza * iqs;
 	xmlElement * bind;
 
 	if (!_feat_bind)
 		return false;
 
-	iq = IQ("set", "bind_1");
+	iqs = iq("set", "bind_1");
 	bind = new xmlElement("bind");
-	bind->AddAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
-	bind->AddChild("resource", _jid.Resource());
-	iq->Element()->AddChild(bind);
-	_xml->AddStanza(iq);
+	bind->addAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
+	bind->addChild("resource", _jid.resource());
+	iqs->element()->addChild(bind);
+	_xml->addStanza(iqs);
 
 	_state = binding;
 
 	return true;
 }
 
-bool jSession::EstablishSession()
+bool jSession::establishSession()
 {
-	xmlStanza * iq;
+	xmlStanza * iqs;
 	xmlElement * session;
 
 	if (!_feat_sess)
 		return false;
 
-	iq = IQ("set", "sess_1", _jid.Domain());
+	iqs = iq("set", "sess_1", _jid.domain());
 	session = new xmlElement("session");
-	session->AddAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-session");
-	iq->Element()->AddChild(session);
-	_xml->AddStanza(iq);
+	session->addAttribute("xmlns", "urn:ietf:params:xml:ns:xmpp-session");
+	iqs->element()->addChild(session);
+	_xml->addStanza(iqs);
 
 	_state = establishing;
 
 	return true;
 }
 
-bool jSession::ParseFeatures(xmlStanza * stanza)
+bool jSession::parseFeatures(xmlStanza * stanza)
 {
 
 	if (_state == connecting) {
 		xmlElement * e_mechs;
-		list<xmlElement *> l_mechs;
-		list<string> mechs;
+		QList<xmlElement *> l_mechs;
+		QList<QString> mechs;
 
 		while (!_force_no_sasl) {
-			e_mechs = stanza->Element()->Child("mechanisms");
+			e_mechs = stanza->element()->child("mechanisms");
 			if (e_mechs == NULL) {
 				// no <mechanisms> tag, give up
 				break;
 			}
-			if (e_mechs->AttributeValue("xmlns") != "urn:ietf:params:xml:ns:xmpp-sasl") {
+			if (e_mechs->attributeValue("xmlns") != "urn:ietf:params:xml:ns:xmpp-sasl") {
 				// <mechanisms> ok, but from different namespace
 				break;
 			}
-			e_mechs->Children("mechanism", l_mechs);
+			e_mechs->children("mechanism", l_mechs);
 
-			for (list<xmlElement *>::iterator it = l_mechs.begin(); it != l_mechs.end(); it++)
-				mechs.push_back((*it)->Value());
+			for (QList<xmlElement *>::iterator it = l_mechs.begin(); it != l_mechs.end(); it++)
+				mechs.push_back((*it)->value());
 
-			for (list<string>::iterator it = mechs.begin(); it != mechs.end(); it++)
-				wxLogVerbose("jSession: SASL mechanism: %s", it->c_str());
+			//for (list<QString>::iterator it = mechs.begin(); it != mechs.end(); it++)
+			//	wxLogVerbose("jSession: SASL mechanism: %s", it->c_str());
 
 			// start authentication process
 			if (!mechs.empty()) {
@@ -542,21 +528,21 @@ bool jSession::ParseFeatures(xmlStanza * stanza)
 	} else if (_state == authenticated) {
 		xmlElement * e;
 
-		e = stanza->Element()->Child("bind");
-		if (e != NULL && e->AttributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-bind") {
+		e = stanza->element()->child("bind");
+		if (e != NULL && e->attributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-bind") {
 			_feat_bind = true;
-			wxLogVerbose("jSession: Resource binding supported.");
+			//wxLogVerbose("jSession: Resource binding supported.");
 		}
-		e = stanza->Element()->Child("session");
-		if (e != NULL && e->AttributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-session") {
+		e = stanza->element()->child("session");
+		if (e != NULL && e->attributeValue("xmlns") == "urn:ietf:params:xml:ns:xmpp-session") {
 			_feat_sess = true;
-			wxLogVerbose("jSession: Sessions supported.");
+			//wxLogVerbose("jSession: Sessions supported.");
 		}
 
 		
 		// start resource binding
 		if (_feat_bind)
-			return BindResource();
+			return bindResource();
 		else
 			return false;
 	}
@@ -564,46 +550,46 @@ bool jSession::ParseFeatures(xmlStanza * stanza)
 	return true;
 }
 
-bool jSession::ParseIQ(xmlStanza * stanza)
+bool jSession::parseIQ(xmlStanza * stanza)
 {
 	if (_state == binding) {
-		return ParseIQBind(stanza);
+		return parseIQBind(stanza);
 	} else if (_state == establishing) {
-		return ParseIQSession(stanza);
+		return parseIQSession(stanza);
 	} else if (_state == established) {
 		xmlElement * el;
 
-		el = stanza->Element()->Child("query");
+		el = stanza->element()->child("query");
 		if (el != NULL) {
-			string xmlns = el->AttributeValue("xmlns");
+			QString xmlns = el->attributeValue("xmlns");
 
 			if (xmlns == "jabber:iq:roster")
-				return ParseIQRoster(stanza);
+				return parseIQRoster(stanza);
 			else if (xmlns == "jabber:iq:private")
-				return ParseIQPrivate(stanza);
+				return parseIQPrivate(stanza);
 			else if (xmlns == "jabber:iq:version")
-				return ParseIQVersion(stanza);
+				return parseIQVersion(stanza);
 		}
 	}
 	return true;	
 }
 
-bool jSession::ParseIQBind(xmlStanza * stanza)
+bool jSession::parseIQBind(xmlStanza * stanza)
 {
-	string type, id;
+	QString type, id;
 
-	type = stanza->Element()->AttributeValue("type");
-	id = stanza->Element()->AttributeValue("id");
+	type = stanza->element()->attributeValue("type");
+	id = stanza->element()->attributeValue("id");
 
 	if (id == "bind_1") {
 		if (type == "result") {
-			if (stanza->Element()->Child("bind") != NULL) {
-				string jid;
-				jid = stanza->Element()->Child("bind")->ChildValue("jid");
-				_jid.Set(jid);
-				wxLogMessage("jSession: Resource bound as %s.", jid.c_str());
+			if (stanza->element()->child("bind") != NULL) {
+				QString jid;
+				jid = stanza->element()->child("bind")->childValue("jid");
+				_jid.set(jid);
+				//wxLogMessage("jSession: Resource bound as %s.", jid.c_str());
 				
-				return EstablishSession();
+				return establishSession();
 			}
 		} else if (type == "error") {
 			// TODO: error handling. Possibly stream pausing.
@@ -612,20 +598,20 @@ bool jSession::ParseIQBind(xmlStanza * stanza)
 	return false;
 }
 
-bool jSession::ParseIQSession(xmlStanza * stanza)
+bool jSession::parseIQSession(xmlStanza * stanza)
 {
-	string type, id;
+	QString type, id;
 
-	type = stanza->Element()->AttributeValue("type");
-	id = stanza->Element()->AttributeValue("id");
+	type = stanza->element()->attributeValue("type");
+	id = stanza->element()->attributeValue("id");
 
 	if (id == "sess_1") {
 		if (type == "result") {
 
-			wxLogMessage("jSession: Session established. Sending initial presence.");
+			//wxLogMessage("jSession: Session established. Sending initial presence.");
 			_state = established;
 
-			Oniria()->EventQueue()->Queue(Event("oniria:im:session:connected"));
+			oniria()->eventQueue()->queue(event("oniria:im:session:connected"));
 
 			return true;
 		} else if (type == "error") {
@@ -635,277 +621,278 @@ bool jSession::ParseIQSession(xmlStanza * stanza)
 	return false;
 }
 
-bool jSession::ParseIQPrivate(xmlStanza * stanza)
+bool jSession::parseIQPrivate(xmlStanza * stanza)
 {
-	if (stanza->Element()->AttributeValue("type") == "result") {
-		if (stanza->Element()->AttributeValue("id") == "roster_delim_1") {	// reply to SyncRoster()
-			if (stanza->Element()->Child("query")->Child("roster") == NULL)
+	if (stanza->element()->attributeValue("type") == "result") {
+		if (stanza->element()->attributeValue("id") == "roster_delim_1") {	// reply to SyncRoster()
+			if (stanza->element()->child("query")->child("roster") == NULL)
 				return true;
-			if (stanza->Element()->Child("query")->Child("roster")->AttributeValue("xmlns") != "roster:delimiter")
+			if (stanza->element()->child("query")->child("roster")->attributeValue("xmlns") != "roster:delimiter")
 				return true;
 			
-			_roster->NestedGroups(true);
-			_roster->NestedGroupsDelimiter(stanza->Element()->Child("query")->ChildValue("roster"));
+			_roster->nestedGroups(true);
+			_roster->nestedGroupsDelimiter(stanza->element()->child("query")->childValue("roster"));
 			
-			wxLogVerbose("jSession: Nested groups supported, using \"%s\" as delimiter.", _roster->NestedGroupsDelimiter().c_str());
+			//wxLogVerbose("jSession: Nested groups supported, using \"%s\" as delimiter.", _roster->NestedGroupsDelimiter().c_str());
 		}
 	}
 	return true;
 }
 
-bool jSession::ParseIQVersion(xmlStanza * stanza)
+bool jSession::parseIQVersion(xmlStanza * stanza)
 {
-	if (stanza->Element()->AttributeValue("type") == "get") {
+	if (stanza->element()->attributeValue("type") == "get") {
 		xmlStanza * reply;
-		string id, to;
+		QString id, to;
 		
-		id = stanza->Element()->AttributeValue("id");
-		to = stanza->Element()->AttributeValue("from");
-		reply = IQQuery("jabber:iq:version", "result", id, to, _jid.Jid());
-		reply->Element()->Child("query")->AddChild("name", Oniria()->ProgramName());
-		reply->Element()->Child("query")->AddChild("version", Oniria()->ProgramVersion());
-		reply->Element()->Child("query")->AddChild("os", Oniria()->OSDescription());
-		_xml->AddStanza(reply);
-	} else if (stanza->Element()->AttributeValue("type") == "result") {
+		id = stanza->element()->attributeValue("id");
+		to = stanza->element()->attributeValue("from");
+		reply = iqQuery("jabber:iq:version", "result", id, to, _jid.jid());
+		reply->element()->child("query")->addChild("name", oniria()->programName());
+		reply->element()->child("query")->addChild("version", oniria()->programVersion());
+		reply->element()->child("query")->addChild("os", oniria()->OSDescription());
+		_xml->addStanza(reply);
+	} else if (stanza->element()->attributeValue("type") == "result") {
 		jRosterItem * ri;
-		string from;
+		QString from;
 		xmlElement * q;
 		
-		from = stanza->Element()->AttributeValue("from");
-		q = stanza->Element()->Child("query");
-		ri = static_cast<jRosterItem *>(_roster->Item(from, true));
+		from = stanza->element()->attributeValue("from");
+		q = stanza->element()->child("query");
+		ri = static_cast<jRosterItem *>(_roster->item(from, true));
 		if (ri != NULL) {
-			ri->SoftwareName(q->ChildValue("name"));
-			ri->SoftwareVersion(q->ChildValue("version"));
-			ri->OS(q->ChildValue("os"));
+			ri->softwareName(q->childValue("name"));
+			ri->softwareVersion(q->childValue("version"));
+			ri->OS(q->childValue("os"));
 		}
 	}
 	return true;
 }
 
-bool jSession::ParseIQRoster(xmlStanza * stanza)
+bool jSession::parseIQRoster(xmlStanza * stanza)
 {
-	if (stanza->Element()->AttributeValue("type") == "result") {
-		if (stanza->Element()->AttributeValue("id") == "roster_1") {	// reply to SyncRoster()
+	if (stanza->element()->attributeValue("type") == "result") {
+		if (stanza->element()->attributeValue("id") == "roster_1") {	// reply to SyncRoster()
 			xmlElement * q;
-			list<xmlElement *> items;
-			map<string, imRosterGroup *> grps;
+			QList<xmlElement *> items;
+			QMap<QString, imRosterGroup *> grps;
 
-			q = stanza->Element()->Child("query");
+			q = stanza->element()->child("query");
 			if (q == NULL)
 				return false;
 
-			q->Children("item", items);
+			q->children("item", items);
 
-			for (list<xmlElement *>::iterator it = items.begin(); it != items.end(); it++) {
+			for (QList<xmlElement *>::iterator it = items.begin(); it != items.end(); it++) {
 				jRosterItem * ri;
-				list<xmlElement *> e_grps;
+				QList<xmlElement *> e_grps;
 				
-				wxLogVerbose("Roster item: jid: %s, name: %s, subscription: %s",
-						(*it)->AttributeValue("jid").c_str(),
-						(*it)->AttributeValue("name").c_str(),
-						(*it)->AttributeValue("subscription").c_str());
+				//wxLogVerbose("Roster item: jid: %s, name: %s, subscription: %s",
+				//		(*it)->attributeValue("jid").c_str(),
+				//		(*it)->attributeValue("name").c_str(),
+				//		(*it)->attributeValue("subscription").c_str());
 						
 				ri = new jRosterItem(this);
-				ri->Name((*it)->AttributeValue("name"));
-				ri->Id("jid:" + (*it)->AttributeValue("jid"));
-				ri->Jid(jJid((*it)->AttributeValue("jid")));
-				if (ri->Name().empty())
-					ri->Name(ri->Jid().Jid());
-				(*it)->Children("group", e_grps);
-				if (e_grps.empty()) {
-					_roster->AddItem(ri, NULL);
+				ri->name((*it)->attributeValue("name"));
+				ri->id("jid:" + (*it)->attributeValue("jid"));
+				ri->jid(jJid((*it)->attributeValue("jid")));
+				if (ri->name().isEmpty())
+					ri->name(ri->jid().jid());
+				(*it)->children("group", e_grps);
+				if (e_grps.isEmpty()) {
+					_roster->addItem(ri, NULL);
 				} else {
-					for (list<xmlElement *>::iterator it = e_grps.begin(); it != e_grps.end(); it++) {
+					for (QList<xmlElement *>::iterator it = e_grps.begin(); it != e_grps.end(); it++) {
 						imRosterGroup * g = NULL;
-						if (grps.find("group:" + (*it)->Value()) == grps.end()) {
+						if (grps.find("group:" + (*it)->value()) == grps.end()) {
 					
-							if (_roster->NestedGroups() && !_roster->NestedGroupsDelimiter().empty()) {
-								string r_id = (*it)->Value(); // rest id
-								string delim = _roster->NestedGroupsDelimiter();
-								string parent_id = ""; // parent group id
+							if (_roster->nestedGroups() && !_roster->nestedGroupsDelimiter().isEmpty()) {
+								QString r_id = (*it)->value(); // rest id
+								QString delim = _roster->nestedGroupsDelimiter();
+								QString parent_id = ""; // parent group id
 								imRosterGroup * parent = NULL; // parent group id
-								string::size_type d_pos;
-								while ((d_pos = r_id.find(delim)) != string::npos) {
-									string g_id;
-									g_id = string(r_id, 0, d_pos);
-									r_id = string(r_id, d_pos + delim.size());
+								int d_pos;
+								while ((d_pos = r_id.indexOf(delim)) != -1) {
+									QString g_id;
+									g_id = r_id.mid(0, d_pos);
+									r_id = r_id.mid(d_pos + delim.size());
 									
-									if (!parent_id.empty())
+									if (!parent_id.isEmpty())
 										parent_id = parent_id + delim;
 									parent_id += g_id;
 									if (grps.find("group:" + parent_id) == grps.end()) {
 										g = new imRosterGroup(this);
-										g->Id("group:" + parent_id);
-										g->Name(g_id);
-										_roster->AddGroup(g, parent);
-										grps[g->Id()] = g;
+										g->id("group:" + parent_id);
+										g->name(g_id);
+										_roster->addGroup(g, parent);
+										grps[g->id()] = g;
 									} else {
 										g = grps["group:" + parent_id];
 									}
 									parent = g;
 								}
-								if (!r_id.empty()) {
-									if (grps.find("group:" + (*it)->Value()) == grps.end()) {
+								if (!r_id.isEmpty()) {
+									if (grps.find("group:" + (*it)->value()) == grps.end()) {
 										g = new imRosterGroup(this);
-										g->Id("group:" + (*it)->Value());
-										g->Name(r_id);
-										_roster->AddGroup(g, parent);
-										grps[g->Id()] = g;
+										g->id("group:" + (*it)->value());
+										g->name(r_id);
+										_roster->addGroup(g, parent);
+										grps[g->id()] = g;
 									} else {
-										g = grps["group:" + (*it)->Value()];
+										g = grps["group:" + (*it)->value()];
 									}
 								}
 							} else {
 								g = new imRosterGroup(this);
-								g->Id("group:" + (*it)->Value());
-								g->Name((*it)->Value());
+								g->id("group:" + (*it)->value());
+								g->name((*it)->value());
 								
-								_roster->AddGroup(g);
+								_roster->addGroup(g);
 								
-								grps[g->Id()] = g;
+								grps[g->id()] = g;
 							}
 						}
 						
-						g = grps["group:" + (*it)->Value()];
-						if (g != NULL)
-							wxLogVerbose("jSession: Adding %s to group %s", ri->Id().c_str(), g->Id().c_str());
-						_roster->AddItem(ri, g);
+						g = grps["group:" + (*it)->value()];
+						//if (g != NULL)
+						//	wxLogVerbose("jSession: Adding %s to group %s", ri->Id().c_str(), g->Id().c_str());
+						_roster->addItem(ri, g);
 					}
 				}
 			}
-			Oniria()->EventQueue()->Queue(Event("oniria:im:session:roster:updated"));
+			oniria()->eventQueue()->queue(event("oniria:im:session:roster:updated"));
 		}
 	}
 	return true;
 }
 
-bool jSession::ParsePresence(xmlStanza * stanza)
+bool jSession::parsePresence(xmlStanza * stanza)
 {
 	
-	if (stanza->Element()->AttributeValue("type") == "" ||
-	    stanza->Element()->AttributeValue("type") == "unavailable") {
-		oEvent * event;
+	if (stanza->element()->attributeValue("type") == "" ||
+	    stanza->element()->attributeValue("type") == "unavailable") {
+		oEvent * ev;
 		imRosterItem * item = NULL;
 		jRosterItem * bare = NULL;
 		jJid jid;
 		imStatus status;
-		vector<string> order;
+		QVector<QString> order;
 
-		status = PresenceToStatus(stanza);
-		jid.Set(stanza->Element()->AttributeValue("from"));
+		status = presenceToStatus(stanza);
+		jid.set(stanza->element()->attributeValue("from"));
 		
-		item = _roster->Item("jid:" + jid.Jid());	// check if it's main item.
+		item = _roster->item("jid:" + jid.jid());	// check if it's main item.
 		if (item == NULL)				// find bare jid only if it's not main item.
-			bare = static_cast<jRosterItem *>(_roster->Item("jid:" + jid.Bare()));
+			bare = static_cast<jRosterItem *>(_roster->item("jid:" + jid.bare()));
 
-		if (_roster->AllItems()->find("jid:" + jid.Jid()) == _roster->AllItems()->end()) {
+		if (_roster->allItems()->find("jid:" + jid.jid()) == _roster->allItems()->end()) {
 			
 			jRosterSubItem * sitem;
 			
-			if (stanza->Element()->AttributeValue("type") == "unavailable")
+			if (stanza->element()->attributeValue("type") == "unavailable")
 				return true;
 		
-			if (jid.Resource().empty())
+			if (jid.resource().isEmpty())
 				return true;
 
 			if (bare == NULL)
 				return true;
 			
 			sitem = new jRosterSubItem(this, bare);
-			sitem->Id("jid:" + jid.Jid());
-			sitem->Name(jid.Resource());
-			sitem->Jid(jid);
+			sitem->id("jid:" + jid.jid());
+			sitem->name(jid.resource());
+			sitem->jid(jid);
 			try {
-				sitem->Priority(ToUInt(stanza->Element()->ChildValue("priority")));
+				sitem->priority(stanza->element()->childValue("priority").toUInt());
 			} catch (...) {
 			}
 			item = sitem;
-			_roster->AddSubItem(item, bare);
+			_roster->addSubItem(item, bare);
 		
-			event = Event("oniria:im:session:roster:item:new");
-			event->XML()->AddChild("item-id", "jid:" + jid.Jid());
-			Oniria()->EventQueue()->Queue(event);
+			ev = event("oniria:im:session:roster:item:new");
+			ev->xml()->addChild("item-id", "jid:" + jid.jid());
+			oniria()->eventQueue()->queue(ev);
 		} else {
-			item = _roster->AllItems()->find("jid:" + jid.Jid())->second;
+			item = _roster->allItems()->find("jid:" + jid.jid()).value();
 		}
 		
-		if (item->Status() != status) {
+		if (item->status() != status) {
 			xmlStanza * verst;
 
-			item->Status(status);
-			if (!jid.Resource().empty() && bare != NULL && status.Status() == imStatus::na) {
-				_roster->RemoveSubItem(item->Id());
+			item->status(status);
+			if (!jid.resource().isEmpty() && bare != NULL && status.status() == imStatus::na) {
+				_roster->removeSubItem(item->id());
 				delete item;
 				item = NULL;
 			}
 			if (bare != NULL) {
-				bare->FixedOrder(order);
+				bare->fixedOrder(order);
 				if (!order.empty()) {
 					if (item != NULL) {
-						if (order.front() == item->Id())
-							bare->Status(status);
+						if (order.front() == item->id())
+							bare->status(status);
 					} else {
-						bare->Status(bare->SubItem(order.front())->Status());
+						bare->status(bare->subItem(order.front())->status());
 					}
 				} else {
-					bare->Status(status);	// should be only, when receiving type='unavailable' from last resource
+					bare->status(status);	// should be only, when receiving type='unavailable' from last resource
 				}
 			}
 	
-			event = Event("oniria:im:session:roster:item:presence");
-			event->XML()->AddChild("item-id", "jid:" + jid.Jid());
-			Oniria()->EventQueue()->Queue(event);
-			if (!jid.Resource().empty() && bare != NULL) {
-				event = Event("oniria:im:session:roster:item:presence");
-				event->XML()->AddChild("item-id", "jid:" + jid.Bare());
-				Oniria()->EventQueue()->Queue(event);
+			ev = event("oniria:im:session:roster:item:presence");
+			ev->xml()->addChild("item-id", "jid:" + jid.jid());
+			oniria()->eventQueue()->queue(ev);
+			if (!jid.resource().isEmpty() && bare != NULL) {
+				ev = event("oniria:im:session:roster:item:presence");
+				ev->xml()->addChild("item-id", "jid:" + jid.bare());
+				oniria()->eventQueue()->queue(ev);
 			}
 			
-			verst = IQQuery("jabber:iq:version", "get", "version_1", jid.Jid(), _jid.Jid());
-			_xml->AddStanza(verst);
+			verst = iqQuery("jabber:iq:version", "get", "version_1", jid.jid(), _jid.jid());
+			_xml->addStanza(verst);
 		}
 
 	}
 	return true;
 }
 
-bool jSession::ParseMessage(xmlStanza * stanza)
+bool jSession::parseMessage(xmlStanza * stanza)
 {
 	
-	if (stanza->Element()->Child("body") != NULL) {
+	if (stanza->element()->child("body") != NULL) {
 		jJid jid;
 		jPeer * peer;
 		imMessage * msg;
-		string thid;
+		QString thid;
 		imMessageThread * thr;
 		jRosterItem * ri;
 	
-		thid = stanza->Element()->AttributeValue("from");
-		jid.Set(thid);
-		if (!stanza->Element()->ChildValue("thread").empty())
-			thid = thid + ":" + stanza->Element()->ChildValue("thread");
+		thid = stanza->element()->attributeValue("from");
+		jid.set(thid);
+		if (!stanza->element()->childValue("thread").isEmpty())
+			thid = thid + ":" + stanza->element()->childValue("thread");
 	
 		peer = new jPeer;
-		peer->Jid(jid);
-		peer->Name(jid.Jid());
-		ri = static_cast<jRosterItem *>(Roster()->Item(string("jid:") + jid.Bare(), true));
+		peer->jid(jid);
+		peer->name(jid.jid());
+		ri = static_cast<jRosterItem *>(roster()->item(QString("jid:") + jid.bare(), true));
 		if (ri == NULL)
-			ri = static_cast<jRosterItem *>(Roster()->Item(string("jid:") + jid.Jid(), true));
+			ri = static_cast<jRosterItem *>(roster()->item(QString("jid:") + jid.jid(), true));
 		if (ri != NULL) {
-			peer->Name(ri->Name());
+			peer->name(ri->name());
 		}
 
-		thr = GetMessageThread("msg", jid, thid);
+		thr = getMessageThread("msg", jid, thid);
 	
 		msg = new imMessage;
-		msg->Subject(stanza->Element()->ChildValue("subject"));
-		msg->Body(stanza->Element()->ChildValue("body"));
-		msg->LocalPeer(thr->LocalPeer());
-		msg->AddPeer(peer);
+		msg->subject(stanza->element()->childValue("subject"));
+		msg->body(stanza->element()->childValue("body"));
+		msg->localPeer(thr->localPeer());
+		msg->addPeer(peer);
 
-		thr->AddInMessage(msg);
+		thr->addInMessage(msg);
 	}
 
 	return true;
 }
+

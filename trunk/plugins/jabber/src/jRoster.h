@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +19,9 @@
 #ifndef __JROSTER_H
 #define __JROSTER_H
 
-#include <onir/im/imRoster.h>
+#include <oim/imRoster.h>
 #include "jJid.h"
 
-using namespace std;
 using onirIM::imRoster;
 class jSession;
 
@@ -32,17 +31,14 @@ class jRoster : public imRoster {
 		jRoster(jSession * session);
 		virtual ~jRoster();
 		
-		inline bool NestedGroups() const { return _nested_groups; };
-		void NestedGroups(bool ng) { _nested_groups = ng; };
-		inline const string& NestedGroupsDelimiter() const { return _ng_delimiter; };
-		void NestedGroupsDelimiter(const string& ngd) { _ng_delimiter = ngd; };
+		inline bool nestedGroups() const { return _nested_groups; };
+		void nestedGroups(bool ng) { _nested_groups = ng; };
+		inline const QString& nestedGroupsDelimiter() const { return _ng_delimiter; };
+		void nestedGroupsDelimiter(const QString& ngd) { _ng_delimiter = ngd; };
 
 	private:
 		bool _nested_groups;
-		string _ng_delimiter;
-
-		DECLARE_OOBJECT;
-
+		QString _ng_delimiter;
 };
 
 #endif

@@ -19,34 +19,28 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <map>
-#include <onir/im/imRoster.h>
+#include <oim/imRoster.h>
 #include "jSession.h"
 #include "jRosterItem.h"
 #include "jMessageQueue.h"
 
-using namespace std;
-
-DEFINE_OOBJECT(jMessageQueue, imMessageQueue);
-
 jMessageQueue::jMessageQueue(jSession * session)
 : imMessageQueue(session)
 {
-	INIT_OOBJECT;
 }
 
 jMessageQueue::~jMessageQueue()
 {
 }
 
-imMessageThread * jMessageQueue::GetThread(const string& type, const string& roster_id, const string& id)
+imMessageThread * jMessageQueue::getThread(const QString& type, const QString& roster_id, const QString& id)
 {
 	jRosterItem * ri;
 	imMessageThread * th = NULL;
 
-	ri = static_cast<jRosterItem *>(Session()->Roster()->Item(roster_id, true));
+	ri = static_cast<jRosterItem *>(session()->roster()->item(roster_id, true));
 	if (ri != NULL) {
-		th = static_cast<jSession *>(Session())->GetMessageThread(type, ri->Jid(), id);
+		th = static_cast<jSession *>(session())->getMessageThread(type, ri->jid(), id);
 	}
 	return th;
 }

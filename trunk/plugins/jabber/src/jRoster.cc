@@ -19,18 +19,14 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <map>
 #include "jSession.h"
 #include "jRoster.h"
 
 using namespace std;
 
-DEFINE_OOBJECT(jRoster, imRoster);
-
 jRoster::jRoster(jSession * session)
 : imRoster(session)
 {
-	INIT_OOBJECT;
 	_nested_groups = false;
 	_ng_delimiter = "";
 }

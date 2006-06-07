@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,26 +19,22 @@
 #ifndef __JSESSION_H
 #define __JSESSION_H
 
-#include <list>
-#include <string>
-#include <wx/socket.h>
+#include <QString>
+#include <QList>
 #include <onir/oOniria.h>
-#include <onir/im/imProtocol.h>
-#include <onir/im/imSession.h>
-#include <onir/im/imStatus.h>
-#include <onir/im/imMessage.h>
-#include <onir/im/imMessageThread.h>
-#include <onir/io/ioSocketStream.h>
-#include <onir/xml/xmlElement.h>
-#include <onir/xml/xmlStanza.h>
-#include <onir/xml/xmlStream.h>
-#include <onir/sasl/saslSASL.h>
+#include <oim/imProtocol.h>
+#include <oim/imSession.h>
+#include <oim/imStatus.h>
+#include <oim/imMessage.h>
+#include <oim/imMessageThread.h>
+#include <oxml/xmlElement.h>
+#include <oxml/xmlStanza.h>
+#include <oxml/xmlStream.h>
+#include <osasl/saslSASL.h>
 #include <onir/oEvent.h>
 #include "jJid.h"
 
-using namespace std;
 using namespace onirIM;
-using onirIO::ioSocketStream;
 using onirXML::xmlStream;
 using onirXML::xmlStanza;
 using onirXML::xmlElement;
@@ -46,54 +42,63 @@ using onirSASL::saslSASL;
 using onir::oOniria;
 using onir::oEvent;
 
+class QTcpSocket;
 class jRoster;
 
 class jSession : public imSession {
+		
+		Q_OBJECT;
 
 	public:
 		jSession(oOniria * o, imProtocol * proto);
 		virtual ~jSession();
 
-		virtual bool SetStatus();
+		virtual bool setStatus();
 
-		virtual bool SyncRoster(bool send);
-		virtual imRoster * Roster();
+		virtual bool syncRoster(bool send);
+		virtual imRoster * roster();
 
-		virtual bool Load(xmlElement *cnode);
-		virtual bool Connect(bool ac = false);
+		virtual bool load(xmlElement *cnode);
+		virtual bool connect(bool ac = false);
 		
-		virtual imMessageQueue * CreateMessageQueue();
-		virtual bool SendMessage(imMessage * msg);
-		imMessageThread * GetMessageThread(const string& type, const jJid& peer, const string& id = "");
+		virtual imMessageQueue * createMessageQueue();
+		virtual bool sendMessage(imMessage * msg);
+		imMessageThread * getMessageThread(const QString& type, const jJid& peer, const QString& id = "");
 
-		virtual bool Poll();
+		virtual bool poll();
+
+		inline oOniria * oniria() const { return _oniria; };
+
+	protected slots:
+		void connected();
+		void receivedStanza(xmlStanza * stanza);
 
 	protected:
 
-		bool Presence(const string& status, const string& desc = "", const string& type = "", const string& to = "");
-		imStatus PresenceToStatus(xmlStanza * stanza);
-		xmlStanza * IQ(const string& type, const string& id, const string& to = "", const string& from = "");
-		xmlElement * Query(const string& xmlns);
-		xmlStanza * IQQuery(const string& xmlns, const string& type, const string& id, const string& to = "", const string& from = "");
-		oEvent * Event(const string& id);
+		bool presence(const QString& status, const QString& desc = "", const QString& type = "", const QString& to = "");
+		imStatus presenceToStatus(xmlStanza * stanza);
+		xmlStanza * iq(const QString& type, const QString& id, const QString& to = "", const QString& from = "");
+		xmlElement * query(const QString& xmlns);
+		xmlStanza * iqQuery(const QString& xmlns, const QString& type, const QString& id, const QString& to = "", const QString& from = "");
+		oEvent * event(const QString& id);
 
-		bool SASLAuth(const list<string>& mechs);
-		bool DoSASLAuth(xmlStanza * stanza);
-		bool BindResource();
-		bool EstablishSession();
+		bool SASLAuth(const QList<QString>& mechs);
+		bool doSASLAuth(xmlStanza * stanza);
+		bool bindResource();
+		bool establishSession();
 
-		bool ParseFeatures(xmlStanza * stanza);
+		bool parseFeatures(xmlStanza * stanza);
 
-		bool ParseIQ(xmlStanza * stanza);
-		bool ParseIQBind(xmlStanza * stanza);
-		bool ParseIQSession(xmlStanza * stanza);
-		bool ParseIQRoster(xmlStanza * stanza);
-		bool ParseIQPrivate(xmlStanza * stanza);
-		bool ParseIQVersion(xmlStanza * stanza);
+		bool parseIQ(xmlStanza * stanza);
+		bool parseIQBind(xmlStanza * stanza);
+		bool parseIQSession(xmlStanza * stanza);
+		bool parseIQRoster(xmlStanza * stanza);
+		bool parseIQPrivate(xmlStanza * stanza);
+		bool parseIQVersion(xmlStanza * stanza);
 
-		bool ParsePresence(xmlStanza * stanza);
+		bool parsePresence(xmlStanza * stanza);
 		
-		bool ParseMessage(xmlStanza * stanza);
+		bool parseMessage(xmlStanza * stanza);
 
 	private:
 		enum sessionState {
@@ -107,14 +112,15 @@ class jSession : public imSession {
 			closed
 		};
 
+		oOniria * _oniria;
+
 		sessionState _state;
 
 		jJid _jid;
 		unsigned int _priority;
-		string _password;
+		QString _password;
 
-		wxSocketClient * _socket;
-		ioSocketStream * _iostream;
+		QTcpSocket * _socket;
 		xmlStream * _xml;
 
 		bool _feat_bind;	// server supports resource binding
@@ -124,9 +130,6 @@ class jSession : public imSession {
 		saslSASL * _sasl;
 		
 		jRoster * _roster;
-
-
-		DECLARE_OOBJECT;
 };
 
 #endif

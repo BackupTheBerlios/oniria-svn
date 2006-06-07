@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +19,9 @@
 #ifndef __JPEER_H
 #define __JPEER_H
 
-#include <onir/im/imPeer.h>
+#include <oim/imPeer.h>
 #include "jJid.h"
 
-using namespace std;
 using onirIM::imPeer;
 
 class jPeer : public imPeer {
@@ -31,13 +30,11 @@ class jPeer : public imPeer {
 		jPeer();
 		virtual ~jPeer();
 
-		const jJid& Jid() const { return _jid; };
-		void Jid(const jJid& jid) { _jid = jid; };
+		const jJid& jid() const { return _jid; };
+		void jid(const jJid& jid) { _jid = jid; };
 		
 	private:
 		jJid _jid;
-
-		DECLARE_OOBJECT;
 
 };
 

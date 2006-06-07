@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,66 +29,66 @@ jJid::jJid()
 	_resource = "";
 }
 
-jJid::jJid(const string& full)
+jJid::jJid(const QString& full)
 {
-	Set(full);
+	set(full);
 }
 
-jJid::jJid(const string& node, const string& domain, const string& resource)
+jJid::jJid(const QString& node, const QString& domain, const QString& resource)
 {
-	Set(node, domain, resource);
+	set(node, domain, resource);
 }
 
 /*!\todo Use libidn to be i18n aware
  */
-const string& jJid::Set(const string& full)
+const QString& jJid::set(const QString& full)
 {
-	string::size_type pos;
+	int pos;
 
 	_full = full;
 
 	_resource = "";
 	_bare = _full;
-	pos = _full.find('/');
-	if (pos != string::npos) {
-		_bare.assign(_full, 0, pos);
-		_resource.assign(_full, pos + 1, _full.size() - pos - 1);
+	pos = _full.indexOf('/');
+	if (pos != -1) {
+		_bare = _full.left(pos);
+		_resource = _full.mid(pos + 1, _full.size() - pos - 1);
 	}
 
-	pos = _bare.find('@');
+	pos = _bare.indexOf('@');
 	_domain = _bare;
 	_node = "";
-	if (pos != string::npos) {
-		_node.assign(_bare, 0, pos);
-		_domain.assign(_bare, pos + 1, _bare.size() - pos - 1);
+	if (pos != -1) {
+		_node = _bare.mid(0, pos);
+		_domain = _bare.mid(pos + 1, _bare.size() - pos - 1);
 	}
 
 	return _full;
 }
 
-const string& jJid::Set(const string& bare, const string& resource)
+const QString& jJid::set(const QString& bare, const QString& resource)
 {
-	string::size_type pos;
+	int pos;
 	
 	_bare = bare;
 	_resource = resource;
 
-	pos = _bare.find('@');
+	pos = _bare.indexOf('@');
 	_domain = _bare;
 	_node = "";
-	if (pos != string::npos) {
-		_node.assign(_bare, 0, pos);
-		_domain.assign(_bare, pos + 1, _bare.size() - pos - 1);
+	if (pos != -1) {
+		_node = _bare.mid(0, pos);
+		_domain = _bare.mid(pos + 1, _bare.size() - pos - 1);
 	}
 
 	_full = _bare;
-	if (!_resource.empty())
+	if (!_resource.isEmpty())
 		_full += "/" + _resource;
 
 	return _full;
 }
 
-const string& jJid::Set(const string& node, const string& domain, const string& resource)
+const QString& jJid::set(const QString& node, const QString& domain, const QString& resource)
 {
 	_node = node;
 	_domain = domain;
@@ -96,25 +96,26 @@ const string& jJid::Set(const string& node, const string& domain, const string& 
 
 	_full = "";
 
-	if (_domain.empty())
+	if (_domain.isEmpty())
 		return _full;
 
-	if (!_node.empty())
+	if (!_node.isEmpty())
 		_full = _node + "@";
 
 	_full += _domain;
 	_bare = _full;
 
-	if (!_resource.empty())
+	if (!_resource.isEmpty())
 		_full += "/" + _resource;
 
 	return _full;
 }
 
-bool jJid::Valid() const
+bool jJid::valid() const
 {
-	if (_domain.empty())
+	if (_domain.isEmpty())
 		return false;
 	else
 		return true;
 }
+
