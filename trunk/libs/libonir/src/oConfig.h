@@ -76,8 +76,8 @@ class LIBONIR_API oConfig
 		virtual QVector<xmlElement *> children(xmlElement * parent) = 0;
 		virtual QVector<xmlElement *> children(xmlElement * parent, const QString& name) = 0;
 		virtual QString nodeName(xmlElement * p) = 0;
-		virtual void removeNode(xmlElement * parent) = 0;
-		virtual void removeNode(const QString& xpath) = 0;
+		virtual xmlElement * removeNode(xmlElement * parent) = 0;
+		virtual xmlElement * removeNode(const QString& xpath) = 0;
 };
 
 }
