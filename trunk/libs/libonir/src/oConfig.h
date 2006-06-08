@@ -51,33 +51,33 @@ class LIBONIR_API oConfig
 		oConfig();
 		virtual ~oConfig();
 
-		virtual xmlElement * storeValue(const QString& parent, const QString& node, const QString& value, bool force = false) = 0;
-		virtual xmlElement * storeValue(xmlElement * parent, const QString& subn,const QString& value, bool force = false) = 0;
-		virtual xmlElement * storeValueNs(const QString& coors, const QString& value, bool force = false) = 0;
+		virtual xmlElement * setValue(const QString& parent, const QString& node, const QString& value, bool force = false) = 0;
+		virtual xmlElement * setValue(xmlElement * parent, const QString& subn,const QString& value, bool force = false) = 0;
+		virtual xmlElement * setValue(const QString& xpath, const QString& value, bool force = false) = 0;
 		
 		virtual QString value(const QString& parent, const QString& node, const QString& defval) = 0;
 		virtual QString value(xmlElement * parent, const QString& defval) = 0;
 		virtual QString value(xmlElement * parent, const QString& name, const QString& defval) = 0;
-		virtual QString valueNs(const QString& coors, const QString& defval) = 0;
+		virtual QString value(const QString& xpath, const QString& defval) = 0;
 		
-		virtual xmlElement * storeValue(const QString& parent, const QString& node, int value, bool force = false) = 0;
-		virtual xmlElement * storeValue(xmlElement * parent, const QString& subn,int value, bool force = false) = 0;
-		virtual xmlElement * storeValueNs(const QString& coors, int value, bool force = false) = 0;
+		virtual xmlElement * setValue(const QString& parent, const QString& node, int value, bool force = false) = 0;
+		virtual xmlElement * setValue(xmlElement * parent, const QString& subn,int value, bool force = false) = 0;
+		virtual xmlElement * setValue(const QString& xpath, int value, bool force = false) = 0;
 		
 		virtual int value(const QString& parent, const QString& node, int defval) = 0;
 		virtual int value(xmlElement * parent, int defval) = 0;
 		virtual int value(xmlElement * parent, const QString& name, int defval) = 0;
-		virtual int valueNs(const QString& coors, int defval) = 0;
+		virtual int value(const QString& xpath, int defval) = 0;
 		
 		virtual xmlElement * root() = 0;
-		virtual xmlElement * nodeAt(const QString& coors) = 0;
-		virtual xmlElement * nodeAt(xmlElement * parent, const QString& name) = 0;
+		virtual xmlElement * node(const QString& xpath) = 0;
+		virtual xmlElement * node(xmlElement * parent, const QString& name) = 0;
 		virtual QVector<xmlElement *> children(const QString& parent) = 0;
 		virtual QVector<xmlElement *> children(xmlElement * parent) = 0;
 		virtual QVector<xmlElement *> children(xmlElement * parent, const QString& name) = 0;
 		virtual QString nodeName(xmlElement * p) = 0;
-		virtual void deleteNode(xmlElement * parent) = 0;
-		virtual void deleteNode(const QString& coors) = 0;
+		virtual void removeNode(xmlElement * parent) = 0;
+		virtual void removeNode(const QString& xpath) = 0;
 };
 
 }
