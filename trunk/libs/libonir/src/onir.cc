@@ -20,11 +20,7 @@
 # include <config.h>
 #endif
 #include <stdint.h>
-#if defined(WIN32)
-# include "win32/onir_config.h"
-#else
-# include "onir_config.h"
-#endif
+#include "onir_config.h"
 #include "onir_dll.h"
 #include "onir.h"
 

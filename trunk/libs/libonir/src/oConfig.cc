@@ -24,5 +24,9 @@ namespace onir {
 oConfig::oConfig()
 {
 }
+
+oConfig::~oConfig()
+{
+}
 	
 };
