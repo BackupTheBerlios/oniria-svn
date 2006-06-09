@@ -72,8 +72,10 @@ dnl	       [],
 dnl	       [AC_ERROR([cannot find one of required functions..
 dnl	          your system is a bit strange.])])
 
-PKG_CHECK_MODULES(QT, [QtGui >= 4.0.0])
+PKG_CHECK_MODULES(QT, [QtCore >= 4.0.0 QtGui >= 4.0.0])
 PKG_CHECK_MODULES(OGUR, [libogur >= 0.1.0])
+PKG_CHECK_MODULES(OXML, [liboxml >= 0.1.0])
+PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0])
 
 AC_OUTPUT
 
