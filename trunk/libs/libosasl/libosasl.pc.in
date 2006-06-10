@@ -8,6 +8,6 @@ includedir=@includedir@/oniria
 Name: @PACKAGE@
 Description: Oniria SASL library
 Version: @VERSION@
-Libs: -L${libdir} -loxml
+Libs: -L${libdir} -losasl
 Cflags: -I${includedir} -I${includedir}/osasl @QT_CFLAGS@
 
