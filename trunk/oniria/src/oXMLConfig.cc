@@ -234,7 +234,7 @@ QVector<xmlElement *> oXMLConfig::children(xmlElement * parent)
 	return ret;
 }
 
-QVector<xmlElement *> oXMLConfig::children(xmlElement * parent, const QString name)
+QVector<xmlElement *> oXMLConfig::children(xmlElement * parent, const QString& name)
 {
 	QList<xmlElement* > l;
 	parent->children(name, l);

@@ -137,7 +137,7 @@ class oXMLConfig : public oConfig {
 
 		QVector<xmlElement *> children(const QString& parent);
 		QVector<xmlElement *> children(xmlElement * parent);
-		QVector<xmlElement *> children(xmlElement *parent, const QString name);
+		QVector<xmlElement *> children(xmlElement * parent, const QString& name);
 
 		QString nodeName(xmlElement * p);
 
