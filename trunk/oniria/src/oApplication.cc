@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2006 Michal Wysoczanski <choman@foto-koszalin.pl>
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,20 +19,21 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#if defined(WIN32)
-# include "win32/oniria_config.h"
-#else
-# include "oniria_config.h"
-#endif
-#include <QToolBar>
+#include <QDir>
+#include "oXMLConfig.h"
 #include "oApplication.h"
-#include "oMainWindow.h"
 
-int main(int argc, char ** argv)
+
+oApplication::oApplication(int& argc, char ** argv)
+: QApplication(argc, argv)
 {
-	oApplication app(argc, argv);
-	oMainWindow mainWindow;
-	mainWindow.show();	
-	return app.exec();
+	QString cf;
+	QDir dir;
+
+	cf = QDir::homePath() + "/.oniria";
+	dir.setPath(cf);
+	if (!dir.exists())
+		dir.mkpath(cf);
+	_config = new oXMLConfig(cf + "/config.xml", true);
 }
 

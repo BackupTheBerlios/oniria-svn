@@ -16,23 +16,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#if defined(HAVE_CONFIG_H)
-# include <config.h>
-#endif
-#if defined(WIN32)
-# include "win32/oniria_config.h"
-#else
-# include "oniria_config.h"
-#endif
-#include <QToolBar>
-#include "oApplication.h"
-#include "oMainWindow.h"
+ 
+#ifndef __OAPPLICATION_H
+#define __OAPPLICATION_H
+ 
+#include <QApplication>
+#include <onir/oOniria.h>
+#include <onir/oConfig.h>
 
-int main(int argc, char ** argv)
-{
-	oApplication app(argc, argv);
-	oMainWindow mainWindow;
-	mainWindow.show();	
-	return app.exec();
-}
+using onir::oOniria;
+using onir::oConfig;
 
+class oApplication : public QApplication {
+
+	Q_OBJECT
+
+	public:
+		oApplication(int& argc, char ** argv);
+		
+	private:
+		oOniria * _oniria;
+		oConfig * _config;
+};
+ 
+#endif

@@ -12,12 +12,14 @@ oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@ @OXML_LIBS@ @ONIR_LIBS@
 
 bin_PROGRAMS = oniria
 
-noinst_HEADERS_moc = oMainWindow.h
+noinst_HEADERS_moc = oMainWindow.h		\
+		     oApplication.h
 
 oniria_SOURCES = oniria.cc			\
 		 oXMLConfig.cc			\
 		 oXMLConfig.h			\
 		 oMainWindow.cc			\
+		 oApplication.cc		\
 		 $(noinst_HEADERS_moc)		\
 		 $(noinst_HEADERS_moc:.h=.moc.cc)
 		 
