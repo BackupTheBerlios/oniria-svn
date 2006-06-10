@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 
 #include <onir/oOniria.h>
 
-class gApp;
+class oApplication;
 using onir::oOniria;
 using onir::oConfig;
 using onir::oTabs;
@@ -30,29 +30,29 @@ using onir::oEventQueue;
 
 class oOniriaImpl : public oOniria {
 	public:
-		oOniriaImpl(gApp * app);
+		oOniriaImpl(oApplication * app);
 		virtual ~oOniriaImpl();
 
-		virtual bool RegisterProtocol(imProtocol * proto);
-		virtual oConfig * Config() const;
-		virtual wxLog * Log() const;
-		virtual oTabs * Tabs() const;
-		virtual oResources * Resources() const;
-		virtual oEventQueue * EventQueue() const;
+		virtual bool registerProtocol(imProtocol * proto);
+		virtual oConfig * config() const;
+		//virtual wxLog * Log() const;
+		virtual oTabs * tabs() const;
+		virtual oResources * resources() const;
+		virtual oEventQueue * eventQueue() const;
 
-		virtual const string& ProgramName() const;
-		virtual const string& ProgramVersion() const;
-		virtual const string& ProgramString() const;
-		virtual const string& OSDescription() const;
+		virtual const QString& programName() const;
+		virtual const QString& programVersion() const;
+		virtual const QString& programString() const;
+		virtual const QString& OSDescription() const;
 		
 		/* @} */
 
 	private:
-		gApp * _app;
-		string _prog_name;
-		string _prog_version;
-		string _prog_string;
-		string _os_desc;
+		oApplication * _app;
+		QString _prog_name;
+		QString _prog_version;
+		QString _prog_QString;
+		QString _os_desc;
 
 };
 

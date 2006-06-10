@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-kszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,75 +19,78 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include "gApp.h"
-#include "oEventManager.h"
-#include "oSessionManager.h"
-#include "oResourceManager.h"
+#include "oApplication.h"
+//#include "oEventManager.h"
+//#include "oSessionManager.h"
+//#include "oResourceManager.h"
 #include <onir/oConfig.h>
-#include <onir/oTabs.h>
+//#include <onir/oTabs.h>
 #include "oOniriaImpl.h"
 
-using namespace std;
-
-oOniriaImpl::oOniriaImpl(gApp * app)
+oOniriaImpl::oOniriaImpl(oApplication * app)
 {
 	_app = app;
 	_prog_name = PACKAGE_NAME;
 	_prog_version = PACKAGE_VERSION;
-	_prog_string = PACKAGE_STRING;
-	_os_desc = static_cast<string>(wxGetOsDescription());
+	_prog_QString = PACKAGE_STRING;
+	//_os_desc = static_cast<QString>(wxGetOsDescription());
 }
 
 oOniriaImpl::~oOniriaImpl()
 {
 }
 
-bool oOniriaImpl::RegisterProtocol(imProtocol * proto)
+bool oOniriaImpl::registerProtocol(imProtocol * proto)
 {
-	return _app->SessionManager()->RegisterProtocol(proto);
+	// TODO
+	//return _app->SessionManager()->RegisterProtocol(proto);
+	return true;
 }
 
-oConfig * oOniriaImpl::Config() const
+oConfig * oOniriaImpl::config() const
 {
-	return _app->Config();
+	return _app->config();
 }
 
-wxLog * oOniriaImpl::Log() const
+//wxLog * oOniriaImpl::Log() const
+//{
+//	return wxLog::GetActiveTarget();
+//}
+
+oTabs * oOniriaImpl::tabs() const
 {
-	return wxLog::GetActiveTarget();
+	// TODO
+	return NULL; //_app->TabManager();
 }
 
-oTabs * oOniriaImpl::Tabs() const
+oResources * oOniriaImpl::resources() const
 {
-	return _app->TabManager();
+	// TODO
+	return NULL; //_app->ResourceManager();
 }
 
-oResources * oOniriaImpl::Resources() const
+oEventQueue * oOniriaImpl::eventQueue() const
 {
-	return _app->ResourceManager();
+	// TODO
+	return NULL; //_app->EventManager();
 }
 
-oEventQueue * oOniriaImpl::EventQueue() const
-{
-	return _app->EventManager();
-}
-
-const string& oOniriaImpl::ProgramName() const
+const QString& oOniriaImpl::programName() const
 {
 	return _prog_name;
 }
 
-const string& oOniriaImpl::ProgramVersion() const
+const QString& oOniriaImpl::programVersion() const
 {
 	return _prog_version;
 }
 
-const string& oOniriaImpl::ProgramString() const
+const QString& oOniriaImpl::programString() const
 {
-	return _prog_string;
+	return _prog_QString;
 }
 
-const string& oOniriaImpl::OSDescription() const
+const QString& oOniriaImpl::OSDescription() const
 {
 	return _os_desc;
 }

@@ -21,6 +21,7 @@
 #endif
 #include <QDir>
 #include "oXMLConfig.h"
+#include "oOniriaImpl.h"
 #include "oApplication.h"
 
 
@@ -35,5 +36,7 @@ oApplication::oApplication(int& argc, char ** argv)
 	if (!dir.exists())
 		dir.mkpath(cf);
 	_config = new oXMLConfig(cf + "/config.xml", true);
+
+	_oniria = new oOniriaImpl(this);
 }
 

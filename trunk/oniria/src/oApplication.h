@@ -33,6 +33,8 @@ class oApplication : public QApplication {
 
 	public:
 		oApplication(int& argc, char ** argv);
+
+		inline oConfig * config() const { return _config; };
 		
 	private:
 		oOniria * _oniria;

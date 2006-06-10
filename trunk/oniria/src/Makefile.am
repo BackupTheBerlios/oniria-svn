@@ -20,6 +20,8 @@ oniria_SOURCES = oniria.cc			\
 		 oXMLConfig.h			\
 		 oMainWindow.cc			\
 		 oApplication.cc		\
+		 oOniriaImpl.cc			\
+		 oOniriaImpl.h			\
 		 $(noinst_HEADERS_moc)		\
 		 $(noinst_HEADERS_moc:.h=.moc.cc)
 		 
