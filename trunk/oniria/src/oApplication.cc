@@ -23,6 +23,7 @@
 #include "oXMLConfig.h"
 #include "oOniriaImpl.h"
 #include "oPluginManager.h"
+#include "oEventManager.h"
 #include "oApplication.h"
 
 
@@ -38,9 +39,14 @@ oApplication::oApplication(int& argc, char ** argv)
 		dir.mkpath(cf);
 	_config = new oXMLConfig(cf + "/config.xml", true);
 
+	_eventman = new oEventManager(this);
+
 	_oniria = new oOniriaImpl(this);
 
 	_plugman = new oPluginManager(this);
 	_plugman->loadPlugins();
+
+
+	_plugman->createPlugins();
 }
 

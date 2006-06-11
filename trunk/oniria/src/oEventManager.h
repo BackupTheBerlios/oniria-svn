@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,41 +19,36 @@
 #ifndef __OEVENTMANAGER_H
 #define __OEVENTMANAGER_H
 
-#include <map>
-#include <string>
-#include <list>
-#include <set>
+#include <QString>
+#include <QMap>
+#include <QList>
 #include <onir/oEventQueue.h>
 #include <onir/oEventHandler.h>
 
-using std::map;
-using std::string;
-using std::list;
-using std::set;
 using onir::oEvent;
 using onir::oEventHandler;
 using onir::oEventQueue;
 
-class gApp;
+class oApplication;
 
 class oEventManager : public oEventQueue {
 	public:
-		oEventManager(gApp * app);
+		oEventManager(oApplication * app);
 		virtual ~oEventManager();
 
-		bool RegisterHandler(const string& id, oEventHandler * hnd);
-		virtual bool Process(oEvent * event);
-		virtual bool Queue(oEvent * event);
+		bool registerHandler(const QString& id, oEventHandler * hnd);
+		virtual bool process(oEvent * event);
+		virtual bool queue(oEvent * event);
 
-		void ProcessQueue();
+		void processQueue();
 
-		const list<oEventHandler *>& HandlerChain(const string& action);
+		const QList<oEventHandler *>& handlerChain(const QString& action);
 
 	private:
-		gApp * _app;
-		map<string, list<oEventHandler *> > _handlers;
-		set<oEventHandler *> _s_handlers;
-		list<oEvent *> _queue;
+		oApplication * _app;
+		QMap<QString, QList<oEventHandler *> > _handlers;
+		QMap<oEventHandler *, oEventHandler *> _m_handlers;	// should be QSet, but Qt set sucks a bit.
+		QList<oEvent *> _queue;
 };
 
 #endif

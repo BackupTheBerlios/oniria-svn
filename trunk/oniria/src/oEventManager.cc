@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,55 +19,54 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
+#include <QtDebug>
 #include <onir/oEvent.h>
 #include "oEventManager.h"
 
-using namespace std;
-
-oEventManager::oEventManager(gApp * app)
+oEventManager::oEventManager(oApplication * app)
 {
 	_app = app;
 }
 
 oEventManager::~oEventManager()
 {
-	for (list<oEvent *>::iterator it = _queue.begin(); it != _queue.end(); it++)
+	for (QList<oEvent *>::iterator it = _queue.begin(); it != _queue.end(); it++)
 		delete *it;
-	for (set<oEventHandler *>::iterator i = _s_handlers.begin(); i != _s_handlers.end(); i++)
-		delete *i;
+	for (QMap<oEventHandler *, oEventHandler *>::iterator i = _m_handlers.begin(); i != _m_handlers.end(); i++)
+		delete i.key();
 }
 
-bool oEventManager::RegisterHandler(const string& id, oEventHandler * hnd)
+bool oEventManager::registerHandler(const QString& id, oEventHandler * hnd)
 {
 	_handlers[id].push_back(hnd);
-	_s_handlers.insert(hnd);
-	wxLogVerbose("oEventManager: Registered handler for event %s.", id.c_str());
+	_m_handlers.insert(hnd, hnd);
+	qDebug() << "oEventManager::registerHandler(): Registered handler for event" << id;
 	return true;
 }
 
-bool oEventManager::Process(oEvent * event)
+bool oEventManager::process(oEvent * event)
 {
-	if (_handlers.find(event->Id()) != _handlers.end()) {
-		wxLogVerbose("oEventManager: Processing event %s, handlers: %d", event->Id().c_str(), _handlers[event->Id()].size());
-		for (list<oEventHandler *>::iterator it = _handlers[event->Id()].begin(); it != _handlers[event->Id()].end(); it++)
-			if (!(*it)->ProcessEvent(event))
+	if (_handlers.find(event->id()) != _handlers.end()) {
+		qDebug() << "oEventManager::process(): Processing event" << event->id() << " handlers:" << _handlers[event->id()].size();
+		for (QList<oEventHandler *>::iterator it = _handlers[event->id()].begin(); it != _handlers[event->id()].end(); it++)
+			if (!(*it)->processEvent(event))
 				break;
 	}
 	delete event;
 	return true;
 }
 
-bool oEventManager::Queue(oEvent * event)
+bool oEventManager::queue(oEvent * event)
 {
-	wxLogVerbose("oEventManager: Queued event %s.", event->Id().c_str());
+	qDebug() << "oEventManager::queue(): Queued event" << event->id();
 	_queue.push_back(event);
 	return true;
 }
 
-void oEventManager::ProcessQueue()
+void oEventManager::processQueue()
 {
 	while (!_queue.empty()) {
-		Process(_queue.front());
+		process(_queue.front());
 		_queue.pop_front();
 	}
 }

@@ -28,6 +28,7 @@ using onir::oOniria;
 using onir::oConfig;
 
 class oPluginManager;
+class oEventManager;
 
 class oApplication : public QApplication {
 
@@ -38,11 +39,14 @@ class oApplication : public QApplication {
 
 		inline oOniria * oniria() const { return _oniria; };
 		inline oConfig * config() const { return _config; };
+		inline oEventManager * eventManager() const { return _eventman; };
+		inline oPluginManager * pluginManager() const { return _plugman; };
 		
 	private:
 		oOniria * _oniria;
 		oConfig * _config;
 		oPluginManager * _plugman;
+		oEventManager * _eventman;
 };
  
 #endif
