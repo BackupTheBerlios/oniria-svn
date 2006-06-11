@@ -50,6 +50,8 @@ AC_PATH_PROGS(ZIP, [zip pkzip], [zip])
 AC_PATH_PROG(QTMOC, moc)
 
 dnl Checks for header files.
+AC_CHECK_HEADERS([dlfcn.h])
+
 dnl AC_CHECK_HEADERS([stdio.h stdlib.h stdint.h errno.h string.h strings.h assert.h \
 dnl		  unistd.h sys/select.h sys/time.h sys/types.h \
 dnl		  malloc.h sys/socket.h netinet/in.h netdb.h fcntl.h],

@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,12 +19,14 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <iostream>
-#include <wx/dir.h>
-#include <wx/dynlib.h>
-#include <onir/utils/uListDirTraverser.h>
+#include <QDir>
+#include <QStringList>
+#include <QtDebug>
+#if defined(HAVE_DLFCN_H)
+# include <dlfcn.h>
+#endif
 #include <onir/oPlugin.h>
-#include "gApp.h"
+#include "oApplication.h"
 #include "oPluginManager.h"
 
 #if defined(WIN32)
@@ -34,16 +36,13 @@
 # define DYNLIB_MASK	"*.so"
 # define PLUGIN_CREATE	"plugin_create"
 #else
-# define DYNLIB_MASK	"*"
+# define DYNLIB_MASK	"*.so"
 # define PLUGIN_CREATE	"plugin_create"
 #endif
 
-using namespace std;
-using onirUtils::uListDirTraverser;
-
 typedef bool (*plugin_create)(oPlugin **);
 
-oPluginManager::oPluginManager(gApp * app)
+oPluginManager::oPluginManager(oApplication * app)
 {
 	_app = app;
 }
@@ -52,49 +51,68 @@ oPluginManager::~oPluginManager()
 {
 }
 
-int oPluginManager::LoadPlugins()
+int oPluginManager::loadPlugins()
 {
-	uListDirTraverser trav;
-	wxDir dir(PLUGINDIR);
-	
-	dir.Traverse(trav, DYNLIB_MASK);
+	QDir dir(PLUGINDIR);
+	QStringList flt, files;
 
-	for (list<string>::iterator it = trav.files().begin(); it != trav.files().end(); it++) {
+	flt.push_back(DYNLIB_MASK);
+	files = dir.entryList(flt, QDir::Files | QDir::Readable);
 
-		wxDynamicLibrary * dl;
+	qDebug() << "oPluginManager::loadPlugins(): Plugins dir:" << PLUGINDIR;
+	qDebug() << "oPluginManager::loadPlugins(): Plugins mask:" << DYNLIB_MASK;
+	for (QStringList::iterator it = files.begin(); it != files.end(); it++) {
+
+		QLibrary * dl;
 		oPlugin * plug;
 		plugin_create fn;
 
-		dl = new wxDynamicLibrary();
-		if (!dl->Load(*it)) {
+		qDebug() << "oPluginManager::loadPlugins(): Found plugin:" << *it;
+
+		dl = new QLibrary(QString(PLUGINDIR) + "/" + *it);
+		if (!dl->load()) {
+			qDebug() << "oPluginManager::loadPlugins(): Can't load library " << *it;
+#if defined(HAVE_DLFCN_H)
+			qDebug() << "oPluginManager::loadPlugins():" << dlerror();
+#endif
 			delete dl;
 		} else {
-			fn = (plugin_create)dl->GetSymbol(PLUGIN_CREATE);
+			fn = (plugin_create)dl->resolve(PLUGIN_CREATE);
 			if (!fn) {
+				qDebug() << "oPluginManager::loadPlugins(): Can't find plugin entry point in " << *it;
 				delete dl;
 				continue;
 			}
 			plug = NULL;
 			if (fn(&plug)) {
-				if (plug != NULL)
-					_plugins[plug->name()] = plug;
-				_dlls.push_back(dl);
+				if (!plug->id().isEmpty()) {
+					if (plug != NULL)
+						_plugins[plug->id()] = plug;
+					qDebug() << "oPluginManager::loadPlugins(): Loaded plugin:" << plug->id();
+					_dlls.push_back(dl);
+				} else {
+					qDebug() << "oPluginManager::loadPlugins(): Empty plugin id? Bad...";
+					delete dl;
+					continue;
+				}
 			} else {
 				delete dl;
 			}
 		}
 
 	}
+	qDebug() << "oPluginManager::loadPlugins(): Loaded " << _dlls.size() << " plugins.";
 	return _dlls.size();
 }
 
-int oPluginManager::CreatePlugins()
+int oPluginManager::createPlugins()
 {
 	int init_ok = 0;
-	for (map<string, oPlugin *>::iterator it = _plugins.begin(); it != _plugins.end(); it++) {
-		if (it->second->Create(_app->Oniria()))
+	for (QMap<QString, oPlugin *>::iterator it = _plugins.begin(); it != _plugins.end(); it++) {
+		if (it.value()->create(_app->oniria()))
 			init_ok++;
 	}
 	return init_ok;
+	return 0;
 }
 

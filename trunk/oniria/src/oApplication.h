@@ -27,6 +27,8 @@
 using onir::oOniria;
 using onir::oConfig;
 
+class oPluginManager;
+
 class oApplication : public QApplication {
 
 	Q_OBJECT
@@ -34,11 +36,13 @@ class oApplication : public QApplication {
 	public:
 		oApplication(int& argc, char ** argv);
 
+		inline oOniria * oniria() const { return _oniria; };
 		inline oConfig * config() const { return _config; };
 		
 	private:
 		oOniria * _oniria;
 		oConfig * _config;
+		oPluginManager * _plugman;
 };
  
 #endif

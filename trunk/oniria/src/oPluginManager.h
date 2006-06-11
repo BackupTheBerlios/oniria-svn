@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,30 +19,25 @@
 #ifndef __OPLUGINMANAGER_H
 #define __OPLUGINMANAGER_H
 
-#include <map>
-#include <string>
-#include <vector>
+#include <QMap>
+#include <QVector>
+#include <QLibrary>
 #include <onir/oPlugin.h>
 
-using std::map;
-using std::string;
-using std::vector;
 using onir::oPlugin;
-class wxDynamicLibrary;
-class gApp;
 
 class oPluginManager {
 	public:
-		oPluginManager(gApp * app);
+		oPluginManager(oApplication * app);
 		virtual ~oPluginManager();
 
-		int LoadPlugins();
-		int CreatePlugins();
+		int loadPlugins();
+		int createPlugins();
 
 	private:
-		gApp * _app;
-		map<string, oPlugin *> _plugins;
-		vector<wxDynamicLibrary *> _dlls;
+		oApplication * _app;
+		QMap<QString, oPlugin *> _plugins;
+		QVector<QLibrary *> _dlls;
 
 };
 

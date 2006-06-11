@@ -22,6 +22,8 @@ oniria_SOURCES = oniria.cc			\
 		 oApplication.cc		\
 		 oOniriaImpl.cc			\
 		 oOniriaImpl.h			\
+		 oPluginManager.cc		\
+		 oPluginManager.h		\
 		 $(noinst_HEADERS_moc)		\
 		 $(noinst_HEADERS_moc:.h=.moc.cc)
 		 
