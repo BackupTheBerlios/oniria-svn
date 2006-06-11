@@ -19,6 +19,7 @@ libonir_la_HEADERS_moc =
 
 nobase_onirinclude_HEADERS = onir.h				\
 			     onir_dll.h				\
+			     plugin.h				\
 			     oPlugin.h				\
 			     oOniria.h				\
 			     oEvent.h				\
