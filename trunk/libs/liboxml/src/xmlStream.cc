@@ -24,7 +24,6 @@
 #include <QXmlDefaultHandler>
 #include <QXmlInputSource>
 #include <QXmlSimpleReader>
-#include <QtDebug>
 #include "xmlElement.h"
 #include "xmlStanza.h"
 #include "xmlStream.h"
@@ -209,6 +208,8 @@ bool xmlStream::initiate()
 	
 	_state = initiating;
 
+	flush();
+
 	return true;
 }
 
@@ -235,17 +236,33 @@ bool xmlStream::close()
 bool xmlStream::parse()
 {
 	QByteArray b;
+	bool ok;
+	int numb;
 
 	b.append(_private->source->data());
 	b.append(_input_b);
-	_private->source->setData(b);
 	_input_b = "";
 
-	if (state() == initiating) {
-		_private->reader->parse(_private->source, true);
-	} else {
-		_private->reader->parseContinue();
+	// Qt XML parser is so stupid to parse only valid chunk of xml, and preserve
+	// rest for next pass, so we must do that manually
+	
+	ok = false;
+	numb = b.size();
+	while (!ok) {
+		_private->source->setData(b.left(numb));
+		if (state() == initiating) {
+			ok =  _private->reader->parse(_private->source, true);
+		} else {
+			ok = _private->reader->parseContinue();
+		}
+		// try to parse smaller buffer as long as numb > 0
+		if (numb > 0)
+			numb--;
+		else
+			break;
 	}
+	_private->source->setData(QByteArray());		// reset source
+	_input_b = b.right(b.size() - numb);	// preserve rest for next try
 
 	return true;
 }
