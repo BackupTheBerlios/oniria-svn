@@ -21,7 +21,10 @@
 
 #include "onir_dll.h"
 
+#include <QObject>
 #include <QString>
+
+class QApplication;
 
 namespace onirIM {
 	class imProtocol;
@@ -114,6 +117,9 @@ class LIBONIR_API oOniria {
 		/*!\name Subsystems accessors
 		 * @{
 		 */
+
+		virtual QApplication * application() const = 0;
+		virtual QObject * applicationQObject() const = 0;
 
 		/*!\fn virtual oConfig * config() const  = 0
 		 * \brief Returns pointer to oConfig object.
