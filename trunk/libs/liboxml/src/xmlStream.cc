@@ -170,6 +170,8 @@ bool xmlStream::prepare()
 	_private->reader = new QXmlSimpleReader();
 
 	_private->reader->setContentHandler(_private->handler);
+	_private->reader->setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+	_private->reader->setFeature("http://xml.org/sax/features/namespaces", false);
 
 	_in_root = new xmlElement;
 
