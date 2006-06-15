@@ -312,9 +312,10 @@ void xmlStream::parseEndTag(const QString& elem)
 		if (_active_stanza != NULL) {
 			if (!_active_stanza->parseEndTag(elem)) {
 				if (_active_stanza->valid()) {
-					emit receivedStanza(_active_stanza);
+					xmlStanza * as = _active_stanza;
 					_active_stanza = NULL;
 					_state = established;
+					emit receivedStanza(as);
 				} else {
 					_state = error;
 				}
@@ -332,10 +333,10 @@ void xmlStream::parseCharacterData(const QString& s)
 	}
 }
 
-void xmlStream::addStanza(xmlStanza * stanza)
+void xmlStream::addStanza(xmlStanza * st)
 {
-	if (stanza != NULL)
-		_out_stanzas.push_back(stanza);
+	if (st != NULL)
+		_out_stanzas.push_back(st);
 	flush();
 }
 
