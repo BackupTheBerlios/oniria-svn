@@ -56,7 +56,7 @@ bool saslDIGESTMD5::step1(QByteArray * challenge, QByteArray * response)
 {
 	QString s_ch;
 	QString realm, nonce, username, serv_type, host, serv_name, passwd, digest_uri, nc, cnonce;
-	QTextStream resp;
+	QTextStream resp(response);
 	QByteArray * prop;
 	QString a1, a2, rval;
 	cptMD5 md5;
@@ -184,8 +184,6 @@ bool saslDIGESTMD5::step1(QByteArray * challenge, QByteArray * response)
 	resp << "digest-uri=\"" << digest_uri << "\",";
 	resp << "response=" << rval << ",";
 	resp << "charset=utf-8";
-
-	*response = resp.readAll().toLocal8Bit();
 
 	_step = 2;
 	state(auth);
