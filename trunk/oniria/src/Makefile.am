@@ -13,7 +13,8 @@ oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@ @OXML_LIBS@ @OIM_LIBS@ @ONIR_LIBS@
 bin_PROGRAMS = oniria
 
 noinst_HEADERS_moc = oMainWindow.h		\
-		     oApplication.h
+		     oApplication.h		\
+		     oEventManager.h
 
 oniria_SOURCES = oniria.cc			\
 		 oXMLConfig.cc			\
@@ -25,7 +26,6 @@ oniria_SOURCES = oniria.cc			\
 		 oPluginManager.cc		\
 		 oPluginManager.h		\
 		 oEventManager.cc		\
-		 oEventManager.h		\
 		 oSessionManager.cc		\
 		 oSessionManager.h		\
 		 $(noinst_HEADERS_moc)		\

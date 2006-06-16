@@ -32,6 +32,9 @@ using onir::oEventQueue;
 class oApplication;
 
 class oEventManager : public oEventQueue {
+
+	Q_OBJECT;
+
 	public:
 		oEventManager(oApplication * app);
 		virtual ~oEventManager();
@@ -40,9 +43,11 @@ class oEventManager : public oEventQueue {
 		virtual bool process(oEvent * event);
 		virtual bool queue(oEvent * event);
 
+		const QList<oEventHandler *>& handlerChain(const QString& action);
+
+	public slots:
 		void processQueue();
 
-		const QList<oEventHandler *>& handlerChain(const QString& action);
 
 	private:
 		oApplication * _app;

@@ -20,6 +20,7 @@
 # include <config.h>
 #endif
 #include <QDir>
+#include <QTimer>
 #include "oXMLConfig.h"
 #include "oOniriaImpl.h"
 #include "oPluginManager.h"
@@ -52,6 +53,10 @@ oApplication::oApplication(int& argc, char ** argv)
 	_sessionman->registerEventHandlers();
 
 	_eventman->processQueue();
+
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), _eventman, SLOT(processQueue()));
+	timer->start();
 
 	_plugman->createPlugins();
 
