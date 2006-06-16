@@ -6,8 +6,8 @@ plugindir = @ONIRIA_PLUGINDIR@
 
 
 plugin_LTLIBRARIES = libjabber.la
-libjabber_la_CPPFLAGS = -Wall @ONIR_CFLAGS@
-libjabber_la_LDFLAGS = @ONIR_LIBS@
+libjabber_la_CPPFLAGS = -Wall @ONIR_CFLAGS@ @OXML_CFLAGS@ @OSASL_CFLAGS@ @OIM_CFLAGS@
+libjabber_la_LDFLAGS = @ONIR_LIBS@ @OXML_LIBS@ @OSASL_LIBS@ @OIM_LIBS@
 
 INCLUDES = -DLOCALEDIR=\"$(localedir)\"
 

@@ -52,7 +52,10 @@ dnl	       [AC_ERROR([cannot find one of required functions..
 dnl	          your system is a bit strange.])])
 
 PKG_CHECK_MODULES(QT, [QtCore >= 4.0.1 QtXml >= 4.0.1])
-PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0 liboim >= 0.1.0 liboxml >= 0.1.0 libosasl >= 0.1.0])
+PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0])
+PKG_CHECK_MODULES(OIM, [liboim >= 0.1.0])
+PKG_CHECK_MODULES(OXML, [liboxml >= 0.1.0])
+PKG_CHECK_MODULES(OSASL, [libosasl >= 0.1.0])
 AM_PATH_ONIRIA
 
 AC_OUTPUT

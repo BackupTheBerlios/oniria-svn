@@ -20,6 +20,7 @@
 # include <config.h>
 #endif
 #include <QTcpSocket>
+#include <QtDebug>
 #include <onir/onir.h>
 #include <onir/oOniria.h>
 #include <onir/oConfig.h>
@@ -83,7 +84,7 @@ bool jSession::load(xmlElement *cnode)
 		return false;
 
 	_password = oniria()->config()->value(cnode, "password", "");
-	_force_no_sasl = (oniria()->config()->nodeAt(cnode, "force-no-sasl") != NULL);
+	_force_no_sasl = (oniria()->config()->node(cnode, "force-no-sasl") != NULL);
 
 
 	return true;
@@ -95,7 +96,7 @@ bool jSession::connect(bool ac)
 
 	_roster = new jRoster(this);
 
-	_socket = new QTcpSocket;
+	_socket = new QTcpSocket();
 	QObject::connect(_socket, SIGNAL(connected()), SLOT(connected()));
 	_socket->connectToHost(_jid.domain(), 5222);	// TODO: resolve host using dns SRV records
 	_state = connecting;
@@ -105,6 +106,7 @@ bool jSession::connect(bool ac)
 
 void jSession::connected()
 {
+	qDebug() << "jSession::connected():" << sessionId();
 	_xml = new xmlStream(_socket, _socket);
 	QObject::connect(_xml, SIGNAL(receivedStanza(xmlStanza *)), SLOT(receivedStanza(xmlStanza *)));
 	_xml->prepare();
@@ -373,10 +375,10 @@ bool jSession::SASLAuth(const QList<QString>& mechs)
 
 	_sasl = new saslSASL;
 	if (_sasl->chooseMechanism(mechs) == NULL) {
-		//wxLogError("jSession: No supported SASL mechanisms found.");
+		qWarning() << "jSession::SASLAuth() No supported SASL mechanisms found.";
 		return false;
 	}
-	//wxLogVerbose("jSession: Using %s SASL mechanism.", _sasl->Mechanism()->Name().c_str());
+	qDebug() << "jSession::SASLAuth():" << sessionId() << ": Using" << _sasl->mechanism()->name() << "SASL mechanism.";
 
 	_sasl->mechanism()->addProperty("username", _jid.node());
 	_sasl->mechanism()->addProperty("passwd", _password);
@@ -401,10 +403,10 @@ bool jSession::doSASLAuth(xmlStanza * stanza)
 			QByteArray challenge, response;
 
 			cptBase64::decode(&challenge, stanza->element()->value());
-			//wxLogVerbose("jSession: SASL challenge: %s", challenge.str().c_str());
+			qDebug() << "jSession::doSASLAuth():" << sessionId() << ": SASL challenge:" << challenge;
 			if (!_sasl->mechanism()->response(&challenge, &response))
 				return false;
-			//wxLogVerbose("jSession: SASL response: %s", response.str().c_str());
+			qDebug() << "jSession::doSASLAuth():" << sessionId() << ": SASL response" << response;
 
 			stanza = new xmlStanza;
 			stanza->element()->name("response");
@@ -415,11 +417,13 @@ bool jSession::doSASLAuth(xmlStanza * stanza)
 			return true;
 		} else if (stanza->element()->name() == "success") {
 
-			//wxLogMessage("jSession: Authenticated.");
+			qDebug() << "jSession::doSASLAuth():" << sessionId() << ": Authenticated.";
 
 			// destroy current and create new stream
+			_xml->disconnect(this);
 			delete _xml;
-			_xml = new xmlStream(/*_iostream, _iostream*/);				// XXX
+			_xml = new xmlStream(_socket, _socket);
+			QObject::connect(_xml, SIGNAL(receivedStanza(xmlStanza *)), SLOT(receivedStanza(xmlStanza *)));
 			_xml->prepare();
 			_xml->outRoot()->name("stream:stream");
 			_xml->outRoot()->addAttribute("to", _jid.domain());
@@ -427,6 +431,7 @@ bool jSession::doSASLAuth(xmlStanza * stanza)
 			_xml->outRoot()->addAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
 			_xml->outRoot()->addAttribute("version", "1.0");
 			_xml->initiate();
+			_xml->poll();
 
 			_state = authenticated;
 
@@ -491,7 +496,6 @@ bool jSession::establishSession()
 
 bool jSession::parseFeatures(xmlStanza * stanza)
 {
-
 	if (_state == connecting) {
 		xmlElement * e_mechs;
 		QList<xmlElement *> l_mechs;
@@ -509,11 +513,11 @@ bool jSession::parseFeatures(xmlStanza * stanza)
 			}
 			e_mechs->children("mechanism", l_mechs);
 
-			for (QList<xmlElement *>::iterator it = l_mechs.begin(); it != l_mechs.end(); it++)
+			for (QList<xmlElement *>::iterator it = l_mechs.begin(); it != l_mechs.end(); it++) {
 				mechs.push_back((*it)->value());
+				qDebug() << "jSession::parseFeatures():" << sessionId() << ": SASL mechanism:" << (*it)->value();
+			}
 
-			//for (list<QString>::iterator it = mechs.begin(); it != mechs.end(); it++)
-			//	wxLogVerbose("jSession: SASL mechanism: %s", it->c_str());
 
 			// start authentication process
 			if (!mechs.empty()) {

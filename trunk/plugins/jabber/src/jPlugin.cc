@@ -19,12 +19,13 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-//#include "jProtocol.h"
+#include "jProtocol.h"
 #include "jPlugin.h"
 
 jPlugin::jPlugin()
 : oPlugin()
 {
+	id("oniria:im:protocol:jabber");
 	descriptionField("name", "jabber");
 	descriptionField("description", "Jabber (XMPP) protocol.");
 	descriptionField("version", VERSION);
@@ -39,8 +40,8 @@ jPlugin::~jPlugin()
 
 bool jPlugin::create(oOniria * o)
 {
-	//_protocol = new jProtocol;
-	//o->RegisterProtocol(_protocol);
+	_protocol = new jProtocol(o);
+	o->registerProtocol(_protocol);
 	return true;
 }
 

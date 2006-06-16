@@ -22,8 +22,9 @@
 #include "jSession.h"
 #include "jProtocol.h"
 
-jProtocol::jProtocol()
+jProtocol::jProtocol(oOniria * o)
 {
+	_oniria = o;
 }
 
 jProtocol::~jProtocol()
@@ -50,10 +51,10 @@ QString jProtocol::protocolVersion() const
 	return "1.0";
 }
 
-imSession * jProtocol::createSession(oOniria * o)
+imSession * jProtocol::createSession()
 {
 	jSession * p;
-	p = new jSession(o, this);
+	p = new jSession(oniria(), this);
 	return p;
 }
 

@@ -30,7 +30,7 @@ using onir::oOniria;
 class jProtocol : public imProtocol {
 
 	public:
-		jProtocol();
+		jProtocol(oOniria * o);
 		virtual ~jProtocol();
 
 		virtual QString protocolId() const;
@@ -38,7 +38,12 @@ class jProtocol : public imProtocol {
 		virtual QString protocolDescription() const;
 		virtual QString protocolVersion() const;
 
-		virtual imSession * createSession(oOniria * o);
+		virtual imSession * createSession();
+
+		inline oOniria * oniria() const { return _oniria; };
+
+	private:
+		oOniria * _oniria;
 
 };
 

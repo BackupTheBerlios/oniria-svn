@@ -19,10 +19,12 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
+#include <onir/plugin.h>
+#include "jPlugin.h"
 
-/*extern "C" bool ONIRIA_PLUGIN_API plugin_create(oPlugin ** p)
+extern "C" bool ONIRIA_PLUGIN_API plugin_create(oPlugin ** p)
 {
 	*p = new jPlugin;
 	return true;
 }
-*/
+
