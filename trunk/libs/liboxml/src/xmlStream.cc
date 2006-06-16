@@ -150,9 +150,9 @@ void xmlStream::cleanup()
 		_private = NULL;
 	}
 
-	_input_b = "";
-	_output_b = "";
-	
+	_input_b.clear();
+	_output_b.clear();
+
 	_state = unknown;
 }
 
@@ -160,6 +160,9 @@ bool xmlStream::prepare()
 {
 	cleanup();
 	encoding("UTF-8");	// set default encoding
+
+	_input_b.clear();
+	_output_b.clear();
 
 	_private = new __private;
 	_private->handler = NULL;
@@ -257,6 +260,8 @@ bool xmlStream::parse()
 		} else {
 			ok = _private->reader->parseContinue();
 		}
+		if (ok)
+			break;
 		// try to parse smaller buffer as long as numb > 0
 		if (numb > 0)
 			numb--;
