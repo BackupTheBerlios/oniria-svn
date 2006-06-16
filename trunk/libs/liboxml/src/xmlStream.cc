@@ -197,8 +197,6 @@ void xmlStream::readyRead()
 
 bool xmlStream::initiate()
 {
-	QTextStream os;
-
 	if (output() == NULL || input() == NULL)
 		return false;
 

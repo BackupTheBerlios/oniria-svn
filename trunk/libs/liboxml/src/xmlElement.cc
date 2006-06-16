@@ -61,9 +61,10 @@ xmlElement::~xmlElement()
 
 void xmlElement::value(int avalue)
 {
-	QTextStream ss;
+	QString s;
+	QTextStream ss(&s);
 	ss << avalue;
-	value(ss.readAll());
+	value(s);
 }
 
 void xmlElement::value(const QString& avalue)
