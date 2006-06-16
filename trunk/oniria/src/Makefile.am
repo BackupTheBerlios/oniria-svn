@@ -7,8 +7,8 @@ datadir = @datadir@/@PACKAGE@
 
 EXTRA_DIST = oniria_config.h.in
 
-oniria_CPPFLAGS = -Wall @QT_CFLAGS@ @OGUR_CFLAGS@ @OXML_CFLAGS@ @ONIR_CFLAGS@ -DPLUGINDIR=\"@PLUGINDIR@\" -DDATADIR=\"@datadir@/@PACKAGE@\"
-oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@ @OXML_LIBS@ @ONIR_LIBS@
+oniria_CPPFLAGS = -Wall @QT_CFLAGS@ @OGUR_CFLAGS@ @OXML_CFLAGS@ @OIM_CFLAGS@ @ONIR_CFLAGS@ -DPLUGINDIR=\"@PLUGINDIR@\" -DDATADIR=\"@datadir@/@PACKAGE@\"
+oniria_LDFLAGS = @QT_LIBS@ @OGUR_LIBS@ @OXML_LIBS@ @OIM_LIBS@ @ONIR_LIBS@
 
 bin_PROGRAMS = oniria
 
@@ -26,6 +26,8 @@ oniria_SOURCES = oniria.cc			\
 		 oPluginManager.h		\
 		 oEventManager.cc		\
 		 oEventManager.h		\
+		 oSessionManager.cc		\
+		 oSessionManager.h		\
 		 $(noinst_HEADERS_moc)		\
 		 $(noinst_HEADERS_moc:.h=.moc.cc)
 		 

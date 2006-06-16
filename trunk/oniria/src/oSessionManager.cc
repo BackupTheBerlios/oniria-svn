@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006 Michal Wysoczanski <choman@foto-koszalin.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,27 +19,26 @@
 #if defined(HAVE_CONFIG_H)
 # include <config.h>
 #endif
-#include <iostream>
-#include <onir/utils/uException.h>
-#include <onir/im/imProtocol.h>
-#include <onir/im/imSession.h>
-#include <onir/im/imMessageQueue.h>
-#include <onir/im/imMessageThread.h>
-#include <onir/im/imMessage.h>
+#include <QtDebug>
+#include <oim/imProtocol.h>
+#include <oim/imSession.h>
+#include <oim/imMessageQueue.h>
+#include <oim/imMessageThread.h>
+#include <oim/imMessageThreadUI.h>
+#include <oim/imMessage.h>
 #include <onir/oConfig.h>
 #include <onir/oEventForwarder.h>
-#include <onir/xml/xmlElement.h>
-#include <onir/oTabs.h>
-#include "gApp.h"
+#include <oxml/xmlElement.h>
+//#include <onir/oTabs.h>
+#include "oApplication.h"
 #include "oEventManager.h"
-#include "gRoster.h"
-#include "oStatusManager.h"
-#include "uiChat.h"
+//#include "gRoster.h"
+//#include "oStatusManager.h"
+//#include "uiChat.h"
 #include "oSessionManager.h"
 
 using namespace onirIM;
 using onir::oEventForwarder;
-using onirUtils::uException;
 
 namespace onirXML{
 	class xmlElement;
@@ -47,60 +46,58 @@ namespace onirXML{
 
 using onirXML::xmlElement;
 
-DEFINE_OOBJECT(oSessionManager, oEventTarget);
-
-oSessionManager::oSessionManager(gApp * app)
+oSessionManager::oSessionManager(oApplication * app)
 {
 	_app = app;
-	_status.Set(imStatus::avail);
-	INIT_OOBJECT;
+	_status.set(imStatus::avail);
 }
 
 oSessionManager::~oSessionManager()
 {
 }
 
-bool oSessionManager::RegisterProtocol(imProtocol * proto)
+bool oSessionManager::registerProtocol(imProtocol * proto)
 {
-	if (_protocols.find(proto->ProtocolId()) != _protocols.end())
-		throw uException(_("Protocol already registered."));
-	_protocols[proto->ProtocolId()] = proto;
+	if (_protocols.find(proto->protocolId()) != _protocols.end())
+		return false;
+	_protocols[proto->protocolId()] = proto;
+	qDebug() << "oSessionManager::registerProtocol(): Registered protocol" << proto->protocolId();
 	return true;
 }
 
-imProtocol * oSessionManager::FindProtocol(const string& id)
+imProtocol * oSessionManager::findProtocol(const QString& id)
 {
 	if (_protocols.find(id) == _protocols.end())
 		return NULL;
 	return _protocols[id];
 }
 
-int oSessionManager::LoadSessions()
+int oSessionManager::loadSessions()
 {
-	vector<xmlElement *> snodes;
+	QVector<xmlElement *> snodes;
 	int sessions;
 
-	snodes = _app->Config()->Children("sessions");
+	snodes = _app->config()->children("sessions");
 	if (snodes.empty())
 		return 0;
 	sessions = 0;
-	for (vector<xmlElement *>::iterator i = snodes.begin(); i != snodes.end(); i++) {
-		if (_app->Config()->NodeName(*i) == "session") {
+	for (QVector<xmlElement *>::iterator i = snodes.begin(); i != snodes.end(); i++) {
+		if (_app->config()->nodeName(*i) == "session") {
 			imProtocol * proto;
 
-			proto = FindProtocol(_app->Config()->Value(*i, "protocol", ""));
+			proto = findProtocol(_app->config()->value(*i, "protocol", ""));
 			if (proto == NULL) {
-				wxLogMessage("oSessionManager: Session with unknown protocol: %s", _app->Config()->Value(*i, "protocol", "").c_str());
+				qDebug() << "oSessionManager::loadSessions(): session with unknown protocol:" << _app->config()->value(*i, "protocol", "");
 			} else {
 				imSession * s;
                 
-				s = proto->CreateSession(_app->Oniria());
-				s->Prepare();
+				s = proto->createSession();
+				s->prepare();
 				if (s != NULL) {
-					s->Load(*i);
-					_sessions[s->SessionId()] = s;
-					CreateRosterWindow(s);
-					wxLogMessage("oSessionManager: Loaded session \"%s\", protocol: %s.", s->Name().c_str(), proto->ProtocolName().c_str());
+					s->load(*i);
+					_sessions[s->sessionId()] = s;
+					//createRosterWindow(s);//XXX
+					qDebug() << "oSessionManager::loadSessions() Loaded session" << s->name() << ", protocol:" << proto->protocolName();
 				}
 			}
 			
@@ -109,198 +106,202 @@ int oSessionManager::LoadSessions()
 	return _sessions.size();
 }
 
-int oSessionManager::ConnectSessions(bool all)
+int oSessionManager::connectSessions(bool all)
 {
 	_active_sessions.clear();
-	for (map<string, imSession *>::iterator it = _sessions.begin(); it != _sessions.end(); it++) {
-		if (all || it->second->AutoConnect()) {
-			if (it->second->Connect(true)) {
-				_active_sessions[it->second->SessionId()] = it->second;
-				it->second->Status(_status, false);
+	for (QMap<QString, imSession *>::iterator it = _sessions.begin(); it != _sessions.end(); it++) {
+		if (all || it.value()->autoConnect()) {
+			if (it.value()->connect(true)) {
+				_active_sessions[it.value()->sessionId()] = it.value();
+				it.value()->status(_status, false);
 			}
 		}
 	}
 	return _active_sessions.size();
 }
 
-void oSessionManager::Poll()
+void oSessionManager::poll()
 {
-	map<string, imSession *>::iterator it = _active_sessions.begin();
+	QMap<QString, imSession *>::iterator it = _active_sessions.begin();
 	while (it != _active_sessions.end()) {
-		if (!it->second->Poll()) {
-			string k = it->first;
+		if (!it.value()->poll()) {
+			QString k = it.key();
 			it++;
-			_active_sessions.erase(k);
+			_active_sessions.remove(k);
 		} else {
-			ProcessMessageQueue(it->second);
+			processMessageQueue(it.value());
 			it++;
 		}
 	}
 }
 
-void oSessionManager::ProcessMessageQueue(imSession * s)
+void oSessionManager::processMessageQueue(imSession * s)
 {
-	for (map<string, imMessageThread *>::iterator it = s->MessageQueue()->Threads()->begin(); it != s->MessageQueue()->Threads()->end(); it++) {
+	for (QMap<QString, imMessageThread *>::iterator it = s->messageQueue()->threads()->begin(); it != s->messageQueue()->threads()->end(); it++) {
 		imMessage * msg;
-		if (it->second->UI() == NULL) {
+		if (it.value()->ui() == NULL) {
 			oEvent * event;
 			event = new oEvent("oniria:im:session:thread:ui:create");
-			event->XML()->AddChild("session-id", s->SessionId());
-			event->XML()->AddChild("thread-id", it->second->Id());
-			_app->EventManager()->Process(event);
-			if (it->second->UI() != NULL)
-				it->second->UI()->Create();
+			event->xml()->addChild("session-id", s->sessionId());
+			event->xml()->addChild("thread-id", it.value()->id());
+			_app->eventManager()->process(event);
+			if (it.value()->ui() != NULL)
+				it.value()->ui()->create();
 		}
-		while ((msg = it->second->NextInMessage()) != NULL) {
-			if (it->second->UI() != NULL) {
-				it->second->UI()->DisplayMessage(msg);
+		while ((msg = it.value()->nextInMessage()) != NULL) {
+			if (it.value()->ui() != NULL) {
+				it.value()->ui()->displayMessage(msg);
 				delete msg;
 			}
 		}
-		while ((msg = it->second->NextOutMessage()) != NULL) {
-			s->SendMessage(msg);
+		while ((msg = it.value()->nextOutMessage()) != NULL) {
+			s->sendMessage(msg);
 			delete msg;
 		}
 	}
 }
 
-bool oSessionManager::StartThread(const string& session_id, const string& roster_id)
+bool oSessionManager::startThread(const QString& session_id, const QString& roster_id)
 {
 	imSession * s;
 	imMessageThread * th;
 	oEvent * event;
 
 	if (_active_sessions.find(session_id) == _active_sessions.end())
-		throw uException(_("Unknown session."));
+		return false;
+		//throw uException(_("Unknown session."));
 
 	s = _active_sessions[session_id];
 
-	th = s->MessageQueue()->GetThread("msg", roster_id, "");
+	th = s->messageQueue()->getThread("msg", roster_id, "");
 
 	event = new oEvent("oniria:im:session:thread:ui:create");
-	event->XML()->AddChild("session-id", s->SessionId());
-	event->XML()->AddChild("thread-id", th->Id());
-	_app->EventManager()->Process(event);
-	if (th->UI() != NULL)
-		th->UI()->Create();
+	event->xml()->addChild("session-id", s->sessionId());
+	event->xml()->addChild("thread-id", th->id());
+	_app->eventManager()->process(event);
+	if (th->ui() != NULL)
+		th->ui()->create();
 	
 	return true;
 }
 
-void oSessionManager::Status(const imStatus& status, bool set)
+void oSessionManager::status(const imStatus& st, bool set)
 {
-	_status = status;
-	for (map<string, imSession *>::iterator it = _active_sessions.begin(); it != _active_sessions.end(); it++) {
-		it->second->Status(_status, set);
+	_status = st;
+	for (QMap<QString, imSession *>::iterator it = _active_sessions.begin(); it != _active_sessions.end(); it++) {
+		it.value()->status(_status, set);
 	}
 }
 
-wxWindow * oSessionManager::CreateRosterWindow(imSession * s)
-{	
-    _rosters[s->SessionId()] = new gRoster(_app, _app->TabManager()->ParentWindow());
-	_app->TabManager()->RegisterPage(s->SessionId(), s->Name(), _rosters[s->SessionId()], "roster");	
-	return _rosters[s->SessionId()];
-}
+// XXX
+//wxWindow * oSessionManager::CreateRosterWindow(imSession * s)
+//{	
+//    _rosters[s->SessionId()] = new gRoster(_app, _app->TabManager()->ParentWindow());
+//	_app->TabManager()->RegisterPage(s->SessionId(), s->Name(), _rosters[s->SessionId()], "roster");	
+//	return _rosters[s->SessionId()];
+//}
 
-imSession * oSessionManager::EventSession(oEvent * event)
+imSession * oSessionManager::eventSession(oEvent * event)
 {
 	imSession * s;
 
-	if (_sessions.find(event->XML()->ChildValue("session-id")) == _sessions.end())
-		throw uException(_("Unknown session."));
+	if (_sessions.find(event->xml()->childValue("session-id")) == _sessions.end())
+		return NULL;
+	//	throw uException(_("Unknown session."));
 
-	s = _sessions[event->XML()->ChildValue("session-id")];
+	s = _sessions[event->xml()->childValue("session-id")];
 	
 	return s;
 }
 
-void oSessionManager::RegisterEventHandlers()
+void oSessionManager::registerEventHandlers()
 {
-	_app->EventManager()->RegisterHandler("oniria:im:session:connected", new oEventForwarder(this));
-	_app->EventManager()->RegisterHandler("oniria:im:session:roster:updated", new oEventForwarder(this));
-	_app->EventManager()->RegisterHandler("oniria:im:session:roster:item:presence", new oEventForwarder(this));
-	_app->EventManager()->RegisterHandler("oniria:im:session:roster:item:new", new oEventForwarder(this));
-	_app->EventManager()->RegisterHandler("oniria:im:session:thread:ui:create", new oEventForwarder(this));
+	_app->eventManager()->registerHandler("oniria:im:session:connected", new oEventForwarder(this));
+	_app->eventManager()->registerHandler("oniria:im:session:roster:updated", new oEventForwarder(this));
+	_app->eventManager()->registerHandler("oniria:im:session:roster:item:presence", new oEventForwarder(this));
+	_app->eventManager()->registerHandler("oniria:im:session:roster:item:new", new oEventForwarder(this));
+	_app->eventManager()->registerHandler("oniria:im:session:thread:ui:create", new oEventForwarder(this));
 }
 
-bool oSessionManager::ProcessEvent(oEvent * event)
+bool oSessionManager::processEvent(oEvent * event)
 {
-	ROUTE_EVENT(event, "oniria:im:session:connected", SessionConnected);
-	ROUTE_EVENT(event, "oniria:im:session:roster:updated", RosterUpdated);
-	ROUTE_EVENT(event, "oniria:im:session:roster:item:presence", RosterPresence);
-	ROUTE_EVENT(event, "oniria:im:session:roster:item:new", RosterNewItem);
-	ROUTE_EVENT(event, "oniria:im:session:thread:ui:create", ThreadUICreate);
+	ROUTE_EVENT(event, "oniria:im:session:connected", sessionConnected);
+	ROUTE_EVENT(event, "oniria:im:session:roster:updated", rosterUpdated);
+	ROUTE_EVENT(event, "oniria:im:session:roster:item:presence", rosterPresence);
+	ROUTE_EVENT(event, "oniria:im:session:roster:item:new", rosterNewItem);
+	ROUTE_EVENT(event, "oniria:im:session:thread:ui:create", threadUICreate);
 	return true;
 }
 
-bool oSessionManager::SessionConnected(oEvent * event)
+bool oSessionManager::sessionConnected(oEvent * event)
 {
 	imSession * s;
 	
-	s = EventSession(event);
+	s = eventSession(event);
 
-	s->SyncRoster(false);
-	s->SetStatus();
+	s->syncRoster(false);
+	s->setStatus();
 
 	return true;
 }
 
-bool oSessionManager::RosterUpdated(oEvent * event)
+bool oSessionManager::rosterUpdated(oEvent * event)
 {
 	imSession * s;
-	gRoster * rwnd;
+	//gRoster * rwnd;
 	
-	s = EventSession(event);
+	s = eventSession(event);
 	
-	rwnd = _rosters[s->SessionId()];
-	rwnd->UpdateTree(s->Roster());
+	//rwnd = _rosters[s->SessionId()];
+	//rwnd->UpdateTree(s->Roster());
 
 	return true;
 }
 
-bool oSessionManager::RosterPresence(oEvent * event)
+bool oSessionManager::rosterPresence(oEvent * event)
 {
 	imSession * s;
-	gRoster * rwnd;
+	//gRoster * rwnd;
 	
-	s = EventSession(event);
+	s = eventSession(event);
 	
-	rwnd = _rosters[s->SessionId()];
-	rwnd->UpdateItem(event->XML()->ChildValue("item-id"));
+	//rwnd = _rosters[s->SessionId()];
+	//rwnd->UpdateItem(event->XML()->ChildValue("item-id"));
 
 	return true;
 }
 
-bool oSessionManager::RosterNewItem(oEvent * event)
+bool oSessionManager::rosterNewItem(oEvent * event)
 {
 	imSession * s;
-	gRoster * rwnd;
+	//gRoster * rwnd;	// XXX
 	
-	s = EventSession(event);
+	s = eventSession(event);
 	
-	rwnd = _rosters[s->SessionId()];
-	rwnd->NewItem(event->XML()->ChildValue("item-id"));
+	//rwnd = _rosters[s->sessionId()];	//XXX
+	//rwnd->newItem(event->xml()->childValue("item-id"));	/XXX
 
 	return true;
 }
 
-bool oSessionManager::ThreadUICreate(oEvent * event)
+bool oSessionManager::threadUICreate(oEvent * event)
 {
 	imSession * s;
 	imMessageThread * th;
 	
-	s = EventSession(event);
-	th = s->MessageQueue()->FindThread(event->XML()->ChildValue("thread-id"));
+	s = eventSession(event);
+	th = s->messageQueue()->findThread(event->xml()->childValue("thread-id"));
 	if (th == NULL)
 		return true;
 
-	th->UI(new uiChat(wxGetApp().Oniria()));
+	//th->ui(new uiChat(wxGetApp().Oniria()));	// XXX
 	
 	return true;
 }
 
-void oSessionManager::RegisterTabGroups()
+void oSessionManager::registerTabGroups()
 {
-	_app->TabManager()->RegisterGroup("roster", oTabs::ts_main_window);
-	_app->TabManager()->RegisterGroup("chat", oTabs::ts_single_window, oTabs::tws_invisible);
+	// XXX
+	//_app->TabManager()->RegisterGroup("roster", oTabs::ts_main_window);
+	//_app->TabManager()->RegisterGroup("chat", oTabs::ts_single_window, oTabs::tws_invisible);
 }

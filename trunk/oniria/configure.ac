@@ -78,6 +78,7 @@ PKG_CHECK_MODULES(QT, [QtCore >= 4.0.0 QtGui >= 4.0.0])
 PKG_CHECK_MODULES(OGUR, [libogur >= 0.1.0])
 PKG_CHECK_MODULES(OXML, [liboxml >= 0.1.0])
 PKG_CHECK_MODULES(ONIR, [libonir >= 0.1.0])
+PKG_CHECK_MODULES(OIM, [liboim >= 0.1.0])
 
 AC_OUTPUT
 

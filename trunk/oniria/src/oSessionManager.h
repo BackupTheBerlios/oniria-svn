@@ -19,23 +19,19 @@
 #ifndef __OSESSIONMANAGER_H
 #define __OSESSIONMANAGER_H
 
-#include <map>
-#include <string>
-#include <onir/im/imProtocol.h>
-#include <onir/im/imSession.h>
-#include <onir/im/imStatus.h>
+#include <oim/imProtocol.h>
+#include <oim/imSession.h>
+#include <oim/imStatus.h>
 #include <onir/oEventTarget.h>
 
-using std::map;
-using std::string;
 using onirIM::imProtocol;
 using onirIM::imSession;
 using onirIM::imStatus;
 using onir::oEventTarget;
 using onir::oEvent;
 
-class gApp;
-class gRoster;
+class oApplication;
+//class gRoster;
 
 /*!\class oSessionManager
  */
@@ -46,11 +42,11 @@ class oSessionManager : public oEventTarget {
 		 */
 		//@{
 
-		/*!\fn oSessionManager(gApp * app)
+		/*!\fn oSessionManager(oApplication * app)
 		 * \brief Constructor
-		 * \param app gApp pointer
+		 * \param app oApplication pointer
 		 */
-		oSessionManager(gApp * app);
+		oSessionManager(oApplication * app);
 
 		/*!\fn virtual ~oSessionManager()
 		 * \brief Destructor
@@ -60,141 +56,139 @@ class oSessionManager : public oEventTarget {
 
 
 
-		/*!\fn bool RegisterProtocol(imProtocol * proto)
+		/*!\fn bool registerProtocol(imProtocol * proto)
 		 * \brief Registers new protocol.
 		 * \param proto Pointer to oniirIM::imProtocol object
 		 * \return true if ok
 		 * \sa onir::oOniria::RegisterProtocol(), onirIM::imProtocol
 		 */
-		bool RegisterProtocol(imProtocol * proto);
+		bool registerProtocol(imProtocol * proto);
 
-		/*!\fn imProtocol * FindProtocol(const string& id)
+		/*!\fn imProtocol * findProtocol(const QString& id)
 		 * \brief Finds protocol object for given id.
 		 * \param id Protocol id
 		 * \return Pointer to onirIM::imProtocol, or NULL if not found.
 		 */
-		imProtocol * FindProtocol(const string& id);
+		imProtocol * findProtocol(const QString& id);
 
-		/*\fn int LoadSessions()
+		/*\fn int loadSessions()
 		 * \brief Loads saved sessions from config file.
 		 * \return Number of loaded sessions.
 		 */
-		int LoadSessions();
+		int loadSessions();
 
-		/*!\fn int ConnectSessions(bool all = false)
+		/*!\fn int connectSessions(bool all = false)
 		 * \brief Connects sessions.
 		 * \param all If true, all sessions are connected, not only these with autoconnect flag.
 		 * \return Number of connected sessions.
 		 */
-		int ConnectSessions(bool all = false);
+		int connectSessions(bool all = false);
 
 		/*!\fn void Poll()
 		 * \brief Makes sessions alive. ;)
 		 */
-		void Poll();
+		void poll();
 		
-		/*!\fn void ProcessMessageQueue(imSession * s)
+		/*!\fn void processMessageQueue(imSession * s)
 		 * \brief Process session message queue.
 		 * \param s Session.
 		 *
 		 * Flushes input message queue and displays pending messages to user.
 		 */
-		void ProcessMessageQueue(imSession * s);
+		void processMessageQueue(imSession * s);
 		
-		bool StartThread(const string& session_id, const string& roster_id);
+		bool startThread(const QString& session_id, const QString& roster_id);
 
-		/*!\fn void Status(const imStatus& status, bool set = true)
+		/*!\fn void status(const imStatus& st, bool set = true)
 		 * \brief Sets status.
 		 * \param status Status.
 		 * \param set True, if status change should be sent to IM servers.
 		 */
-		void Status(const imStatus& status, bool set = true);
+		void status(const imStatus& st, bool set = true);
 
 		/*!\fn inline const imStatus& Status() const
 		 * \brief Returns current status.
 		 * \return Current status.
 		 */
-		inline const imStatus& Status() const { return _status; };
+		inline const imStatus& status() const { return _status; };
 
 		/*!\fn void RegisterTabGroups()
 		 * \brief Registers tab groups for rosters, chats, etc.
 		 */
-		void RegisterTabGroups();
+		void registerTabGroups();
 
 		/*!\fn void RegisterEventHandlers()
 		 * \brief Registers session event handlers. Mainly from oniria:im:session namespace.
 		 */
-		void RegisterEventHandlers();
+		void registerEventHandlers();
 
-		/*!\fn virtual bool ProcessEvent(oEvent * event)
+		/*!\fn virtual bool processEvent(oEvent * event)
 		 * \brief Handles event.
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		virtual bool ProcessEvent(oEvent * event);
+		virtual bool processEvent(oEvent * event);
 
 	protected:
 
-		wxWindow * CreateRosterWindow(imSession * s);
+		//wxWindow * CreateRosterWindow(imSession * s);
 
 		/*!\name Event handlers.
 		 * @{
 		 */
 
-		/*!\fn imSession * EventSession(oEvent * event)
+		/*!\fn imSession * eventSession(oEvent * event)
 		 * \brief Returns session which generated given event.
 		 * \param event Event.
 		 * \return Session pointer.
 		 */
-		imSession * EventSession(oEvent * event);
+		imSession * eventSession(oEvent * event);
 
-		/*!\fn bool SessionConnected(oEvent * event)
+		/*!\fn bool sessionConnected(oEvent * event)
 		 * \brief Called when session is successfully connected to server.
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		bool SessionConnected(oEvent * event);
+		bool sessionConnected(oEvent * event);
 
 		/*!\fn bool RosterUpdated(oEvent * event)
 		 * \brief Called when roster is changed.
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		bool RosterUpdated(oEvent * event);
+		bool rosterUpdated(oEvent * event);
 
 		/*!\fn bool RosterPresence(oEvent * event)
 		 * \brief Called when roster item presence changed.
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		bool RosterPresence(oEvent * event);
+		bool rosterPresence(oEvent * event);
 
 		/*!\fn bool RosterNewItem(oEvent * event)
 		 * \brief Called when new roster item is added.
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		bool RosterNewItem(oEvent * event);
+		bool rosterNewItem(oEvent * event);
 
 		/*!\fn bool ThreadUICreate(oEvent * event)
 		 * \brief Called when UI for thread need to be created..
 		 * \param event Event.
 		 * \return true if event manager should call next handler in chain.
 		 */
-		bool ThreadUICreate(oEvent * event);
+		bool threadUICreate(oEvent * event);
 
 		/* @} */
 
 	private:
-		gApp * _app;
-		map<string, imProtocol *> _protocols;
-		map<string, imSession *> _sessions;
-		map<string, imSession *> _active_sessions;
-		map<string, gRoster *> _rosters;
+		oApplication * _app;
+		QMap<QString, imProtocol *> _protocols;
+		QMap<QString, imSession *> _sessions;
+		QMap<QString, imSession *> _active_sessions;
+		//QMap<QString, gRoster *> _rosters;
 
 		imStatus _status;
-
-		DECLARE_OOBJECT;
 };
 
 #endif

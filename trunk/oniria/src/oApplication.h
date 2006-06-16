@@ -29,6 +29,7 @@ using onir::oConfig;
 
 class oPluginManager;
 class oEventManager;
+class oSessionManager;
 
 class oApplication : public QApplication {
 
@@ -41,12 +42,14 @@ class oApplication : public QApplication {
 		inline oConfig * config() const { return _config; };
 		inline oEventManager * eventManager() const { return _eventman; };
 		inline oPluginManager * pluginManager() const { return _plugman; };
+		inline oSessionManager * sessionManager() const { return _sessionman; };
 		
 	private:
 		oOniria * _oniria;
 		oConfig * _config;
 		oPluginManager * _plugman;
 		oEventManager * _eventman;
+		oSessionManager * _sessionman;
 };
  
 #endif

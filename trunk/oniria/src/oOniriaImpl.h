@@ -34,6 +34,8 @@ class oOniriaImpl : public oOniria {
 		virtual ~oOniriaImpl();
 
 		virtual bool registerProtocol(imProtocol * proto);
+		virtual QApplication * application() const;
+		virtual QObject * applicationQObject() const;
 		virtual oConfig * config() const;
 		//virtual wxLog * Log() const;
 		virtual oTabs * tabs() const;

@@ -20,8 +20,8 @@
 # include <config.h>
 #endif
 #include "oApplication.h"
-//#include "oEventManager.h"
-//#include "oSessionManager.h"
+#include "oEventManager.h"
+#include "oSessionManager.h"
 //#include "oResourceManager.h"
 #include <onir/oConfig.h>
 //#include <onir/oTabs.h>
@@ -42,9 +42,18 @@ oOniriaImpl::~oOniriaImpl()
 
 bool oOniriaImpl::registerProtocol(imProtocol * proto)
 {
-	// TODO
-	//return _app->SessionManager()->RegisterProtocol(proto);
+	return _app->sessionManager()->registerProtocol(proto);
 	return true;
+}
+
+QApplication * oOniriaImpl::application() const
+{
+	return _app;
+}
+
+QObject * oOniriaImpl::applicationQObject() const
+{
+	return _app;
 }
 
 oConfig * oOniriaImpl::config() const
@@ -71,8 +80,7 @@ oResources * oOniriaImpl::resources() const
 
 oEventQueue * oOniriaImpl::eventQueue() const
 {
-	// TODO
-	return NULL; //_app->EventManager();
+	return _app->eventManager();
 }
 
 const QString& oOniriaImpl::programName() const

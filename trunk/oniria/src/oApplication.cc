@@ -23,6 +23,7 @@
 #include "oXMLConfig.h"
 #include "oOniriaImpl.h"
 #include "oPluginManager.h"
+#include "oSessionManager.h"
 #include "oEventManager.h"
 #include "oApplication.h"
 
@@ -46,7 +47,15 @@ oApplication::oApplication(int& argc, char ** argv)
 	_plugman = new oPluginManager(this);
 	_plugman->loadPlugins();
 
+	_sessionman = new oSessionManager(this);
+
+	_sessionman->registerEventHandlers();
+
+	_eventman->processQueue();
 
 	_plugman->createPlugins();
+
+	_sessionman->loadSessions();
+	_sessionman->connectSessions();
 }
 
