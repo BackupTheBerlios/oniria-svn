@@ -21,6 +21,7 @@
 
 #include "onir_dll.h"
 
+#include <QObject>
 #include <QString>
 
 namespace onir {
@@ -31,7 +32,9 @@ class oEventHandler;
 /*!\class oEventQueue
  * \brief Event queue.
  */
-class LIBONIR_API oEventQueue {
+class LIBONIR_API oEventQueue : public QObject {
+
+		Q_OBJECT;
 
 	public:
 		/*!\name Contructors and destructor

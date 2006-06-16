@@ -15,7 +15,7 @@ libonir_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 
 
 
-libonir_la_HEADERS_moc =
+libonir_la_HEADERS_moc = oEventQueue.h
 
 nobase_onirinclude_HEADERS = onir.h				\
 			     onir_dll.h				\
@@ -26,7 +26,6 @@ nobase_onirinclude_HEADERS = onir.h				\
 			     oEventTarget.h			\
 			     oEventHandler.h			\
 			     oEventForwarder.h			\
-			     oEventQueue.h			\
 			     oConfig.h				\
 			     $(libonir_la_HEADERS_moc)
 
