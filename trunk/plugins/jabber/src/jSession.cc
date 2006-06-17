@@ -691,10 +691,8 @@ bool jSession::parseIQRoster(xmlStanza * stanza)
 				jRosterItem * ri;
 				QList<xmlElement *> e_grps;
 				
-				//wxLogVerbose("Roster item: jid: %s, name: %s, subscription: %s",
-				//		(*it)->attributeValue("jid").c_str(),
-				//		(*it)->attributeValue("name").c_str(),
-				//		(*it)->attributeValue("subscription").c_str());
+				qDebug() << "jSession::parseIQRoster():" << sessionId() << ": Roster item: jid:" << (*it)->attributeValue("jid")
+					<< ", name:" << (*it)->attributeValue("name") << ", subscription:" << (*it)->attributeValue("subscription");
 						
 				ri = new jRosterItem(this);
 				ri->name((*it)->attributeValue("name"));
