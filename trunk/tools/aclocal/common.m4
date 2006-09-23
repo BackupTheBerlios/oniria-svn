@@ -23,3 +23,8 @@ AC_DEFUN([AC_LIBTOOL_EXTRA_LDFLAGS],
   fi
 ])
 
+AC_DEFUN([AC_PROG_MOC],
+[
+  AC_ARG_WITH(moc, [AC_HELP_STRING([--with-moc=path], [use given path for moc program])], [AC_SUBST(QTMOC), $withval], [AC_PATH_PROG(QTMOC, moc)])
+])
+ 

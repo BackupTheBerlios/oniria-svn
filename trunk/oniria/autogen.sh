@@ -8,7 +8,7 @@ else
 fi
 
 echo "Running aclocal $AUTOGEN_ACLOCAL_FLAGS ..."
-aclocal $AUTOGEN_ACLOCAL_FLAGS
+aclocal -I ../tools/aclocal $AUTOGEN_ACLOCAL_FLAGS
 
 echo "Running autoheader..."
 autoheader

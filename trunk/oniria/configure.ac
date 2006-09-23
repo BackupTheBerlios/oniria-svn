@@ -47,7 +47,7 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PATH_PROGS(ZIP, [zip pkzip], [zip])
-AC_PATH_PROG(QTMOC, moc)
+AC_PROG_MOC
 
 dnl Checks for header files.
 AC_CHECK_HEADERS([dlfcn.h])
