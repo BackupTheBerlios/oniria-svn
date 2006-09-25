@@ -203,7 +203,6 @@ bool xmlStream::initiate()
 	if (state() != ready)
 		return false;
 
-	_input_b = "";
 	_output_b = "<?xml version='1.0'?>";
 
 	// Prepare root element, and add to queue
@@ -214,6 +213,19 @@ bool xmlStream::initiate()
 	flush();
 
 	return true;
+}
+
+bool xmlStream::reset(bool closefirst)
+{
+	if (closefirst) {
+		_output_b.append(_out_root->formatClosing(true, true));
+		_state = reseting;
+		flush();
+		return true;
+	} else {
+		_state = ready;
+		return initiate();
+	}
 }
 
 bool xmlStream::poll()
@@ -251,6 +263,8 @@ bool xmlStream::parse()
 	
 	ok = false;
 	numb = b.size();
+	if (b.size() == 0)
+		return true;
 	while (!ok) {
 		_private->source->setData(b.left(numb));
 		if (state() == initiating) {
@@ -323,6 +337,11 @@ void xmlStream::parseEndTag(const QString& elem)
 					_state = error;
 				}
 			}
+		}
+	} else if (state() == reseting) {
+		if (elem == "stream:stream") {
+			_state = ready;
+			initiate();
 		}
 	}
 }

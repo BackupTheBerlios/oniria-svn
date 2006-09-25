@@ -54,6 +54,7 @@ class LIBOXML_API xmlStream : public QObject {
 			established,	/*!< Established stream, waiting for stanzas. */
 			stanza,		/*!< Stream is currently receiving stanza. */
 			closing,	/*!< Stream is in closing state. */
+			reseting,	/*!< Stream is being reseted and awaiting for closing tag. */
 			error		/*!< Errorneus stream. */
 		};
 		
@@ -202,6 +203,20 @@ class LIBOXML_API xmlStream : public QObject {
 		 * is established.
 		 */
 		bool initiate();
+
+		/*!\fn bool reset(bool closefirst)
+		 * \brief Resets stream (closes and reinitiates).
+		 * \param closefirst If true, stream will be closed by sending closing tag for root element.
+		 * \return true if successfull.
+		 * \sa initiate()
+		 *
+		 * This method closes current stream and establishes new one. If closefirst param is true,
+		 * then old stream will be closed before establishing new one. Otherwise new stream
+		 * will be immediatelly established by sending opening tag for root element.
+		 *
+		 * \warning Please read warning for initiate() method.
+		 */
+		bool reset(bool closefirst);
 
 		/*!\fn bool poll()
 		 * \brief Does the main streaming stuff.

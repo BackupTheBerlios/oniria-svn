@@ -419,19 +419,7 @@ bool jSession::doSASLAuth(xmlStanza * stanza)
 
 			qDebug() << "jSession::doSASLAuth():" << sessionId() << ": Authenticated.";
 
-			// destroy current and create new stream
-			_xml->disconnect(this);
-			delete _xml;
-			_xml = new xmlStream(_socket, _socket);
-			QObject::connect(_xml, SIGNAL(receivedStanza(xmlStanza *)), SLOT(receivedStanza(xmlStanza *)));
-			_xml->prepare();
-			_xml->outRoot()->name("stream:stream");
-			_xml->outRoot()->addAttribute("to", _jid.domain());
-			_xml->outRoot()->addAttribute("xmlns", "jabber:client");
-			_xml->outRoot()->addAttribute("xmlns:stream", "http://etherx.jabber.org/streams");
-			_xml->outRoot()->addAttribute("version", "1.0");
-			_xml->initiate();
-			_xml->poll();
+			_xml->reset(false);
 
 			_state = authenticated;
 
